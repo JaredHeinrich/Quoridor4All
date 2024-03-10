@@ -8,21 +8,32 @@ Ein Vorteil gegenüber einem herkömmlichen Brettspiel ist die Verfügbarkeit, d
 es downloadbar für den PC überall zur Verfügung steht.
 # 2. Einsatz 
 ## Zielgruppen:
-Spieler alt
-Spieler jung
+Brettspielspieler jeglicher Altersgruppen mit Affinität zu digitalen Spielformat
 Admin / Developer gehört der hier hin ??? 
 ## Einsatzbereiche:
-Das Spiel soll hauptsächlich für den freizeitlichen Gebrauch entworfen werden.
-Es soll kompetitiv gestaltet sein, sodass Spieler ihre Fähigkeiten verglichen
+Das Spiel soll für den freizeitlichen Gebrauch entworfen werden.
+Es soll kompetitiv gestaltet sein, sodass Spieler ihre Fähigkeiten vergleichen
 können, sowie den Spieler eine angenehme Möglichkeit bieten sich die Zeit zu
 vertreiben. Es soll die Konzentration und strategisches Denken verbessern.
-## Szenarien: ????
+## Szenarien:
+Das Produkt könnte beispielsweise durch eine Familie genutzt werden, die zuhause oder auf einer Reise zusammen etwas spielen möchte. Ein weiteres Szenario ist ein Spiel von Studenten in der Hochschule. Auch Zuhause bei Spieleabenden kann das Spiel zum Einsatz kommen, da dann nicht die Brettspielversion gekauft werden muss und digitale Hilfen bereit gestellt werden.
 # 3. Umgebung
 Das Spiel wird für Desktop-PCs und Laptops unter den gängigen Betriebssystemen
 Windows und MacOS entwickelt. Es handelt sich dabei um eine eigenständige
 Anwendung. (Bibliotheken müssen gegebenenfalls mit installiert werden???)
 # 4. Funktionalität
-User-Story-Map
+- Angabe Benutzername, um die Anzahl der Siege anzuzeigen
+- Anzeige der Spielregeln in einer kurzen verständlichen Form
+- Anzeige des Spielbretts mit unterschiedlich gefärbten Spielfiguren und Wänden, Anzeige der Startseite jeder Spielfigur
+- Anzeige der Anzahl an noch verfügbaren Wände für einen Spieler
+- Anzeige des Spielers, der am Spielzug ist
+- Möglichkeit in einem Spielzug eine Wand mittels Mausklick zu setzen oder seine Figur mit Mausklick zu ziehen
+- Sicherstellen, dass Wände richtig gesetzt werden
+- Sicherstellen, dass Figuren richtig ziehen können und gegebenenfalls übereinander um die Ecke springen können
+- Sicherstellen, dass Figuren immer einen Weg auf die gegenüberliegende Seite besitzen
+- Möglichkeit, einen Zug rückgängig zu machen
+- Benachrichtigung über den Sieger
+
 # 5. Daten
 (muss ein Impressum oder ähnliches erstellt werden, wenn das Produkt nur lokal genutzt wird
 und der Download über Github möglich ist?)
@@ -93,4 +104,5 @@ Um die Einhaltung der Qualitätsziele sicherzustellen, wird die Software mithilf
   mit Github Pull Requests durchgeführt wobei vor dem Merge ein anderer
   Entwickler den Code geprüft haben muss.
 # 10. Erweiterungen
-Hier werden die Regel definiert. ??
+## 10.1 Spielregeln
+Quoridor ist ein Brettspiel, dass mit zwei oder vier Personen gespielt werden kann. Klassischerweise ist das Spielbrett ein 9x9-Feld. Jeder Spieler startet mit seiner Spielfigur auf dem Mittelfeld einer Randspalte. Zusätzlich erhält jeder Spieler 10 Wände der länge 2 Spielfelder (bei 4 Spielern 6 Wände). Das Ziel ist es, die gegenüberliegende Randseite zu erreichen. Dafür ziehen die Spieler abwechselnd, beziehungsweise im Uhzeigersinn. Ein Zug beinhält entweder eine Bewegung der eigenen Spielfigur um eins in einer geraden Spielfeldrichtung (nicht schräg) oder das Setzen einer Wand  zwischen 4 Felder. Eine Wand kann nicht durch eine Spielfigur passiert werden. Eine Wand kann nicht eine andere Wand schneiden. Auch dürfen Wände nicht so gesetzt werden, dass einer Spielfigur es nicht mehr möglich ist, die andere Seite zu erreichen. Es gewinnt, wessen Spielfigur als erstes die andere Seite erreicht.
