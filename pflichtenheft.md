@@ -1,15 +1,12 @@
-? um zu offenen Punkten zu navigieren.
-
 # 1. Zielbestimmung
 Bei dem Produkt handelt es sich um ein elektronisches Spiel, welches auf dem
-Brettspiel Quoridor basiert. Das Spiel soll bis zu vier Spielern erlauben lokal
-auf demselben Gerät zu spielen. Ein Online Multiplayer ist nicht vorgesehen.
+Brettspiel Quoridor basiert. Das Spiel soll bis zu vier Personen erlauben, Quorridor lokal
+auf demselben Gerät mit einer graphischen Oberflächee zu spielen. Ein Online Multiplayer ist nicht vorgesehen.
 Ein Vorteil gegenüber einem herkömmlichen Brettspiel ist die Verfügbarkeit, da
 es downloadbar für den PC überall zur Verfügung steht.
 # 2. Einsatz 
 ## Zielgruppen:
-Brettspielspieler jeglicher Altersgruppen mit Affinität zu digitalen Spielformat
-Admin / Developer gehört der hier hin ??? 
+Brettspielspieler jeglicher Altersgruppen mit Affinität zu digitalen Spielformat.
 ## Einsatzbereiche:
 Das Spiel soll für den freizeitlichen Gebrauch entworfen werden.
 Es soll kompetitiv gestaltet sein, sodass Spieler ihre Fähigkeiten vergleichen
@@ -41,7 +38,7 @@ und der Download über Github möglich ist?)
 Daten, die Verarbeitet werden sind ein vom Nutzer freiwillig erstellbares
 Spielerprofil, sowie die Informationen über das aktuelle Spiel. Ein
 Spielerprofil enthält dabei nur einen vom Nutzer ausgedachten Nutzernamen und
-Informationen zu mit diesem Profil gespielten Spielen, jedoch keine
+die Anzahl an bereits gewonnenen Spielen, jedoch keine
 personenbezogenen Daten wie E-Mail, Vorname, Nachname oder Alter. Die
 Informationen sind nicht gesondert durch ein Passwort oder ähnliches geschützt
 und die Spieldaten werden auch nicht verschlüsselt gespeichert. Die Speicherung
@@ -53,13 +50,12 @@ ER-Modell ???
 Um eine angenehme Nutzererfahrung zu bieten werden folgende
 Leistungsanforderungen aufgestellt:
 - Skalierbarkeit: Die Spieleranzahl soll nicht über 4 Erhöht werden können. Es
-  soll
-  möglich sein in Zukunft die Spielfeldgröße sowie die Zugmöglichkeiten zu
+  soll technisch
+  möglich sein in Zukunft die Spielfeldgröße sowie die Zugmöglichkeiten auf eine Größe von maximal 15 mal 15 zu
   erweitern, ohne dass andere Leistungsanforderungen nicht mehr eingehalten
   werden. Die maximale Anzahl an Spielerprofilen soll dabei mindestens 100
-  betragen, wobei der benötigte Speicherplatz nicht (Wert X ???) überschritten
-  werden darf.
-- Durchsatz: was genau ist durchsatz???? 
+  betragen, wobei der benötigte Speicherplatz nicht 1 GB? überschreiten darf.
+- Durchsatz: Wegen der geringen Datenmenge werden keine besonderen Anforderungen an den Durchsatz gestellt?
 - Antwortzeiten: Die Latenz, wenn eine Aktion durch den Nutzer ausgeführt
   wurde, darf maximal eine halbe Sekunde betragen. Dies vom gilt vom Klick des
   Nutzers bis zum Anzeigen auf dem Bildschirm, wobei die Latenz des
@@ -72,23 +68,23 @@ Leistungsanforderungen aufgestellt:
 # 7. Benutzeroberfläche
 Das System sollte den Spielern jederzeit den aktuellen Status des Spiels
 mitteilen, dies betrifft den Status des Spielfelds und die Position der Figuren
-als auch bei längeren Wartezeiten den Spieler über diese zu informieren.
+als auch bei längeren Wartezeiten den Spieler über diese zu informieren. Der Nutzer kann das Spiel mittels Mausklicks navigieren.?
 
-Der Spieler sollte das Spiel jederzeit speichern und verlassen können, um später an diesem Punkt weiter zuspielen.
+Der Spieler muss das Spiel nicht speichern und verlassen können, um später an diesem Punkt weiter zuspielen.
 
 Es soll eine einheitliche Auswahl an Farben und Symbolen genutzt werden, um dem
 Spieler Informationen zu vermitteln. Das User-Interface soll fehlerhafte
 Aktionen verhindern, oder den Spieler auf diese hinweisen.
 Das Spiel soll für Einsteiger und erfahrene Nutzer gleichermaßen intuitiv
 nutzbar sein. Um dies um zusetzen soll die Benutzeroberfläche minimalistisch
-und frei von unnötigen Elementen sein.
-Um es Anfängern einfacher zu machen, sollte das Spiel ein simples Tutorial
-enthalten.
+und frei von nicht essenziellen Elementen sein.
+Um es Anfängern einfacher zu machen, sollte das Spiel eine Beschreibung der Regeln enthalten.
+10 usability heuristics???
 # 8. Qualitätsziele
 - Wartbarkeit: Die Wartbarkeit und Erweiterbarkeit der Software soll einfach
 möglich sein.
-- Zuverlässigkeit: Das Spiel soll Zuverlässig und ohne Fehler laufen.
-- Sicherheit: Was ist Sicherheit in unserem Kontext???
+- Zuverlässigkeit: Das Spiel soll zuverlässig und ohne Fehler laufen.
+- Sicherheit: Es gibt keine Qualitätsziele für die Sicherheit???
 Um die Einhaltung der Qualitätsziele sicherzustellen, wird die Software mithilfe von Unit-Test hinreichend getestet.
 # 9. Entwicklungsumgebung
 - Softwaretools: Für das Schreiben des Codes wird Neovim und Visual Studio Code
@@ -96,8 +92,9 @@ Um die Einhaltung der Qualitätsziele sicherzustellen, wird die Software mithilf
 - Programmierrichtlinien: Für die Qualität des Codes ist es essenziell, dass
   sich an gemeinsame Code-Standards gehalten wird. Für die Naming-Conventions
   werden die Standard Rust-Naming-Conventions für Rust und die camelCase
-  Naming-Conventions für Svelte genutzt.
-  (Was gehört sonst noch hier hin???)
+  Naming-Conventions für Svelte genutzt. Eine Statement-Test-Coverage von 50% 
+  wird erreicht.
+  sonst noch etwas?
 - Versionskontrolle: Die Versionierung wird mit Git und Github umgesetzt.
   Dabei wird jedes Feature auf einem eigenen Branch entwickelt, welcher nach
   dem Merge mit dem Main-Branch gelöscht wieder gelöscht wird. Der Merge wird
