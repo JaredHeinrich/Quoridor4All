@@ -1,7 +1,9 @@
 # 1. Zielbestimmung
 Bei dem Produkt handelt es sich um ein elektronisches Spiel, welches auf dem
 Brettspiel Quoridor basiert. Das Spiel soll bis zu vier Personen erlauben, Quorridor lokal
-auf demselben Gerät mit einer graphischen Oberflächee zu spielen. Ein Online Multiplayer ist nicht vorgesehen.
+auf demselben Gerät mit einer graphischen Oberflächee zu spielen. Ein Online Multiplayer 
+ist nicht vorgesehen. Das Produkt soll lediglich die essenziellen Features eines
+Walking Skeleton zum Spielen von Quorridor enthalten.
 Ein Vorteil gegenüber einem herkömmlichen Brettspiel ist die Verfügbarkeit, da
 es downloadbar für den PC überall zur Verfügung steht.
 # 2. Einsatz 
@@ -17,7 +19,7 @@ Das Produkt könnte beispielsweise durch eine Familie genutzt werden, die zuhaus
 # 3. Umgebung
 Das Spiel wird für Desktop-PCs und Laptops unter den gängigen Betriebssystemen
 Windows und MacOS entwickelt. Es handelt sich dabei um eine eigenständige
-Anwendung. (Bibliotheken müssen gegebenenfalls mit installiert werden???)
+Anwendung.
 # 4. Funktionalität
 - Angabe Benutzername, um die Anzahl der Siege anzuzeigen
 - Anzeige der Spielregeln in einer kurzen verständlichen Form
@@ -32,9 +34,6 @@ Anwendung. (Bibliotheken müssen gegebenenfalls mit installiert werden???)
 - Benachrichtigung über den Sieger
 
 # 5. Daten
-(muss ein Impressum oder ähnliches erstellt werden, wenn das Produkt nur lokal genutzt wird
-und der Download über Github möglich ist?)
-
 Daten, die Verarbeitet werden sind ein vom Nutzer freiwillig erstellbares
 Spielerprofil, sowie die Informationen über das aktuelle Spiel. Ein
 Spielerprofil enthält dabei nur einen vom Nutzer ausgedachten Nutzernamen und
@@ -43,9 +42,8 @@ personenbezogenen Daten wie E-Mail, Vorname, Nachname oder Alter. Die
 Informationen sind nicht gesondert durch ein Passwort oder ähnliches geschützt
 und die Spieldaten werden auch nicht verschlüsselt gespeichert. Die Speicherung
 der Daten wird mit einer lokalen SQLite Datenbank in einer Datei auf der
-Festplatte des Computers umgesetzt.
-
-ER-Modell ???
+Festplatte des Computers umgesetzt. Ein Impressum ist nicht notwendig.
+Das ER-Modell ist dem Pflichtenheft beigefügt.
 # 6. Leistungen
 Um eine angenehme Nutzererfahrung zu bieten werden folgende
 Leistungsanforderungen aufgestellt:
@@ -54,25 +52,25 @@ Leistungsanforderungen aufgestellt:
   möglich sein in Zukunft die Spielfeldgröße sowie die Zugmöglichkeiten auf eine Größe von maximal 15 mal 15 zu
   erweitern, ohne dass andere Leistungsanforderungen nicht mehr eingehalten
   werden. Die maximale Anzahl an Spielerprofilen soll dabei mindestens 100
-  betragen, wobei der benötigte Speicherplatz nicht 1 GB? überschreiten darf.
-- Durchsatz: Wegen der geringen Datenmenge werden keine besonderen Anforderungen an den Durchsatz gestellt?
+  betragen, wobei der benötigte Speicherplatz nicht 100 MB überschreiten darf.
+- Durchsatz: Wegen der geringen Datenmenge werden keine besonderen Anforderungen an den Durchsatz gestellt.
 - Antwortzeiten: Die Latenz, wenn eine Aktion durch den Nutzer ausgeführt
-  wurde, darf maximal eine halbe Sekunde betragen. Dies vom gilt vom Klick des
+  wurde, darf auf einem M1 MacBook Pro mit 16 GB RAM auf MacOS 14.4 maximal eine halbe Sekunde betragen. Dies vom gilt vom Klick des
   Nutzers bis zum Anzeigen auf dem Bildschirm, wobei die Latenz des
   Bildschirms, der Maus und der Tastatur nicht beachtet werden. 
-  (müssen wir das abhängig von System Voraussetzungen festlegen?)
 - Ladezeiten: Die Initiale Ladezeit des Programms bis zum Anzeigen auf dem
-  Bildschirm darf maximal eine Sekunde dauern, wobei die Latenz des
+  Bildschirm darf auf einem M1 MacBook Pro mit 16 GB RAM auf MacOS 14.4 maximal eine Sekunde dauern, wobei die Latenz des
   Bildschirms, der Maus und der Tastatur nicht beachtet werden.
-  (müssen wir das abhängig von System Voraussetzungen festlegen?)
 # 7. Benutzeroberfläche
-Das System sollte den Spielern jederzeit den aktuellen Status des Spiels
+Das System sollte den Spielern jederzeit den aktuellen Status des Spiels in einer
+minimalistischen Abbildung der Realität
 mitteilen, dies betrifft den Status des Spielfelds und die Position der Figuren
-als auch bei längeren Wartezeiten den Spieler über diese zu informieren. Der Nutzer kann das Spiel mittels Mausklicks navigieren.?
+als auch bei längeren Wartezeiten den Spieler über diese zu informieren. Der 
+Nutzer kann das Spiel mittels Mausklicks navigieren.
 
-Der Spieler muss das Spiel nicht speichern und verlassen können, um später an diesem Punkt weiter zuspielen.
+Der Spieler kann das Spiel nicht speichern.
 
-Es soll eine einheitliche Auswahl an Farben und Symbolen genutzt werden, um dem
+Es soll eine abgestimmte Auswahl an Farben und Symbolen genutzt werden, um dem
 Spieler Informationen zu vermitteln. Das User-Interface soll fehlerhafte
 Aktionen verhindern, oder den Spieler auf diese hinweisen.
 Das Spiel soll für Einsteiger und erfahrene Nutzer gleichermaßen intuitiv
@@ -80,11 +78,21 @@ nutzbar sein. Um dies um zusetzen soll die Benutzeroberfläche minimalistisch
 und frei von nicht essenziellen Elementen sein.
 Um es Anfängern einfacher zu machen, sollte das Spiel eine Beschreibung der Regeln enthalten.
 10 usability heuristics???
+
+10 
+
+10
+
+10
+
+10
+
+10
 # 8. Qualitätsziele
 - Wartbarkeit: Die Wartbarkeit und Erweiterbarkeit der Software soll einfach
 möglich sein.
 - Zuverlässigkeit: Das Spiel soll zuverlässig und ohne Fehler laufen.
-- Sicherheit: Es gibt keine Qualitätsziele für die Sicherheit???
+- Sicherheit: Es gibt keine Qualitätsziele für die Sicherheit
 Um die Einhaltung der Qualitätsziele sicherzustellen, wird die Software mithilfe von Unit-Test hinreichend getestet.
 # 9. Entwicklungsumgebung
 - Softwaretools: Für das Schreiben des Codes wird Neovim und Visual Studio Code
@@ -92,9 +100,8 @@ Um die Einhaltung der Qualitätsziele sicherzustellen, wird die Software mithilf
 - Programmierrichtlinien: Für die Qualität des Codes ist es essenziell, dass
   sich an gemeinsame Code-Standards gehalten wird. Für die Naming-Conventions
   werden die Standard Rust-Naming-Conventions für Rust und die camelCase
-  Naming-Conventions für Svelte genutzt. Eine Statement-Test-Coverage von 50% 
-  wird erreicht.
-  sonst noch etwas?
+  Naming-Conventions für Svelte genutzt. Eine Statement-Test-Coverage  der Logik
+  von 50% wird erreicht.
 - Versionskontrolle: Die Versionierung wird mit Git und Github umgesetzt.
   Dabei wird jedes Feature auf einem eigenen Branch entwickelt, welcher nach
   dem Merge mit dem Main-Branch gelöscht wieder gelöscht wird. Der Merge wird
