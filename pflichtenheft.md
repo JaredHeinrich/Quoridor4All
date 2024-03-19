@@ -8,7 +8,7 @@ Ein Vorteil gegenüber einem herkömmlichen Brettspiel ist die Verfügbarkeit, d
 es downloadbar für den PC überall zur Verfügung steht.
 # 2. Einsatz 
 ## Zielgruppen:
-Brettspielspieler jeglicher Altersgruppen mit Affinität zu digitalen Spielformat.
+Brettspielspieler jeglicher Altersgruppen mit Affinität zu digitalen Spielformat. Die Personas sind diesem Pflichtenheft beigefügt.
 ## Einsatzbereiche:
 Das Spiel soll für den freizeitlichen Gebrauch entworfen werden.
 Es soll kompetitiv gestaltet sein, sodass Spieler ihre Fähigkeiten vergleichen
