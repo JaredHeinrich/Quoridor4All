@@ -21,6 +21,7 @@ Das Spiel wird für Desktop-PCs und Laptops unter den gängigen Betriebssystemen
 Windows und MacOS entwickelt. Es handelt sich dabei um eine eigenständige
 Anwendung.
 
+Ein UML-Klassendiagramm, UML-Sequenzdiagramm sowie ein UML-Zustandsdiagramm sind diesem Pflichtenheft beigefügt. Ebenso ist eine High-Level-Architektur als Diagramm angehangen. Für eine Modulspezifikation dient das UML-Klassendiagramm.
 # 4. Funktionalität
 - Angabe Benutzername, um die Anzahl der Siege anzuzeigen
 - Anzeige der Spielregeln in einer kurzen verständlichen Form
