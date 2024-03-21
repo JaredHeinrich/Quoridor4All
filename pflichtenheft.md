@@ -20,6 +20,7 @@ Das Produkt könnte beispielsweise durch eine Familie genutzt werden, die zuhaus
 Das Spiel wird für Desktop-PCs und Laptops unter den gängigen Betriebssystemen
 Windows und MacOS entwickelt. Es handelt sich dabei um eine eigenständige
 Anwendung.
+
 # 4. Funktionalität
 - Angabe Benutzername, um die Anzahl der Siege anzuzeigen
 - Anzeige der Spielregeln in einer kurzen verständlichen Form
@@ -64,9 +65,12 @@ Leistungsanforderungen aufgestellt:
 # 7. Benutzeroberfläche
 Das System sollte den Spielern jederzeit den aktuellen Status des Spiels in einer
 minimalistischen Abbildung der Realität
-mitteilen, dies betrifft den Status des Spielfelds und die Position der Figuren
-als auch bei längeren Wartezeiten den Spieler über diese zu informieren. Der 
-Nutzer kann das Spiel mittels Mausklicks navigieren.
+mitteilen, dies betrifft den Status des Spielfelds und die Position der Figuren.
+Der Nutzer kann das Spiel mittels Mausklicks navigieren, wobei nur grundsätzlich valide
+Spielzüge graphisch angezeigt werden. Spielzüge die die Regel, dass ein offener 
+Weg für jeden Spieler bleiben muss, dürfen angezeigt werden, sollten bei dem Versuch der
+Durchführung jedoch eine Fehlermeldung "Zug nicht erlaubt. Jeder Spieler muss einen offenen
+Weg auf die andere Seite haben" ausgeben.
 
 Der Spieler kann das Spiel nicht speichern.
 
@@ -77,17 +81,7 @@ Das Spiel soll für Einsteiger und erfahrene Nutzer gleichermaßen intuitiv
 nutzbar sein. Um dies um zusetzen soll die Benutzeroberfläche minimalistisch
 und frei von nicht essenziellen Elementen sein.
 Um es Anfängern einfacher zu machen, sollte das Spiel eine Beschreibung der Regeln enthalten.
-10 usability heuristics???
-
-10 
-
-10
-
-10
-
-10
-
-10
+Ein grundsätzliches Mockup mit den wichtigsten Komponenten ist dem Pflichtenheft beigelegt.
 # 8. Qualitätsziele
 - Wartbarkeit: Die Wartbarkeit und Erweiterbarkeit der Software soll einfach
 möglich sein.
