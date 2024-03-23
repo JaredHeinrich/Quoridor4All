@@ -1,8 +1,12 @@
 //Prototyp Implementation des Strategy Patterns. Das Strategy Pattern ermöglicht es einem
-//verschiedene Wege, die die gleiche funktionalität erfüllen, auszutauschen. In unserem Spiel
-//ist es notwendig zu überprüfen, ob jede Spielfigur einen Weg zu ihrem Ziel hat. Um die Art
-//und Weise, wie das festgestellt wird, austauschen zu können. Könnte man das Strategy Pattern
-//nutzen.
+//verschiedene Implementationen, um die gleiche Funktionalität zu erfüllen, auszutauschen.
+//In unserem Spiel ist es notwendig, zu überprüfen, ob jede Spielfigur einen Weg auf die Ziel-
+//seite besitzt. Für die Lösung dieses Problems sind mehrere Algorithmen denkbar. Daher
+//ist es wahrscheinlich, dass ein PathChecker in Zukunft ausgetauscht wird, wenn ein effizienterer
+//oder einfacherer Algorithmus verwendet werden soll. Daher ist hier ein optimaler Anwendungsfall
+//des Strategy Patterns gegeben. Der PathChecker prüft für einen Pawn die Erreichbarkeit der
+//anderen Seite. Wie dies jedoch genau geschieht kann in unterschiedlichen Strategieen
+//implementiert werden.
 use path_finder::{Game, PathChecker1, PathChecker2, Pawn};
 
 fn main() {
