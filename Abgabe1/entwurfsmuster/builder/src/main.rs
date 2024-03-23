@@ -1,6 +1,10 @@
 //Builder Pattern für die Wall. WallBuilder ist eine Beispiel Implementation, später könnte dieses
-//Pattern für z.B. den Pawn genutzt werdne, da dieser eine komplexe Struktur ist und mehrere
-//ähnliche Instanzen von diesem gebaut werden müssen.
+//Pattern auch auf z.B. den Pawn ausgeweitet werden.
+//Das Builder Pattern ermöglicht die Erzeugung von komplexeren Objekten aus vielen Schritten und
+//trennt den Konstruktionsprozess vom repräsentierten Objekt. Bei der Wall kann so sichergestellt 
+//werden, dass die Wall die obligatorischen Attribute initialisiert. Eine Erweiterung mit optionalen
+//Attributen ist danach einfacher und mit weniger Fehlerpotenzial möglich. Dadurch wird eine lang-
+//fristige Wartbarkeit sichergestellt
 use wall::WallBuilder;
 fn main() {
     let w1 = WallBuilder::new() 
