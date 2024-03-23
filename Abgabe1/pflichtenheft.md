@@ -37,7 +37,9 @@ Betriebssystemen Windows und MacOS entwickelt. Es handelt sich dabei um eine
 eigenständige Anwendung. Ein UML-Klassendiagramm, UML-Sequenzdiagramm sowie ein
 UML-Zustandsdiagramm sind diesem Pflichtenheft beigefügt. Ebenso ist eine
 High-Level-Architektur als Diagramm angehangen. Für eine Modulspezifikation
-dient das UML-Klassendiagramm.
+dient das UML-Klassendiagramm. Es können die beigefügten Entwurfsmuster
+verwendet werden. Die Begründungen für die Anwendung dieser Muster befinden
+sich im Code.
 
 # 4. Funktionalität
 - Angabe Benutzername, um die Anzahl der Siege anzuzeigen
