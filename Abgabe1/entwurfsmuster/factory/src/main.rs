@@ -1,6 +1,9 @@
-//Prototyp implementation des Factory patterns. Das Factory Pattern könnte in unserem Spiel genutzt
-//werden um verschiedene Spielfeldarten zu generieren, hier am Beispiel von einem Vier Spieler Modus
-//und einem Zwei Spieler Modus umgesetzt
+//Prototyp implementation des Factory patterns. Das Factory Pattern trennt die Erzeugung von einem
+//Object von diesem selbst. Es vereinfacht die Erzeugung von komplexen Objecten und könnte in
+//unserem Spiel genutzt werden um verschiedene Game-Arten zu generieren, hier am Beispiel von
+//einem Vier Spieler-Game und einem Zwei Spieler-Game umgesetzt, das Factory pattern erleichtert
+//die erzeugung des komplexen Game Objectes. Ebenfalls ermöglicht es, dass erst zur Laufzeit
+//entschieden werden muss, welche Game-Art genutzt werden soll
 use game::{Factory, FourPlayerGameFactory, TwoPlayerGameFactory};
 fn main() {
     let four_player_game = FourPlayerGameFactory::create();
