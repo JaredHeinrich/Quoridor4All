@@ -1,22 +1,35 @@
+//Prototyp implementation des Faktory patterns. Das Faktory Pattern könnte in unserem Spiel genutzt
+//werden um verschiedene Spielfeldarten zu generieren, hier am Beispiel von einem Vier Spieler Modus
+//und einem Zwei Spieler Modus umgesetzt
 use game::{Factory, FourPlayerGameFactory, TwoPlayerGameFactory};
 fn main() {
     let fpgf = FourPlayerGameFactory{};
     let tpgf = TwoPlayerGameFactory{};
     let fpg = fpgf.create();
     let tpg = tpgf.create();
+
+    println!("four player game:");
+    println!("{}", fpg.number_of_players());
+
+    println!("two player game:");
+    println!("{}", tpg.number_of_players());
 }
 pub mod game {
 
+    //Factory Interface
     pub trait Factory {
         fn create(&self) -> Box<dyn Game>;
     }
 
+    //Factory Klasse für Vier Spieler
     pub struct FourPlayerGameFactory{}
+    //implementation der Factory Klasse für Vier Spieler
     impl Factory for FourPlayerGameFactory{
         fn create(&self) -> Box<dyn Game> {
             let number_of_available_walls: u32 = 10;
             let board_size: u32 = 9;
 
+            //erstelle Spieler
             let p1: Player = Player::new(board_size, Position::Bottom, number_of_available_walls);
             let p2: Player = Player::new(board_size, Position::Left, number_of_available_walls);
             let p3: Player = Player::new(board_size, Position::Top, number_of_available_walls);
@@ -24,8 +37,10 @@ pub mod game {
 
             let players: [Player; 4] = [p1, p2, p3, p4];
             
+            //leere Liste an Walls
             let walls: Vec<Wall> = Vec::new();
 
+            //gibt Vier Spieler Game zurück
             Box::new(FourPlayerGame{
                 players,
                 walls,
@@ -54,25 +69,43 @@ pub mod game {
             })
         }
     }
-    pub trait Game{}
+    //Game Interface wird von Factory zurückgegeben
+    pub trait Game{
+        fn number_of_players(&self) -> u16;
+    }
 
-    #[derive(Debug)]
+    //Vier Spieler Variante
     pub struct FourPlayerGame{
         players: [Player;4],
         walls: Vec<Wall>,
         board_size: u32,
     } 
-    impl Game for FourPlayerGame{}
+    impl Game for FourPlayerGame{
+        fn number_of_players(&self) -> u16 {
+            self.players.len() as u16
+        }
+    }
 
-    #[derive(Debug)]
     pub struct TwoPlayerGame{
         players: [Player;2],
         walls: Vec<Wall>,
         board_size: u32,
     } 
-    impl Game for TwoPlayerGame{}
+    impl Game for TwoPlayerGame{
+        fn number_of_players(&self) -> u16 {
+            self.players.len() as u16
+        }
+    }
 
-    #[derive(Debug)]
+
+    //
+    // Nicht mehr unbedingt Notwendig für das Factory Pattern
+    // Klassen für Spieler Goal Wall und Enum für Start Position des Spielers
+    // sowie implementation für konstruktoren, welche jedoch nur von der Factory und anderen
+    // klassen dieses moduls genutzt werden können.
+    //
+
+
     struct Player {
         pawn_coordinate: (u32,u32),
         goal: Goal,
@@ -102,7 +135,6 @@ pub mod game {
         }
     }
 
-    #[derive(Debug)]
     struct Goal {
         is_x_coordinate: bool, //if the goal is defined by x coordinate. if its false the goal is defined by y coordinate
         coordinate: u32,
@@ -139,13 +171,11 @@ pub mod game {
         }
     }
 
-    #[derive(Debug)]
     struct Wall {
         is_vertical: bool, //if the wall is vertical. if its false the wall is horizontal
         coordinate: (u32,u32),
     }
 
-    #[derive(Debug)]
     enum Position {
         Top,
         Right,
