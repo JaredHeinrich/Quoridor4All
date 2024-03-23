@@ -1,31 +1,29 @@
-//Prototyp implementation des Faktory patterns. Das Faktory Pattern könnte in unserem Spiel genutzt
+//Prototyp implementation des Factory patterns. Das Factory Pattern könnte in unserem Spiel genutzt
 //werden um verschiedene Spielfeldarten zu generieren, hier am Beispiel von einem Vier Spieler Modus
 //und einem Zwei Spieler Modus umgesetzt
 use game::{Factory, FourPlayerGameFactory, TwoPlayerGameFactory};
 fn main() {
-    let fpgf = FourPlayerGameFactory{};
-    let tpgf = TwoPlayerGameFactory{};
-    let fpg = fpgf.create();
-    let tpg = tpgf.create();
+    let four_player_game = FourPlayerGameFactory::create();
+    let two_player_game = TwoPlayerGameFactory::create();
 
     println!("four player game:");
-    println!("{}", fpg.number_of_players());
+    println!("{}", four_player_game.number_of_players());
 
     println!("two player game:");
-    println!("{}", tpg.number_of_players());
+    println!("{}", two_player_game.number_of_players());
 }
 pub mod game {
 
     //Factory Interface
     pub trait Factory {
-        fn create(&self) -> Box<dyn Game>;
+        fn create() -> Box<dyn Game>;
     }
 
     //Factory Klasse für Vier Spieler
     pub struct FourPlayerGameFactory{}
     //implementation der Factory Klasse für Vier Spieler
     impl Factory for FourPlayerGameFactory{
-        fn create(&self) -> Box<dyn Game> {
+        fn create() -> Box<dyn Game> {
             let number_of_available_walls: u32 = 10;
             let board_size: u32 = 9;
 
@@ -51,7 +49,7 @@ pub mod game {
 
     pub struct TwoPlayerGameFactory{}
     impl Factory for TwoPlayerGameFactory{
-        fn create(&self) -> Box<dyn Game> {
+        fn create() -> Box<dyn Game> {
             let number_of_available_walls: u32 = 10;
             let board_size: u32 = 9;
 
