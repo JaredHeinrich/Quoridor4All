@@ -1,5 +1,5 @@
 //Builder Pattern für die Wall. WallBuilder ist eine Beispiel Implementation, später könnte dieses
-//Pattern für z.B. den Pawn genutzt werdne, da dieser eine komplexe Struktur ist und mehrere
+//Pattern für z.B. den Pawn genutzt werden, da dieser eine komplexe Struktur ist und mehrere
 //ähnliche Instanzen von diesem gebaut werden müssen.
 use wall::WallBuilder;
 fn main() {
