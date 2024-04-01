@@ -7,7 +7,7 @@
   let internalSize = 2 * size - 1;
   let squareWidth = 4;
   let wallWidth = 1;
-  let gridSize = size * squareWidth + wallWidth * (size - 1);
+  let gridSize = size * squareWidth + (size - 1) * wallWidth;
 
   let grid = new Array(internalSize)
     .fill(0)
@@ -58,7 +58,7 @@
           row-span-{wallWidth}"
         >
           <!-- <p>hw x: {xLarge} y: {yLarge}</p> -->
-          <p>hw</p>
+          <!-- <p>hw</p> -->
         </div>
       {:else if yLarge % 2 === 0}
         <!-- vertical wall [xLarge % 2 === 1] -->
@@ -66,8 +66,7 @@
           class="col-start-{((xLarge - 1) / 2) * (squareWidth + wallWidth) +
             squareWidth + 1} row-start-{(yLarge / 2) * (squareWidth + wallWidth) +1 } col-span-{wallWidth} row-span-{squareWidth}"
         >
-          <!-- <Button>Wand</Button> -->
-          <p>vw</p>
+          <!-- <p>vw</p> -->
           <!-- <p>vw x: {xLarge} y: {yLarge}</p> -->
 
         </div>
@@ -79,9 +78,9 @@
             (squareWidth + wallWidth) +
             squareWidth + 1} col-span-{wallWidth} row-span-{wallWidth}"
         >
-          <!-- <Button>Wand</Button> -->
           <!-- <p>cw x: {xLarge} y: {yLarge}</p> -->
-          <p>cw</p>
+          <!-- <p>cw</p> -->
+          <div class="w-full aspect-[1/1] bg-gray-200"></div>
         </div>
       {/if}
     {/each}

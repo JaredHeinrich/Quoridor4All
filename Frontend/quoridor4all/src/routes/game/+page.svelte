@@ -3,7 +3,6 @@
   import { players as playersStore } from "../../store";
   import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
-  import { text } from "@sveltejs/kit";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
 
@@ -75,30 +74,30 @@
 </script>
 
 <div class="bg-gray-900">
-  <div class="grid grid-cols-4 grid-rows-6 gap-4">
-    <div class="col-start-2 row-start-1 col-span-2 text-center">
+  <div class="grid grid-cols-6 gap-4">
+    <div class="col-start-2 col-span-4 text-center">
       <PlayerViewVertical player_name={players[2].player_name} number_of_available_walls={players[2].number_of_available_walls} color={players[2].color} />
     </div>
   
-    <div class="col-start-1 row-start-2 text-center">
+    <div class="col-start-1 text-center">
       <PlayerViewHorizontal player_name={players[1].player_name} number_of_available_walls={players[1].number_of_available_walls} color={players[1].color}/>
     </div>
   
-    <div class="col-start-2 row-start-2 col-span-2 row-span-4">
-      <div class="aspect-w-1 aspect-h-1 bg-gray-200">
+    <div class="col-start-2  col-span-4">
+      <div class="aspect-w-1 aspect-h-1 bg-gray-200 border-8">
         <Board size={boardSize}/>
       </div>
     </div>
   
-    <div class="col-start-4 row-start-2 text-center">
+    <div class="col-start-6 text-center">
       <PlayerViewHorizontal player_name={players[3].player_name} number_of_available_walls={players[3].number_of_available_walls} color={players[3].color}/>
     </div>
   
-    <div class="col-start-2 row-start-6 col-span-2 text-center">
+    <div class="col-start-2 col-span-4 text-center">
       <PlayerViewVertical player_name={players[0].player_name} number_of_available_walls={players[0].number_of_available_walls} color={players[0].color}/>
     </div>
   </div>
-  <div>
+  <div class= "border-8 text-center border-gray-900">
     <Button color="dark">Zurück</Button>
     <Button color="dark">Spiel abbrechen</Button>
     <Button color="dark">Spielregeln</Button>
