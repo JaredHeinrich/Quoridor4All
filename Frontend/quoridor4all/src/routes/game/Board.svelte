@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
   import Square from "./Square.svelte";
+  import Wall from "./Wall.svelte";
   export let size = 9;
 
   //internal size considers space for the walls
@@ -13,25 +14,6 @@
     .fill(0)
     .map(() => new Array(internalSize).fill(0));
 </script>
-
-<!-- <div class="w-full aspect-[1/1] bg-gray-500"> -->
-<!-- maybe  -->
-<!-- <div class="m-4 bg-gray-100 w-full aspect-[1/1]">
-    {#each Array(internalSize) as _, xPosition}
-      
-       <Square /> -->
-<!-- {/each} -->
-
-<!-- </div> -->
-
-<!-- <div class="flex flex-wrap" style={`width: ${size * 1.5}rem`}>
-    {#each Array(internalSize) as _, xPosition}
-      {#each Array(internalSize) as _2, yPosition}
-        <Square/>
-      {/each}
-    {/each}
-  </div> -->
-<!-- </div> -->
 
 <div class="grid grid-cols-{gridSize} grid-rows-{gridSize} ">
   {#each grid as row, yLarge}
@@ -63,12 +45,12 @@
       {:else if yLarge % 2 === 0}
         <!-- vertical wall [xLarge % 2 === 1] -->
         <div
-          class="col-start-{((xLarge - 1) / 2) * (squareWidth + wallWidth) +
+          class="bg-gray-1000 col-start-{((xLarge - 1) / 2) * (squareWidth + wallWidth) +
             squareWidth + 1} row-start-{(yLarge / 2) * (squareWidth + wallWidth) +1 } col-span-{wallWidth} row-span-{squareWidth}"
-        >
+         >
           <!-- <p>vw</p> -->
           <!-- <p>vw x: {xLarge} y: {yLarge}</p> -->
-
+          <!-- <Wall gridHeight={squareWidth} gridLength={wallWidth}/> -->
         </div>
       {:else}
         <!-- corner wall [xLarge % 2 === 1 && yLarge % 2 === 1] -->
