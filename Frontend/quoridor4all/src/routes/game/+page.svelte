@@ -5,6 +5,7 @@
   import { Button } from "flowbite-svelte";
   import { text } from "@sveltejs/kit";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
+  import PlayerViewVertical from "./PlayerViewVertical.svelte";
 
   let players: any = null;
   const boardSize: number = 9;
@@ -19,6 +20,7 @@
           x: 0,
         }, 
         player_name: "Player 1",
+        color: "red"
       }, {
         position: {
           x: 4, 
@@ -29,6 +31,7 @@
           y: 8,
         }, 
         player_name: "Player 2",
+        color: "dark"
       }, {
         position: {
           x: 0, 
@@ -39,6 +42,7 @@
           x: 8,
         }, 
         player_name: "Player 3",
+        color: "blue"
       }, {
         position: {
           x: 4, 
@@ -49,6 +53,7 @@
           y: 0,
         },  
         player_name: "Player 4",
+        color: "green"
       }
     ]
 
@@ -69,29 +74,28 @@
   });
 </script>
 
-<div>
+<div class="bg-gray-900">
   <div class="grid grid-cols-4 grid-rows-6 gap-4">
     <div class="col-start-2 row-start-1 col-span-2 text-center">
-      <p>Spieler 3</p>
+      <PlayerViewVertical player_name={players[2].player_name} number_of_available_walls={players[2].number_of_available_walls} color={players[2].color} />
     </div>
   
     <div class="col-start-1 row-start-2 text-center">
-      <PlayerViewHorizontal player_name={players[1].player_name} number_of_available_walls={players[1].number_of_available_walls} color="dark"/>
+      <PlayerViewHorizontal player_name={players[1].player_name} number_of_available_walls={players[1].number_of_available_walls} color={players[1].color}/>
     </div>
   
     <div class="col-start-2 row-start-2 col-span-2 row-span-4">
       <div class="aspect-w-1 aspect-h-1 bg-gray-200">
-        <!-- <p class="m-4 text-center">Brett</p> -->
-        <Board />
+        <Board size={boardSize}/>
       </div>
     </div>
   
     <div class="col-start-4 row-start-2 text-center">
-      <PlayerViewHorizontal player_name={players[3].player_name} number_of_available_walls={players[3].number_of_available_walls} color="dark"/>
+      <PlayerViewHorizontal player_name={players[3].player_name} number_of_available_walls={players[3].number_of_available_walls} color={players[3].color}/>
     </div>
   
     <div class="col-start-2 row-start-6 col-span-2 text-center">
-      <p>Spieler 1</p>
+      <PlayerViewVertical player_name={players[0].player_name} number_of_available_walls={players[0].number_of_available_walls} color={players[0].color}/>
     </div>
   </div>
   <div>
