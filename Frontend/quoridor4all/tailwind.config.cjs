@@ -22,6 +22,12 @@ const config = {
           800: '#CC4522',
           900: '#A5371B'
         }
+      },
+
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        '14': 'repeat(14, minmax(0, 1fr))',
+        '44': 'repeat(44, minmax(0, 1fr))',
       }
     }
   }
