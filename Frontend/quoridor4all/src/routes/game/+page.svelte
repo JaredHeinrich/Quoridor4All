@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { players as playersStore } from "../../store";
-  import Board from "./BoardDeprecated.svelte";
+  import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
@@ -55,7 +55,44 @@
         color: "green"
       }
     ]
-  
+  let walls: any = [
+    {
+      position: {
+          x: 5, 
+          y: 5,
+        },
+      isVertical: true
+    },
+    {
+      position: {
+          x: 0, 
+          y: 0,
+        },
+      isVertical: false
+    },
+    {
+      position: {
+          x: 7, 
+          y: 4,
+        },
+      isVertical: true
+    },
+    {
+      position: {
+          x: 1, 
+          y: 7,
+        },
+      isVertical: false
+    },
+    {
+      position: {
+          x: 4, 
+          y: 2,
+        },
+      isVertical: true
+    },
+
+  ]
   onMount(() => {
     //fetch data from backend, players should be created in backend
 
@@ -85,7 +122,7 @@
   
     <div class="col-start-2  col-span-4">
       <div class="aspect-w-1 aspect-h-1 bg-gray-200 border-8">
-        <Board size={boardSize} bind:players />
+        <Board size={boardSize} bind:players bind:walls/>
       </div>
     </div>
   

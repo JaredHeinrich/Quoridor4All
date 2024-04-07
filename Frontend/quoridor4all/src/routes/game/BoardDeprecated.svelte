@@ -1,6 +1,5 @@
 <script lang="ts">
   import Square from "./SquareDeprecated.svelte";
-  import Wall from "./Wall.svelte";
   import Pawn from "./PawnDeprecated.svelte";
   export let size: number = 3;
 

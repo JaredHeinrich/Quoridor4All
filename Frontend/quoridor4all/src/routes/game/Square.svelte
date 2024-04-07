@@ -1,9 +1,10 @@
 <script lang="ts">
   import { getContext, onMount } from "svelte";
+  import { startOfSquare, squareWidthCanvas} from './coordinateCalculation';
 
-  export let topLeftCornerX: number;
-  export let topLeftCornerY: number;
-  export let width: number; //square width is equal to height
+  export let xBoard: number;
+  export let yBoard: number;
+  let width: number = squareWidthCanvas; //square width is equal to height
 
   const { register, unregister} = getContext<{ register: (fn: any) => void, unregister: () => void }>('Canvas');
 
@@ -18,7 +19,11 @@
   function draw(ctx : CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.fillStyle = 'gray';
-    ctx.rect(topLeftCornerX, topLeftCornerY, width, width);
+    ctx.rect(
+      startOfSquare(xBoard), 
+      startOfSquare(yBoard),
+      width,
+      width);
     ctx.fill();
   }
 </script>
