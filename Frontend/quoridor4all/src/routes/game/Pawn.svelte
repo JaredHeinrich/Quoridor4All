@@ -7,11 +7,18 @@
   export let color: string;
   export let isPreview: boolean;
 
+  let colorMap: { [key: string]: string } = {
+  "blue": "0, 0, 200",
+  "red": "200, 0, 0",
+  "green": "0, 200, 0",
+  "yellow": "200, 200, 0"
+  };
+
   if(isPreview){
-    color = 'rgba(84, 47, 2, 0.6)'
-  } else{
-    color = color
-  }
+   color = 'rgba(' + colorMap[color] + ', 0.5)';
+} else {
+   color = 'rgb(' + colorMap[color] + ')';
+}
 
   let radius: number = (squareWidthCanvas / 2) * 0.8; 
 
