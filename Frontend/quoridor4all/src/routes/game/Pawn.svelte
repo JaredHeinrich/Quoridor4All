@@ -5,6 +5,13 @@
   export let xBoard: number;
   export let yBoard: number;
   export let color: string;
+  export let isPreview: boolean;
+
+  if(isPreview){
+    color = 'rgba(84, 47, 2, 0.6)'
+  } else{
+    color = color
+  }
 
   let radius: number = (squareWidthCanvas / 2) * 0.8; 
 

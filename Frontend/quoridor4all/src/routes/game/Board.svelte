@@ -9,7 +9,7 @@
 
   let divWidth2: number;
   $: console.log(divWidth2);
-  let divWidth = 980;
+  let divWidth = 500;
   const canvasWidth = divWidth || 1000;
 
   //internal size considers space for the walls
@@ -41,34 +41,29 @@
         xBoard={player.position.x}
         yBoard={player.position.y}
         color={player.color}
+        isPreview={false}
       />
     {/each}
 
-    <!--{#each walls as wall, index}
-      {#if wall.isVertical}
+    {#each walls as wall, index}
         <Wall
-          topLeftCornerX={startOfSquare(wall.position.x)}
-          topLeftCornerY={endOfSquare(wall.position.y)}
-          height={wallWidthCanvas}
-          width={2*squareWidthCanvas + wallWidthCanvas}
+          xBoard= {wall.position.x}
+          yBoard={wall.position.y}
+          isVertical={wall.isVertical}
           isPreview={false}
         />
-      {:else}
-        <Wall
-          topLeftCornerX={endOfSquare(wall.position.x)}
-          topLeftCornerY={startOfSquare(wall.position.y)}
-          height={2*squareWidthCanvas + wallWidthCanvas}
-          width={wallWidthCanvas}
-          isPreview={false}
-        />
-      {/if}
     {/each}
     <Wall
-          topLeftCornerX={endOfSquare(7)}
-          topLeftCornerY={startOfSquare(7)}
-          height={2*squareWidthCanvas + wallWidthCanvas}
-          width={wallWidthCanvas}
+          xBoard= {1}
+          yBoard={0}
+          isVertical={true}
           isPreview={true}
-        /> -->
+        />
+        <Pawn
+        xBoard={4}
+        yBoard={4}
+        color={players[0].color}
+        isPreview={true}
+      />
   </Canvas>
 </div>
