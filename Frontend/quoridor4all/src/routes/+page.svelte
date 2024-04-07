@@ -2,5 +2,6 @@
   import Board from "./game/Board.svelte";
 </script>
 
-<!-- <Board players={[]} /> -->
+<Board players={[]} />
+
 

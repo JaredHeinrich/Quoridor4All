@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { players as playersStore } from "../../store";
-  import Board from "./Board.svelte";
+  import Board from "./BoardDeprecated.svelte";
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
@@ -55,7 +55,7 @@
         color: "green"
       }
     ]
-
+  
   onMount(() => {
     //fetch data from backend, players should be created in backend
 

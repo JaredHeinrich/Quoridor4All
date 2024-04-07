@@ -1,0 +1,2 @@
+<div class="w-full aspect-[1/1] bg-gray-600 rounded">
+</div>
