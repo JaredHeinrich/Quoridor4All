@@ -7,7 +7,7 @@
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
 
   let players: any = null;
-  const boardSize: number = 3;
+  const boardSize: number = 9;
 
   players = [{
         position: {

@@ -37,7 +37,7 @@
           {/each} -->
           <Square />
         </div>
-      {:else if xLarge % 2 === 0}
+        {:else if xLarge % 2 === 0}
         <!-- horizontal wall [yLarge % 2 === 1] -->
         <div
           class="
@@ -48,9 +48,9 @@
           col-span-{squareWidth} 
           row-span-{wallWidth}"
         >
-          <div class="w-full aspect-[1/1] bg-gray-200">
+          <!-- <div class="w-full bg-gray-200"> -->
             <!-- <p>hw x: {xLarge} y: {yLarge}</p> -->
-          </div>
+          <!-- </div> -->
         </div>
       {:else if yLarge % 2 === 0}
         <!-- vertical wall [xLarge % 2 === 1] -->
@@ -61,9 +61,9 @@
             1} row-start-{(yLarge / 2) * (squareWidth + wallWidth) +
             1} col-span-{wallWidth} row-span-{squareWidth}"
         >
-          <div class="w-full aspect-[1/1] bg-gray-200">
+          <!-- <div class="w-full aspect-[1/1] bg-gray-200"> -->
             <!-- <p>vw x: {xLarge} y: {yLarge}</p> -->
-          </div>
+          <!-- </div> -->
           <!-- <Wall gridHeight={squareWidth} gridLength={wallWidth}/> -->
         </div>
       {:else}
@@ -75,9 +75,9 @@
             squareWidth +
             1} col-span-{wallWidth} row-span-{wallWidth}"
         >
-          <div class="w-full aspect-[1/1] bg-gray-200">
+          <!-- <div class="w-full aspect-[1/1] bg-gray-200"> -->
             <!-- <p>cw x: {xLarge} y: {yLarge}</p> -->
-          </div>
+          <!-- </div> -->
         </div>
       {/if}
     {/each}
