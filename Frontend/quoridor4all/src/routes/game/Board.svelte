@@ -36,16 +36,15 @@
       {/each}
     {/each}
 
-    <!-- {#each players as player, index}
+    {#each players as player, index}
       <Pawn
-        centerX={centerOfSquare(player.position.x)}
-        centerY={centerOfSquare(player.position.y)}
-        radius={(squareWidthCanvas / 2) * 0.8}
+        xBoard={player.position.x}
+        yBoard={player.position.y}
         color={player.color}
       />
     {/each}
 
-    {#each walls as wall, index}
+    <!--{#each walls as wall, index}
       {#if wall.isVertical}
         <Wall
           topLeftCornerX={startOfSquare(wall.position.x)}
