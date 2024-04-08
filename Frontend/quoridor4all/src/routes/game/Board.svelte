@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy, onMount } from "svelte";
   import Canvas from "./Canvas.svelte";
   import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
@@ -9,17 +10,23 @@
     endOfSquare,
     setConfigurations,
   } from "./coordinateCalculation";
+  import {
+    getPossiblePlayerMoves,
+    checkWallObstacle,
+    isWallPositionValid,
+  } from "./gameLogic";
 
   export let size: number = 9;
   export let players: any;
   export let walls: any;
   export let currentPlayerIndex: number;
 
-  let divWidth = 500;
-  const canvasWidth = divWidth || 1000;
+  let canvasWidth: number = 500;
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
+
   setConfigurations(size, canvasWidth, squareWidthComparedToWallWidth);
+  console.log("canvas Width", canvasWidth);
 
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
@@ -35,100 +42,20 @@
 
   // console.log("Wall test", isWallPositionValid({ wallPreview }));
   function handleClick(clickPosition: any) {
-   console.log("handleClick")
+    console.log("handleClick");
   }
 
-
-  getPossiblePlayerMoves(currentPlayerIndex).forEach((playerMove: any) => {
-    previewPlayers.push({
-      playerIndex: currentPlayerIndex,
-      position: playerMove,
-    });
-  });
-
-  function getPossiblePlayerMoves(playerIndex: number): any {
-    let playerPosition = players[0].position;
-
-    //all surrounding positions are possible moveDirections at first
-    let possibleMoveDirections = [
-      { x: +1, y: 0 }, //right
-      { x: 0, y: +1 }, //down
-      { x: -1, y: 0 }, //left
-      { x: 0, y: -1 }, //up
-    ];
-    let possibleMovePositions: any = [];
-
-    possibleMoveDirections.forEach((possibleMoveDirection) => {
-      let possiblePosition = {
-        x: playerPosition.x + possibleMoveDirection.x,
-        y: playerPosition.y + possibleMoveDirection.y,
-      };
-      // if (checkWallObstacle(possiblePosition, possibleMoveDirection)) {
-      //   return;
-      // }
-
-      //loop over player positions
-
-      possibleMovePositions.push(possiblePosition);
-    });
-    return possibleMovePositions;
-  }
-
-  function checkWallObstacle(playerPosition: any, moveDirection: any): boolean {
-    for (let wall of walls) {
-      if (moveDirection.x === 0 && wall.isVertical) {
-        return false; // vertical wall can't hinder vertical movement in y dircetion
-      }
-      if (moveDirection.y === 0 && !wall.isVertical) {
-        return false; // horizontal wall can't hinder horizontal movement in x direction
-      }
-
-      let possiblePosition = {
-        x: playerPosition.x + moveDirection.x,
-        y: playerPosition.y + moveDirection.y,
-      };
-
-      if ((wall.position = possiblePosition)) {
-        return false; // wall
-      }
+  getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
+    (playerMove: any) => {
+      previewPlayers.push({
+        playerIndex: currentPlayerIndex,
+        position: playerMove,
+      });
     }
-    return true;
-  }
-
-  function isWallPositionValid(newWall: any): boolean {
-    if (
-      newWall.position.x >= size ||
-      newWall.position.y >= size ||
-      newWall.position.x < 0 ||
-      newWall.position.y < 0
-    ) {
-      // wall is (at least partially) outside of the board
-      return false;
-    }
-    for (let wall of walls) {
-      console.log("wall position:", wall.position);
-      console.log("NewWall position:", newWall.position);
-      if (wall.position === newWall.position) {
-        console.log("same position");
-        //walls on same square always collide
-        return false;
-      }
-      if (newWall.isVertical && wall.position.y === newWall.position.y) {
-        //vertical wall on same row
-        const xDifference = Math.abs(wall.position.x - newWall.position.x);
-        if (xDifference <= 1) return false;
-      }
-      if (!newWall.isVertical && wall.position.x === newWall.position.x) {
-        const yDifference = Math.abs(wall.position.y - newWall.position.y);
-        if (yDifference <= 1) return false;
-      }
-    }
-    return true;
-  }
+  );
 </script>
 
-<!-- <Board players={[]} /> -->
-<div id="outerDiv" bind:offsetWidth={divWidth}>
+<div>
   <Canvas width={canvasWidth} onClick={handleClick}>
     <!-- Grid -->
     {#each grid as row, yBoard}
@@ -173,3 +100,10 @@
     {/if} -->
   </Canvas>
 </div>
+
+<style>
+  /* Damit der div-Container immer die volle Breite des umschließenden Elements einnimmt */
+  div {
+    width: 100%;
+  }
+</style>

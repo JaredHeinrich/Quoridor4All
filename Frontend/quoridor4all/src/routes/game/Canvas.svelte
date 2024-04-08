@@ -7,6 +7,11 @@
   let canvas;
   const drawFunctions = [];
 
+  $: {
+    console.log(canvas);
+    console.log(width);
+  }
+
   setContext("Canvas", {
     register(drawFn) {
       drawFunctions.push(drawFn);
@@ -29,11 +34,13 @@
 
   onMount(() => {
     const ctx = canvas.getContext("2d");
+    // canvas.width = canvas.parentElement.offsetWidth;
+    // canvas.height = canvas.parentElement.offsetWidth;
     canvas.width = width;
     canvas.height = width;
 
     canvas.addEventListener("click", handleClick);
-
+    
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
