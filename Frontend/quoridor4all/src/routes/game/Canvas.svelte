@@ -7,28 +7,40 @@
   let canvas;
   const drawFunctions = [];
 
-
-  setContext('Canvas', {
+  setContext("Canvas", {
     register(drawFn) {
       drawFunctions.push(drawFn);
     },
-    unregister(drawFn){
+    unregister(drawFn) {
       drawFunctions.splice(drawFunctions.indexOf(drawFn), 1);
-    }
+    },
   });
 
+  export let onClick;
+  function handleClick(event) {
+    let boundingRect = canvas.getBoundingClientRect(); 
+    let clickPosition = {
+      x: event.clientX - boundingRect.left,
+      y: event.clientY - boundingRect.top
+    };
+    console.log("clicked", clickPosition)
+    onClick(clickPosition);
+  }
+
   onMount(() => {
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     canvas.width = width;
     canvas.height = width;
 
-    function update() {
-      //draw something
-      ctx.clearRect(0,0, canvas.width, canvas.height)
+    canvas.addEventListener("click", handleClick);
 
-      drawFunctions.forEach(drawFn => {
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      //draw something
+      drawFunctions.forEach((drawFn) => {
         drawFn(ctx);
-      })
+      });
 
       frameId = requestAnimationFrame(update);
     }
@@ -37,9 +49,10 @@
 
     return () => {
       cancelAnimationFrame(update);
-    }
-  })
+      canvas.removeEventListener('click', handleClick);
+    };
+  });
 </script>
 
-<canvas bind:this={canvas} />
+<canvas bind:this={canvas} on:click={handleClick} />
 <slot />
