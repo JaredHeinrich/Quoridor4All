@@ -15,7 +15,7 @@
   };
 
   if(isPreview){
-   color = 'rgba(' + colorMap[color] + ', 0.5)';
+   color = 'rgba(' + colorMap[color] + ', 0.3)';
 } else {
    color = 'rgb(' + colorMap[color] + ')';
 }
