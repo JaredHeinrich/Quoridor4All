@@ -28,10 +28,10 @@ export function getPossiblePlayerMoves(playerIndex: number, players: any) {
 
 export function checkWallObstacle(playerPosition: any, moveDirection: any, walls: any): boolean {
   for (let wall of walls) {
-    if (moveDirection.x === 0 && wall.isVertical) {
+    if (moveDirection.x === 0 && !wall.isHorizontal) {
       return false; // vertical wall can't hinder vertical movement in y dircetion
     }
-    if (moveDirection.y === 0 && !wall.isVertical) {
+    if (moveDirection.y === 0 && wall.isHorizontal) {
       return false; // horizontal wall can't hinder horizontal movement in x direction
     }
 
@@ -50,8 +50,8 @@ export function checkWallObstacle(playerPosition: any, moveDirection: any, walls
 
 export function isWallPositionValid(newWall: any, size: number, walls: any): boolean {
   if (
-    newWall.position.x >= size ||
-    newWall.position.y >= size ||
+    newWall.position.x >= size - 1 ||
+    newWall.position.y >= size - 1 ||
     newWall.position.x < 0 ||
     newWall.position.y < 0
   ) {
@@ -61,20 +61,25 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
   for (let wall of walls) {
     console.log("wall position:", wall.position);
     console.log("NewWall position:", newWall.position);
-    if (wall.position === newWall.position) {
+    if (equalPos(wall.position, newWall.position)) {
       console.log("same position");
       //walls on same square always collide
       return false;
     }
-    if (newWall.isVertical && wall.position.y === newWall.position.y) {
+    if (newWall.isHorizontal && wall.isHorizontal && wall.position.y === newWall.position.y) {
       //vertical wall on same row
       const xDifference = Math.abs(wall.position.x - newWall.position.x);
       if (xDifference <= 1) return false;
     }
-    if (!newWall.isVertical && wall.position.x === newWall.position.x) {
+    if (!newWall.isHorizontal && !wall.isHorizontal && wall.position.x === newWall.position.x) {
+      //horizontal wall on same column
       const yDifference = Math.abs(wall.position.y - newWall.position.y);
       if (yDifference <= 1) return false;
     }
   }
   return true;
+}
+
+function equalPos(position1: any, position2: any){
+  return position1.x === position2.x && position1.y === position2.y
 }

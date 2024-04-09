@@ -7,11 +7,6 @@
   let canvas;
   const drawFunctions = [];
 
-  $: {
-    console.log(canvas);
-    console.log(width);
-  }
-
   setContext("Canvas", {
     register(drawFn) {
       drawFunctions.push(drawFn);

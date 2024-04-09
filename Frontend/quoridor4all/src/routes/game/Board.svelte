@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import Canvas from "./Canvas.svelte";
   import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
@@ -28,19 +28,31 @@
   setConfigurations(size, canvasWidth, squareWidthComparedToWallWidth);
   console.log("canvas Width", canvasWidth);
 
+  let divWidth: number;
+  
+
+  onMount(async () => {
+    // Warte auf die nächste DOM-Aktualisierung
+    await tick();
+    console.log("div width", divWidth);
+    canvasWidth = divWidth;
+  });
+  
+
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
   let previewPlayers: any = [];
   let wallPreview: any = {
-    isVertical: false,
+    isHorizontal: true,
     position: {
-      x: -1,
-      y: -1,
+      x: 0,
+      y: 0,
     },
-    isVisible: true,
+    isVisible: false,
   };
 
-  // console.log("Wall test", isWallPositionValid({ wallPreview }));
+  console.log("Wall test", isWallPositionValid(wallPreview, size, walls));
+
   function handleClick(clickPosition: any) {
     console.log("handleClick");
   }
@@ -55,7 +67,7 @@
   );
 </script>
 
-<div>
+<div bind:offsetWidth={divWidth}>
   <Canvas width={canvasWidth} onClick={handleClick}>
     <!-- Grid -->
     {#each grid as row, yBoard}
@@ -77,7 +89,7 @@
       <Wall
         xBoard={wall.position.x}
         yBoard={wall.position.y}
-        isVertical={wall.isVertical}
+        isHorizontal={wall.isHorizontal}
         isPreview={false}
       />
     {/each}
@@ -90,19 +102,18 @@
         isPreview={true}
       />
     {/each}
-    <!-- {#if wallPreview.isVisible}
+    {#if wallPreview.isVisible}
       <Wall
         xBoard={wallPreview.position.x}
         yBoard={wallPreview.position.y}
         isPreview={true}
-        isVertical={wallPreview.isVertical}
+        isHorizontal={wallPreview.isHorizontal}
       />
-    {/if} -->
+    {/if}
   </Canvas>
 </div>
 
 <style>
-  /* Damit der div-Container immer die volle Breite des umschließenden Elements einnimmt */
   div {
     width: 100%;
   }

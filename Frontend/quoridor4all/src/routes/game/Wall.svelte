@@ -4,7 +4,7 @@
 
   export let xBoard: number;
   export let yBoard: number;
-  export let isVertical: boolean;
+  export let isHorizontal: boolean;
   export let isPreview: boolean;
 
   let topLeftCornerX: number;
@@ -12,7 +12,7 @@
   let width: number; 
   let height: number;
   
-  if(isVertical){
+  if(isHorizontal){
     topLeftCornerX=startOfSquare(xBoard);
     topLeftCornerY=endOfSquare(yBoard);
     height=wallWidthCanvas;

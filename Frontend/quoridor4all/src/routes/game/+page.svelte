@@ -67,35 +67,35 @@
         x: 5,
         y: 5,
       },
-      isVertical: true,
+      isHorizontal: true,
     },
     {
       position: {
         x: 0,
         y: 0,
       },
-      isVertical: false,
+      isHorizontal: false,
     },
     {
       position: {
         x: 7,
         y: 4,
       },
-      isVertical: true,
+      isHorizontal: true,
     },
     {
       position: {
         x: 1,
         y: 7,
       },
-      isVertical: false,
+      isHorizontal: false,
     },
     {
       position: {
         x: 4,
         y: 2,
       },
-      isVertical: true,
+      isHorizontal: true,
     },
   ];
 
