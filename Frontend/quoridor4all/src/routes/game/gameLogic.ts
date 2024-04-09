@@ -59,10 +59,7 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
     return false;
   }
   for (let wall of walls) {
-    console.log("wall position:", wall.position);
-    console.log("NewWall position:", newWall.position);
     if (equalPos(wall.position, newWall.position)) {
-      console.log("same position");
       //walls on same square always collide
       return false;
     }
