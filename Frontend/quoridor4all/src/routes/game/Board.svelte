@@ -1,85 +1,120 @@
 <script lang="ts">
+  import { onDestroy, onMount, tick } from "svelte";
+  import Canvas from "./Canvas.svelte";
+  import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
-  import Pawn from "./Pawn.svelte";
-  export let size: number = 3;
+  import {
+    startOfSquare,
+    centerOfSquare,
+    endOfSquare,
+    setConfigurations,
+  } from "./coordinateCalculation";
+  import {
+    getPossiblePlayerMoves,
+    checkWallObstacle,
+    isWallPositionValid,
+  } from "./gameLogic";
 
-  //internal size considers space for the walls
-  let internalSize = 2 * size - 1;
-  let squareWidth = 4;
-  let wallWidth = 1;
-  let gridSize = size * squareWidth + (size - 1) * wallWidth;
-
+  export let size: number = 9;
   export let players: any;
+  export let walls: any;
+  export let currentPlayerIndex: number;
 
-  let grid = new Array(internalSize)
-    .fill(0)
-    .map(() => new Array(internalSize).fill(0));
+  let canvasWidth: number = 500;
+
+  let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
+
+  setConfigurations(size, canvasWidth, squareWidthComparedToWallWidth);
+  console.log("canvas Width", canvasWidth);
+
+  let divWidth: number;
+  
+
+  onMount(async () => {
+    // Warte auf die nächste DOM-Aktualisierung
+    await tick();
+    console.log("div width", divWidth);
+    canvasWidth = divWidth;
+  });
+  
+
+  let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
+
+  let previewPlayers: any = [];
+  let wallPreview: any = {
+    isHorizontal: true,
+    position: {
+      x: 0,
+      y: 0,
+    },
+    isVisible: false,
+  };
+
+  console.log("Wall test", isWallPositionValid(wallPreview, size, walls));
+
+  function handleClick(clickPosition: any) {
+    console.log("handleClick");
+  }
+
+  getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
+    (playerMove: any) => {
+      previewPlayers.push({
+        playerIndex: currentPlayerIndex,
+        position: playerMove,
+      });
+    }
+  );
 </script>
 
-<div class="grid grid-rows-{gridSize} grid-cols-{gridSize}">
-  {#each grid as row, yLarge}
-    {#each row as cell, xLarge}
-      {#if xLarge % 2 === 0 && yLarge % 2 === 0}
-        <!-- Square -->
-        <div
-          class="
-          
-          col-start-{(xLarge / 2) * (squareWidth + wallWidth) + 1} 
-          row-start-{(yLarge / 2) * (squareWidth + wallWidth) + 1} 
-          col-span-{squareWidth} 
-          row-span-{squareWidth}"
-        >
-          <!-- {#each players as player}
-            {#if 2 * player.position.x === xLarge && 2 * player.position.y === yLarge}
-              <Pawn color={player.color} />
-            {/if}
-          {/each} -->
-          <Square />
-        </div>
-      {:else if xLarge % 2 === 0}
-        <!-- horizontal wall [yLarge % 2 === 1] -->
-        <div
-          class="
-          col-start-{(xLarge / 2) * (squareWidth + wallWidth) + 1} 
-          row-start-{((yLarge - 1) / 2) * (squareWidth + wallWidth) +
-            squareWidth +
-            1} 
-          col-span-{squareWidth} 
-          row-span-{wallWidth}"
-        >
-          <div class="w-full aspect-[1/1] bg-gray-200">
-            <!-- <p>hw x: {xLarge} y: {yLarge}</p> -->
-          </div>
-        </div>
-      {:else if yLarge % 2 === 0}
-        <!-- vertical wall [xLarge % 2 === 1] -->
-        <div
-          class="bg-gray-1000 col-start-{((xLarge - 1) / 2) *
-            (squareWidth + wallWidth) +
-            squareWidth +
-            1} row-start-{(yLarge / 2) * (squareWidth + wallWidth) +
-            1} col-span-{wallWidth} row-span-{squareWidth}"
-        >
-          <div class="w-full aspect-[1/1] bg-gray-200">
-            <!-- <p>vw x: {xLarge} y: {yLarge}</p> -->
-          </div>
-          <!-- <Wall gridHeight={squareWidth} gridLength={wallWidth}/> -->
-        </div>
-      {:else}
-        <!-- corner wall [xLarge % 2 === 1 && yLarge % 2 === 1] -->
-        <div
-          class="col-start-{((xLarge - 1) / 2) * (squareWidth + wallWidth) +
-            squareWidth +
-            1} row-start-{((yLarge - 1) / 2) * (squareWidth + wallWidth) +
-            squareWidth +
-            1} col-span-{wallWidth} row-span-{wallWidth}"
-        >
-          <div class="w-full aspect-[1/1] bg-gray-200">
-            <!-- <p>cw x: {xLarge} y: {yLarge}</p> -->
-          </div>
-        </div>
-      {/if}
+<div bind:offsetWidth={divWidth}>
+  <Canvas width={canvasWidth} onClick={handleClick}>
+    <!-- Grid -->
+    {#each grid as row, yBoard}
+      {#each row as cell, xBoard}
+        <Square {xBoard} {yBoard} />
+      {/each}
     {/each}
-  {/each}
+
+    {#each players as player, index}
+      <Pawn
+        xBoard={player.position.x}
+        yBoard={player.position.y}
+        color={player.color}
+        isPreview={false}
+      />
+    {/each}
+
+    {#each walls as wall, index}
+      <Wall
+        xBoard={wall.position.x}
+        yBoard={wall.position.y}
+        isHorizontal={wall.isHorizontal}
+        isPreview={false}
+      />
+    {/each}
+
+    {#each previewPlayers as previewPlayer, index}
+      <Pawn
+        xBoard={previewPlayer.position.x}
+        yBoard={previewPlayer.position.y}
+        color={players[previewPlayer.playerIndex].color}
+        isPreview={true}
+      />
+    {/each}
+    {#if wallPreview.isVisible}
+      <Wall
+        xBoard={wallPreview.position.x}
+        yBoard={wallPreview.position.y}
+        isPreview={true}
+        isHorizontal={wallPreview.isHorizontal}
+      />
+    {/if}
+  </Canvas>
 </div>
+
+<style>
+  div {
+    width: 100%;
+  }
+</style>
