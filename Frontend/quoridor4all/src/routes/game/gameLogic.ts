@@ -1,3 +1,5 @@
+import { endOfSquare, startOfSquare } from "./coordinateCalculation";
+
 export function getPossiblePlayerMoves(playerIndex: number, players: any) {
   let playerPosition = players[playerIndex].position;
 
@@ -86,7 +88,33 @@ export function canvasClick(clickPositionCanvas: any, canvasWidth: number, size:
 }
 
 function isClickWall(clickPositionCanvas: any, canvasWidth: number, size: number): any{
-  for(let i = 0; i < size; i++){
-    if
+  for(let yBoard = 0; yBoard < size - 1; yBoard++){
+    for(let xBoard = 0; xBoard < size - 1; xBoard++)
+      if(
+      endOfSquare(xBoard) <= clickPositionCanvas.x &&
+      clickPositionCanvas.x <= startOfSquare(xBoard + 1) &&
+      startOfSquare(yBoard) <= clickPositionCanvas.y &&
+      clickPositionCanvas.y <= endOfSquare(yBoard) )
+      {
+        return {
+          position: {
+            x: xBoard,
+            y: yBoard
+          },
+          isHorizontal: false
+        }
+      } else if (
+      startOfSquare(xBoard)   <= clickPositionCanvas.x &&
+      clickPositionCanvas.x <= endOfSquare(xBoard) &&
+      endOfSquare(yBoard) <= clickPositionCanvas.x &&
+      clickPositionCanvas.y <= endOfSquare(yBoard)){
+        return {
+          position: {
+            x: xBoard,
+            y: yBoard
+          },
+          isHorizontal: true
+        }
+      }
   }
 }
