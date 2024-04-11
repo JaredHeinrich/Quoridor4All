@@ -80,3 +80,13 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
 function equalPos(position1: any, position2: any){
   return position1.x === position2.x && position1.y === position2.y
 }
+
+export function canvasClick(clickPositionCanvas: any, canvasWidth: number, size: number, walls: any, players: any){
+
+}
+
+function isClickWall(clickPositionCanvas: any, canvasWidth: number, size: number): any{
+  for(let i = 0; i < size; i++){
+    if
+  }
+}

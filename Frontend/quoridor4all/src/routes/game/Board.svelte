@@ -14,6 +14,7 @@
     getPossiblePlayerMoves,
     checkWallObstacle,
     isWallPositionValid,
+    canvasClick
   } from "./gameLogic";
 
   export let size: number = 9;
@@ -54,6 +55,7 @@
   console.log("Wall test", isWallPositionValid(wallPreview, size, walls));
 
   function handleClick(clickPosition: any) {
+    canvasClick(clickPosition, canvasWidth, size, walls, players);
     console.log("handleClick");
   }
 
