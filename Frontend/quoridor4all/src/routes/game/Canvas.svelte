@@ -4,27 +4,37 @@
 
   export let width: number;
 
-  let canvas;
-  const drawFunctions = [];
+  let canvas: any;
+  const drawFunctions: Function[] = [];
 
   setContext("Canvas", {
-    register(drawFn) {
+    register(drawFn: Function) {
       drawFunctions.push(drawFn);
     },
-    unregister(drawFn) {
+    unregister(drawFn: Function) {
       drawFunctions.splice(drawFunctions.indexOf(drawFn), 1);
     },
   });
 
-  export let onClick;
-  function handleClick(event) {
+  export let onClick: Function;
+
+  function handleClick(event: any) {
     let boundingRect = canvas.getBoundingClientRect(); 
     let clickPosition = {
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
     };
-    console.log("clicked", clickPosition)
     onClick(clickPosition);
+  }
+
+  function handleResize(event: any) {
+    if(canvas && canvas.parentElement){
+      width = canvas.parentElement.offsetWidth;
+      canvas.width = width;
+      canvas.height = width;
+      console.log("handle resize", width)
+
+    }
   }
 
   onMount(() => {
@@ -35,6 +45,7 @@
     canvas.height = width;
 
     canvas.addEventListener("click", handleClick);
+    window.addEventListener("resize", handleResize)
     
 
     function update() {
@@ -51,6 +62,7 @@
 
     return () => {
       cancelAnimationFrame(update);
+      window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('click', handleClick);
     };
   });

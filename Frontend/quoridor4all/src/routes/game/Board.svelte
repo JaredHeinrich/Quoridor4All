@@ -14,7 +14,7 @@
     getPossiblePlayerMoves,
     checkWallObstacle,
     isWallPositionValid,
-    canvasClick
+    canvasClick,
   } from "./gameLogic";
 
   export let size: number = 9;
@@ -30,7 +30,6 @@
   console.log("canvas Width", canvasWidth);
 
   let divWidth: number;
-  
 
   onMount(async () => {
     // Warte auf die nächste DOM-Aktualisierung
@@ -38,25 +37,52 @@
     console.log("div width", divWidth);
     canvasWidth = divWidth;
   });
-  
 
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
   let previewPlayers: any = [];
   let wallPreview: any = {
-    isHorizontal: true,
-    position: {
-      x: 0,
-      y: 0,
+    wall: {
+      isHorizontal: true,
+      position: {
+        x: 0,
+        y: 0,
+      },
     },
     isVisible: false,
   };
 
-  console.log("Wall test", isWallPositionValid(wallPreview, size, walls));
+  console.log("Wall test", isWallPositionValid(wallPreview.wall, size, walls));
 
   function handleClick(clickPosition: any) {
-    canvasClick(clickPosition, canvasWidth, size, walls, players);
-    console.log("handleClick");
+    let clickObject = canvasClick(
+      clickPosition,
+      canvasWidth,
+      size,
+      walls,
+      players
+    ) ?? { isValidClick: false };
+
+    console.log("clickObject", clickObject);
+    if (!clickObject.isValidClick) {
+      return;
+    }
+
+    if (clickObject.clickedWall) {
+      wallPreview = {
+        wall: clickObject.clickedWall,
+        isVisible: true,
+      };
+      console.log("wallPreview", wallPreview);
+      
+      previewPlayers.forEach((previewPlayer: any) =>{
+        previewPlayer.isVisible = false;
+      });
+      return;
+    }
+
+    if (clickObject.clickedPawn) {
+    }
   }
 
   getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
@@ -97,19 +123,21 @@
     {/each}
 
     {#each previewPlayers as previewPlayer, index}
-      <Pawn
-        xBoard={previewPlayer.position.x}
-        yBoard={previewPlayer.position.y}
-        color={players[previewPlayer.playerIndex].color}
-        isPreview={true}
-      />
+      {#if previewPlayer.isVisible}
+        <Pawn
+          xBoard={previewPlayer.position.x}
+          yBoard={previewPlayer.position.y}
+          color={players[previewPlayer.playerIndex].color}
+          isPreview={true}
+        />
+      {/if}
     {/each}
     {#if wallPreview.isVisible}
       <Wall
-        xBoard={wallPreview.position.x}
-        yBoard={wallPreview.position.y}
+        xBoard={wallPreview.wall.position.x}
+        yBoard={wallPreview.wall.position.y}
         isPreview={true}
-        isHorizontal={wallPreview.isHorizontal}
+        isHorizontal={wallPreview.wall.isHorizontal}
       />
     {/if}
   </Canvas>
