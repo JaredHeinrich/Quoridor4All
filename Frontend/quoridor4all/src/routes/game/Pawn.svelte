@@ -20,7 +20,7 @@
    color = 'rgb(' + colorMap[color] + ')';
 }
 
-  let radius: number = (squareWidthCanvas / 2) * 0.8; 
+  
 
   const { register, unregister} = getContext<{ register: (fn: any) => void, unregister: () => void }>('Canvas');
 
@@ -33,6 +33,8 @@
   });
 
   function draw(ctx : CanvasRenderingContext2D) {
+    let radius: number = (squareWidthCanvas / 2) * 0.8; 
+    
     ctx.beginPath();
     ctx.fillStyle = color;
     ctx.arc(
