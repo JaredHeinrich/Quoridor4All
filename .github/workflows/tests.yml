@@ -1,6 +1,6 @@
 # run this action when the repository is pushed to
 on: 
-  push:
+  pull_request:
     branches: 
       - main
 
