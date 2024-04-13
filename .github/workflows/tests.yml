@@ -26,5 +26,5 @@ jobs:
           webkit2gtk-driver
           xvfb
       - run: rustup update stable && rustup default stable
-      - run: cargo build --verbose
-      - run: cargo test --verbose
+      - run: cargo build
+      - run: cargo test
