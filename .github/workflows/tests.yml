@@ -42,6 +42,7 @@ jobs:
       # we run our rust tests before the webdriver tests to avoid testing a broken application
       - name: Cargo test
         uses: actions-rs/cargo@v1
-        working-directory: ./quoridor4all/src-tauri/
+          #working-directory: ./quoridor4all/src-tauri/
+          #working-directory: client
         with:
           command: test
