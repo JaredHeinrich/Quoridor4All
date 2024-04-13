@@ -26,8 +26,9 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-          cache: 'yarn' # Set this to npm, yarn or pnpm.
+          #node-version: lts/*
+          node-version-file: './quoridor4all/package.json'
+          cache: 'npm' # Set this to npm
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -40,7 +41,8 @@ jobs:
           workspaces: './src-tauri -> target'
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
-        run: yarn install # change this to npm or pnpm depending on which one you use.
+        run: npm install # change this to npm
+        working-directory: ./quoridor4all
 
       - uses: tauri-apps/tauri-action@v0
         env:
