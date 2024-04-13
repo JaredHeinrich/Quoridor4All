@@ -1,8 +1,8 @@
 # run this action when the repository is pushed to
 on: 
-push:
-  branches: 
-    - main
+  push:
+    branches: 
+      - main
 
 # the name of our workflow
 name: Unit-Tests
