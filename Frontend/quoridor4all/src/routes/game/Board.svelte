@@ -27,16 +27,11 @@
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
   setConfigurations(size, canvasWidth, squareWidthComparedToWallWidth);
-  console.log("canvas Width", canvasWidth);
 
-  let divWidth: number;
-
-  onMount(async () => {
-    // Warte auf die nächste DOM-Aktualisierung
-    await tick();
-    console.log("div width", divWidth);
-    canvasWidth = divWidth;
-  });
+  function onResize(width: number){
+    console.log("handle resize", width)
+    setConfigurations(size, width, squareWidthComparedToWallWidth);
+  }
 
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
@@ -74,7 +69,7 @@
         isVisible: true,
       };
       console.log("wallPreview", wallPreview);
-      
+
       previewPlayers.forEach((previewPlayer: any) =>{
         previewPlayer.isVisible = false;
       });
@@ -95,8 +90,8 @@
   );
 </script>
 
-<div bind:offsetWidth={divWidth}>
-  <Canvas width={canvasWidth} onClick={handleClick}>
+<div>
+  <Canvas onClick={handleClick} onResize={onResize}>
     <!-- Grid -->
     {#each grid as row, yBoard}
       {#each row as cell, xBoard}

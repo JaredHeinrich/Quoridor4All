@@ -2,7 +2,7 @@
   import { updated } from "$app/stores";
   import { onMount, setContext } from "svelte";
 
-  export let width: number;
+  let width: number;
 
   let canvas: any;
   const drawFunctions: Function[] = [];
@@ -27,22 +27,22 @@
     onClick(clickPosition);
   }
 
+  export let onResize: Function;
+
   function handleResize(event: any) {
     if(canvas && canvas.parentElement){
       width = canvas.parentElement.offsetWidth;
       canvas.width = width;
       canvas.height = width;
-      console.log("handle resize", width)
-
+      onResize(width);
+      
     }
   }
 
   onMount(() => {
     const ctx = canvas.getContext("2d");
-    // canvas.width = canvas.parentElement.offsetWidth;
-    // canvas.height = canvas.parentElement.offsetWidth;
-    canvas.width = width;
-    canvas.height = width;
+    // canvas.width = width;
+    // canvas.height = width;
 
     canvas.addEventListener("click", handleClick);
     window.addEventListener("resize", handleResize)

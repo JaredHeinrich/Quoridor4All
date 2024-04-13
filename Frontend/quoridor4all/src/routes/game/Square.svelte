@@ -4,7 +4,6 @@
 
   export let xBoard: number;
   export let yBoard: number;
-  let width: number = squareWidthCanvas; //square width is equal to height
 
   const { register, unregister} = getContext<{ register: (fn: any) => void, unregister: () => void }>('Canvas');
 
@@ -22,8 +21,8 @@
     ctx.rect(
       startOfSquare(xBoard), 
       startOfSquare(yBoard),
-      width,
-      width);
+      squareWidthCanvas,
+      squareWidthCanvas);
     ctx.fill();
   }
 </script>
