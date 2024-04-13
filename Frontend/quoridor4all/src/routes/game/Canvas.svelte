@@ -29,7 +29,7 @@
 
   export let onResize: Function;
 
-  function handleResize(event: any) {
+  function handleResize() {
     if(canvas && canvas.parentElement){
       width = canvas.parentElement.offsetWidth;
       canvas.width = width;
@@ -41,12 +41,11 @@
 
   onMount(() => {
     const ctx = canvas.getContext("2d");
-    // canvas.width = width;
-    // canvas.height = width;
 
     canvas.addEventListener("click", handleClick);
     window.addEventListener("resize", handleResize)
     
+    handleResize();
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
