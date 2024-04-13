@@ -16,20 +16,28 @@ export function setConfigurations(_size: number, _canvasWidth: number, _squareWi
   squareWidthCanvas = wallWidthCanvas * squareWidthComparedToWallWidth;
 }
 
-export function startOfSquare(boardCoordinate: number) {
+export function startOfSquare(boardCoordinate: number): number {
   return boardCoordinate * (wallWidthCanvas + squareWidthCanvas);
 }
 
-export function centerOfSquare(boardCoordinate: number) {
+export function centerOfSquare(boardCoordinate: number): number {
   return (
     boardCoordinate * (wallWidthCanvas + squareWidthCanvas) +
     squareWidthCanvas / 2
   );
 }
 
-export function endOfSquare(boardCoordinate: number) {
+export function endOfSquare(boardCoordinate: number): number {
   return (
     (boardCoordinate + 1) * (squareWidthCanvas + wallWidthCanvas) -
     wallWidthCanvas
   );
+}
+
+export function isAfterThisSquare(boardCoordinate: number, canvasCoordinate: number): boolean {
+  return endOfSquare(boardCoordinate) <= canvasCoordinate && canvasCoordinate <= startOfSquare(boardCoordinate + 1)
+}
+
+export function isInThisSquare(boardCoordinate: number, canvasCoordinate: number): boolean {
+  return startOfSquare(boardCoordinate) <= canvasCoordinate && canvasCoordinate <= endOfSquare(boardCoordinate);
 }

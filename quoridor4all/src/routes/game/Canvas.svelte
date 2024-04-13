@@ -2,40 +2,50 @@
   import { updated } from "$app/stores";
   import { onMount, setContext } from "svelte";
 
-  export let width: number;
+  let width: number;
 
-  let canvas;
-  const drawFunctions = [];
+  let canvas: any;
+  const drawFunctions: Function[] = [];
 
   setContext("Canvas", {
-    register(drawFn) {
+    register(drawFn: Function) {
       drawFunctions.push(drawFn);
     },
-    unregister(drawFn) {
+    unregister(drawFn: Function) {
       drawFunctions.splice(drawFunctions.indexOf(drawFn), 1);
     },
   });
 
-  export let onClick;
-  function handleClick(event) {
+  export let onClick: Function;
+
+  function handleClick(event: any) {
     let boundingRect = canvas.getBoundingClientRect(); 
     let clickPosition = {
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
     };
-    console.log("clicked", clickPosition)
     onClick(clickPosition);
+  }
+
+  export let onResize: Function;
+
+  function handleResize() {
+    if(canvas && canvas.parentElement){
+      width = canvas.parentElement.offsetWidth;
+      canvas.width = width;
+      canvas.height = width;
+      onResize(width);
+      
+    }
   }
 
   onMount(() => {
     const ctx = canvas.getContext("2d");
-    // canvas.width = canvas.parentElement.offsetWidth;
-    // canvas.height = canvas.parentElement.offsetWidth;
-    canvas.width = width;
-    canvas.height = width;
 
     canvas.addEventListener("click", handleClick);
+    window.addEventListener("resize", handleResize)
     
+    handleResize();
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -51,6 +61,7 @@
 
     return () => {
       cancelAnimationFrame(update);
+      window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('click', handleClick);
     };
   });

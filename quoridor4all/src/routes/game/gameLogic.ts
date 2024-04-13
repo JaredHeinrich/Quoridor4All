@@ -1,29 +1,31 @@
+import { endOfSquare, startOfSquare, isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
+
 export function getPossiblePlayerMoves(playerIndex: number, players: any) {
   let playerPosition = players[playerIndex].position;
 
-    //all surrounding positions are possible moveDirections at first
-    let possibleMoveDirections = [
-      { x: +1, y: 0 }, //right
-      { x: 0, y: +1 }, //down
-      { x: -1, y: 0 }, //left
-      { x: 0, y: -1 }, //up
-    ];
-    let possibleMovePositions: any = [];
+  //all surrounding positions are possible moveDirections at first
+  let possibleMoveDirections = [
+    { x: +1, y: 0 }, //right
+    { x: 0, y: +1 }, //down
+    { x: -1, y: 0 }, //left
+    { x: 0, y: -1 }, //up
+  ];
+  let possibleMovePositions: any = [];
 
-    possibleMoveDirections.forEach((possibleMoveDirection) => {
-      let possiblePosition = {
-        x: playerPosition.x + possibleMoveDirection.x,
-        y: playerPosition.y + possibleMoveDirection.y,
-      };
-      // if (checkWallObstacle(possiblePosition, possibleMoveDirection)) {
-      //   return;
-      // }
+  possibleMoveDirections.forEach((possibleMoveDirection) => {
+    let possiblePosition = {
+      x: playerPosition.x + possibleMoveDirection.x,
+      y: playerPosition.y + possibleMoveDirection.y,
+    };
+    // if (checkWallObstacle(possiblePosition, possibleMoveDirection)) {
+    //   return;
+    // }
 
-      //loop over player positions
+    //loop over player positions
 
-      possibleMovePositions.push(possiblePosition);
-    });
-    return possibleMovePositions;
+    possibleMovePositions.push(possiblePosition);
+  });
+  return possibleMovePositions;
 }
 
 export function checkWallObstacle(playerPosition: any, moveDirection: any, walls: any): boolean {
@@ -59,10 +61,7 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
     return false;
   }
   for (let wall of walls) {
-    console.log("wall position:", wall.position);
-    console.log("NewWall position:", newWall.position);
     if (equalPos(wall.position, newWall.position)) {
-      console.log("same position");
       //walls on same square always collide
       return false;
     }
@@ -80,6 +79,75 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
   return true;
 }
 
-function equalPos(position1: any, position2: any){
+function equalPos(position1: any, position2: any) {
   return position1.x === position2.x && position1.y === position2.y
+}
+
+export function canvasClick(clickPositionCanvas: any, canvasWidth: number, size: number, walls: any, players: any) {
+  let clickedWall = isClickWall(clickPositionCanvas, canvasWidth, size);
+  if (clickedWall) {
+    if (isWallPositionValid(clickedWall, size, walls)) {
+      //set preview wall
+      return{
+        isValidClick: true,
+        clickedWall: clickedWall
+      };
+    }
+    return { isValidClick: false};
+    //maybe error message, that wall cannot be put on this position
+  }
+
+  let clickedPawn = isClickPawn(clickPositionCanvas, canvasWidth, size);
+  if(clickedPawn){
+    //maybe additional check if clicked position is a possible pawn move
+    return {
+      isValidClick: true,
+      clickedPawn: clickedPawn
+    };
+  }
+  return{ isValidClick: false}
+}
+
+function isClickWall(clickPositionCanvas: any, canvasWidth: number, size: number): any {
+  for (let yBoard = 0; yBoard < size - 1; yBoard++) {
+    for (let xBoard = 0; xBoard < size - 1; xBoard++)
+      if (
+        isAfterThisSquare(xBoard, clickPositionCanvas.x) &&
+        isInThisSquare(yBoard, clickPositionCanvas.y)) {
+        return {
+          position: {
+            x: xBoard,
+            y: yBoard
+          },
+          isHorizontal: false
+        }
+      } else if (
+        isInThisSquare(xBoard, clickPositionCanvas.x) &&
+        isAfterThisSquare(yBoard, clickPositionCanvas.y)) {
+        return {
+          position: {
+            x: xBoard,
+            y: yBoard
+          },
+          isHorizontal: true
+        }
+      }
+  }
+  return false;
+}
+
+function isClickPawn(clickPositionCanvas: any, canvasWidth: number, size: number): any {
+  for (let yBoard = 0; yBoard < size - 1; yBoard++) {
+    for (let xBoard = 0; xBoard < size - 1; xBoard++)
+      if (
+        isInThisSquare(xBoard, clickPositionCanvas.x) &&
+        isInThisSquare(yBoard, clickPositionCanvas.y)) {
+        return {
+          position: {
+            x: xBoard,
+            y: yBoard
+          },
+        }
+      }
+  }
 }
