@@ -7,8 +7,6 @@
   } from "./coordinateCalculation";
   import {
     getPossiblePlayerMoves,
-    checkWallObstacle,
-    isWallPositionValid,
     canvasClick,
   } from "./gameLogic";
 
@@ -19,26 +17,25 @@
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
-  function onResize(width: number){
-    console.log("handle resize", width)
+  function handleResize(width: number){
     setConfigurations(size, width, squareWidthComparedToWallWidth);
   }
 
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
-  let previewPlayers: any = [];
+  let playerPreviews: any = [];
   let wallPreview: any = {
     wall: {
       isHorizontal: true,
       position: {
-        x: 0,
-        y: 0,
+        x: 4,
+        y: 4,
       },
     },
-    isVisible: false,
+    isVisible: true,
   };
-
-  console.log("Wall test", isWallPositionValid(wallPreview.wall, size, walls));
+  
+  
 
   function handleClick(clickPosition: any) {
     let canvasWidth = document.getElementById("outerDiv")?.offsetWidth  ?? 500;//div width or width inside of the canvas/inside configuration or last call onResize;
@@ -50,7 +47,6 @@
       players
     ) ?? { isValidClick: false };
 
-    console.log("clickObject", clickObject);
     if (!clickObject.isValidClick) {
       return;
     }
@@ -60,10 +56,11 @@
         wall: clickObject.clickedWall,
         isVisible: true,
       };
+      
       console.log("wallPreview", wallPreview);
 
-      previewPlayers.forEach((previewPlayer: any) =>{
-        previewPlayer.isVisible = false;
+      playerPreviews.forEach((playerPreview: any) =>{
+        playerPreview.isVisible = false;
       });
       return;
     }
@@ -74,16 +71,18 @@
 
   getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
     (playerMove: any) => {
-      previewPlayers.push({
+      playerPreviews.push({
         playerIndex: currentPlayerIndex,
         position: playerMove,
+        isVisible: true
       });
     }
   );
+
 </script>
 
 <div id ="outerDiv">
-  <Canvas onClick={handleClick} onResize={onResize}>
+  <Canvas onClick={handleClick} onResize={handleResize}>
     <!-- Grid -->
     {#each grid as row, yBoard}
       {#each row as cell, xBoard}
@@ -109,12 +108,12 @@
       />
     {/each}
 
-    {#each previewPlayers as previewPlayer, index}
-      {#if previewPlayer.isVisible}
+    {#each playerPreviews as playerPreview, index}
+      {#if playerPreview.isVisible}
         <Pawn
-          xBoard={previewPlayer.position.x}
-          yBoard={previewPlayer.position.y}
-          color={players[previewPlayer.playerIndex].color}
+          xBoard={playerPreview.position.x}
+          yBoard={playerPreview.position.y}
+          color={players[playerPreview.playerIndex].color}
           isPreview={true}
         />
       {/if}
@@ -128,6 +127,8 @@
       />
     {/if}
   </Canvas>
+  <p>{wallPreview.wall.isHorizontal}</p>
+
 </div>
 
 <style>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { updated } from "$app/stores";
   import { onMount, setContext } from "svelte";
 
   let width: number;
@@ -24,7 +23,9 @@
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
     };
+    console.log("handleClick in Canvas", canvas);
     onClick(clickPosition);
+    console.log("handleClick in Canvas after onClick", canvas);
   }
 
   export let onResize: Function;
@@ -40,6 +41,7 @@
   }
 
   onMount(() => {
+    console.log("canvas on mount begin")
     const ctx = canvas.getContext("2d");
 
     canvas.addEventListener("click", handleClick);
@@ -47,20 +49,21 @@
     
     handleResize();
 
-    function update() {
+    let update: Function = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       //draw something
       drawFunctions.forEach((drawFn) => {
         drawFn(ctx);
       });
 
-      frameId = requestAnimationFrame(update);
+      frameId = requestAnimationFrame(update as FrameRequestCallback );
     }
 
-    let frameId = requestAnimationFrame(update);
+    let frameId = requestAnimationFrame(update as FrameRequestCallback);
 
+    console.log("canvas on mount end");
     return () => {
-      cancelAnimationFrame(update);
+      cancelAnimationFrame(frameId);
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('click', handleClick);
     };
