@@ -55,5 +55,4 @@ jobs:
           projectPath: './quoridor4all'
           releaseDraft: true
           prerelease: false
-          signApp: false
           args: ${{ matrix.settings.args }}
