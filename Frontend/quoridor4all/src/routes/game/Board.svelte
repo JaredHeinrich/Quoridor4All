@@ -3,21 +3,17 @@
   import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
-  import {setConfigurations,
-  } from "./coordinateCalculation";
-  import {
-    getPossiblePlayerMoves,
-    canvasClick,
-  } from "./gameLogic";
+  import { setConfigurations } from "./coordinateCalculation";
+  import { getPossiblePlayerMoves, canvasClick } from "./gameLogic";
 
   export let size: number = 9;
-  export let players: any;
-  export let walls: any;
+  export let players: any[] = [];
+  export let walls: any[] = [];
   export let currentPlayerIndex: number;
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
-  function handleResize(width: number){
+  function handleResize(width: number) {
     setConfigurations(size, width, squareWidthComparedToWallWidth);
   }
 
@@ -28,17 +24,15 @@
     wall: {
       isHorizontal: true,
       position: {
-        x: 4,
+        x: 3,
         y: 4,
       },
     },
     isVisible: true,
   };
-  
-  
 
   function handleClick(clickPosition: any) {
-    let canvasWidth = document.getElementById("outerDiv")?.offsetWidth  ?? 500;//div width or width inside of the canvas/inside configuration or last call onResize;
+    let canvasWidth = document.getElementById("outerDiv")?.offsetWidth ?? 500; //div width or width inside of the canvas/inside configuration or last call onResize;
     let clickObject = canvasClick(
       clickPosition,
       canvasWidth,
@@ -56,11 +50,10 @@
         wall: clickObject.clickedWall,
         isVisible: true,
       };
-      
       console.log("wallPreview", wallPreview);
 
       playerPreviews.forEach((playerPreview: any) =>{
-        playerPreview.isVisible = false;
+        playerPreview = playerPreview.isVisible = false;
       });
       return;
     }
@@ -74,14 +67,13 @@
       playerPreviews.push({
         playerIndex: currentPlayerIndex,
         position: playerMove,
-        isVisible: true
+        isVisible: true,
       });
     }
   );
-
 </script>
 
-<div id ="outerDiv">
+<div id="outerDiv">
   <Canvas onClick={handleClick} onResize={handleResize}>
     <!-- Grid -->
     {#each grid as row, yBoard}
@@ -119,16 +111,14 @@
       {/if}
     {/each}
     {#if wallPreview.isVisible}
-      <Wall
-        xBoard={wallPreview.wall.position.x}
-        yBoard={wallPreview.wall.position.y}
-        isPreview={true}
-        isHorizontal={wallPreview.wall.isHorizontal}
-      />
+    <Wall
+      xBoard={wallPreview.wall.position.x}
+      yBoard={wallPreview.wall.position.y}
+      isPreview={true}
+      isHorizontal={wallPreview.wall.isHorizontal}
+    />
     {/if}
   </Canvas>
-  <p>{wallPreview.wall.isHorizontal}</p>
-
 </div>
 
 <style>

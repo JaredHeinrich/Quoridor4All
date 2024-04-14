@@ -8,7 +8,7 @@
 
   let currentPlayerIndex = 0;
 
-  let players: any = null;
+  let players: any[] = [];
   const boardSize: number = 9;
 
   players = [
@@ -61,7 +61,7 @@
       color: "green",
     },
   ];
-  let walls: any = [
+  let walls: any[] = [
     {
       position: {
         x: 5,
@@ -104,8 +104,10 @@
 
     players = $playersStore.map((player) => {
       return {
-        xPosition: null,
-        yPosition: null,
+        position: {
+          x: 0,
+          y: 0
+        },
         number_of_available_walls: 6,
         goal: null,
         player_name: player,
@@ -136,7 +138,7 @@
 
     <div class="col-start-2 col-span-4">
       <div class="aspect-w-1 aspect-h-1 bg-gray-200 border-8">
-        <Board size={boardSize} bind:players bind:walls bind:currentPlayerIndex />
+        <Board size={boardSize} players={players} walls={walls} bind:currentPlayerIndex />
       </div>
     </div>
 
