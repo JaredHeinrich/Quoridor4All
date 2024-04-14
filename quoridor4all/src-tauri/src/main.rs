@@ -6,3 +6,11 @@ fn main() {
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn first_test(){
+        assert!(true);
+    }
+}
