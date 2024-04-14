@@ -1,6 +1,6 @@
 import { endOfSquare, startOfSquare, isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
 
-export function getPossiblePlayerMoves(playerIndex: number, players: any) {
+export function getPossiblePlayerMoves(playerIndex: number, players: any): any[] {
   let playerPosition = players[playerIndex].position;
 
   //all surrounding positions are possible moveDirections at first
@@ -26,6 +26,20 @@ export function getPossiblePlayerMoves(playerIndex: number, players: any) {
     possibleMovePositions.push(possiblePosition);
   });
   return possibleMovePositions;
+}
+
+export function getPlayerPreviews(currentPlayerIndex: number, players: any[]): any[] {
+  let playerPreviews: any[] = [];
+  getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
+    (playerMove: any) => {
+      console.log("player preview getPossiblePlayerMoves");
+      playerPreviews.push({
+        playerIndex: currentPlayerIndex,
+        position: playerMove,
+        isVisible: true,
+      });
+    });
+    return playerPreviews;
 }
 
 export function checkWallObstacle(playerPosition: any, moveDirection: any, walls: any): boolean {

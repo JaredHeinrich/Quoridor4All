@@ -22,10 +22,8 @@
     let clickPosition = {
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
-    };
-    console.log("handleClick in Canvas", canvas);
+    };    
     onClick(clickPosition);
-    console.log("handleClick in Canvas after onClick", canvas);
   }
 
   export let onResize: Function;
@@ -41,7 +39,6 @@
   }
 
   onMount(() => {
-    console.log("canvas on mount begin")
     const ctx = canvas.getContext("2d");
 
     canvas.addEventListener("click", handleClick);

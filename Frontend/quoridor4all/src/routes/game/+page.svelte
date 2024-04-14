@@ -99,6 +99,10 @@
     },
   ];
 
+  function revertPreview(){
+    //
+  }
+
   onMount(() => {
     //fetch data from backend, players should be created in backend
 
@@ -159,7 +163,7 @@
     </div>
   </div>
   <div class="border-8 text-center border-gray-900">
-    <Button color="red">Abbrechen</Button>
+    <Button color="red" on:click={revertPreview}>Abbrechen</Button>
     <Button color="blue">Bestätigen</Button>
   </div>
   <div class="border-8 text-center border-gray-900">

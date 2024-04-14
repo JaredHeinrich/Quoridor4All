@@ -1,10 +1,14 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import Canvas from "./Canvas.svelte";
   import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
   import { setConfigurations } from "./coordinateCalculation";
-  import { getPossiblePlayerMoves, canvasClick } from "./gameLogic";
+  import {
+    canvasClick,
+    getPlayerPreviews,
+  } from "./gameLogic";
 
   export let size: number = 9;
   export let players: any[] = [];
@@ -50,30 +54,21 @@
         wall: clickObject.clickedWall,
         isVisible: true,
       };
-      console.log("wallPreview", wallPreview);
 
       //traditional for loop, because in foreach loop svelte does not register that the playerPreviews over all change since only the objects inside the array change
-      for(let i = 0; i < playerPreviews.length; i++){
+      for (let i = 0; i < playerPreviews.length; i++) {
         playerPreviews[i].isVisible = false;
       }
-      console.log(playerPreviews);
       return;
     }
 
     if (clickObject.clickedPawn) {
     }
   }
-
-  getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
-    (playerMove: any) => {
-      console.log("player preview getPossiblePlayerMoves")
-      playerPreviews.push({
-        playerIndex: currentPlayerIndex,
-        position: playerMove,
-        isVisible: true,
-      });
-    }
-  );
+  function showPlayerPreviews() {
+    playerPreviews = getPlayerPreviews(currentPlayerIndex, players);
+  }
+  showPlayerPreviews();
 </script>
 
 <div id="outerDiv">
@@ -114,12 +109,12 @@
       {/if}
     {/each}
     {#if wallPreview.isVisible}
-    <Wall
-      xBoard={wallPreview.wall.position.x}
-      yBoard={wallPreview.wall.position.y}
-      isPreview={true}
-      isHorizontal={wallPreview.wall.isHorizontal}
-    />
+      <Wall
+        xBoard={wallPreview.wall.position.x}
+        yBoard={wallPreview.wall.position.y}
+        isPreview={true}
+        isHorizontal={wallPreview.wall.isHorizontal}
+      />
     {/if}
   </Canvas>
 </div>
