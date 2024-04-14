@@ -19,7 +19,7 @@
 
   let grid = new Array(size).fill(0).map(() => new Array(size).fill(0));
 
-  let playerPreviews: any = [];
+  let playerPreviews: any[] = [];
   let wallPreview: any = {
     wall: {
       isHorizontal: true,
@@ -52,9 +52,11 @@
       };
       console.log("wallPreview", wallPreview);
 
-      playerPreviews.forEach((playerPreview: any) =>{
-        playerPreview = playerPreview.isVisible = false;
-      });
+      //traditional for loop, because in foreach loop svelte does not register that the playerPreviews over all change since only the objects inside the array change
+      for(let i = 0; i < playerPreviews.length; i++){
+        playerPreviews[i].isVisible = false;
+      }
+      console.log(playerPreviews);
       return;
     }
 
@@ -64,6 +66,7 @@
 
   getPossiblePlayerMoves(currentPlayerIndex, players).forEach(
     (playerMove: any) => {
+      console.log("player preview getPossiblePlayerMoves")
       playerPreviews.push({
         playerIndex: currentPlayerIndex,
         position: playerMove,

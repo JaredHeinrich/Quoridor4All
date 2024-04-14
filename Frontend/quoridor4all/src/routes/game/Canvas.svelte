@@ -60,8 +60,6 @@
     }
 
     let frameId = requestAnimationFrame(update as FrameRequestCallback);
-
-    console.log("canvas on mount end");
     return () => {
       cancelAnimationFrame(frameId);
       window.removeEventListener('resize', handleResize);
