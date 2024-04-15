@@ -10,11 +10,6 @@
     showPlayerPreviews,
   } from "./gameLogic";
   import {currentPlayerIndex, size, walls, players, playerPreviews, wallPreview} from "../../store";
-  import { get } from "svelte/store";
-
-  // export let instance: object = {
-  //   revertPreview(),
-  //  }; // funktioniert nicht wenn = {};
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
@@ -80,7 +75,7 @@
       <Wall
         xBoard={wall.position.x}
         yBoard={wall.position.y}
-        is_horizontal={wall.is_horizontal}
+        isHorizontal={wall.isHorizontal}
         isPreview={false}
       />
     {/each}
@@ -100,7 +95,7 @@
         xBoard={$wallPreview.position.x}
         yBoard={$wallPreview.position.y}
         isPreview={true}
-        is_horizontal={$wallPreview.is_horizontal}
+        isHorizontal={$wallPreview.isHorizontal}
       />
     {/if}
   </Canvas>

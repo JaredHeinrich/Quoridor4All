@@ -48,10 +48,10 @@ export function showPlayerPreviews() {
 
 export function checkWallObstacle(playerPosition: any, moveDirection: any): boolean {
   for (let wall of get(walls)) {
-    if (moveDirection.x === 0 && !wall.is_horizontal) {
+    if (moveDirection.x === 0 && !wall.isHorizontal) {
       return false; // vertical wall can't hinder vertical movement in y dircetion
     }
-    if (moveDirection.y === 0 && wall.is_horizontal) {
+    if (moveDirection.y === 0 && wall.isHorizontal) {
       return false; // horizontal wall can't hinder horizontal movement in x direction
     }
 
@@ -92,12 +92,12 @@ function isInConflictWith(newWall: any, wall: any) {
     return true;
   }
 
-  if (newWall.is_horizontal && wall.is_horizontal && wall.position.y === newWall.position.y) {
+  if (newWall.isHorizontal && wall.isHorizontal && wall.position.y === newWall.position.y) {
     //horizontal wall on same row
     const xDifference = Math.abs(wall.position.x - newWall.position.x);
     if (xDifference <= 1) return true;
   }
-  if (!newWall.is_horizontal && !wall.is_horizontal && wall.position.x === newWall.position.x) {
+  if (!newWall.isHorizontal && !wall.isHorizontal && wall.position.x === newWall.position.x) {
     //vertical wall on same column
     const yDifference = Math.abs(wall.position.y - newWall.position.y);
     if (yDifference <= 1) return true;
@@ -145,7 +145,7 @@ function isClickWall(clickPositionCanvas: any, canvasWidth: number): any {
             x: xBoard,
             y: yBoard
           },
-          is_horizontal: false
+          isHorizontal: false
         }
       } else if (
         isInThisSquare(xBoard, clickPositionCanvas.x) &&
@@ -155,7 +155,7 @@ function isClickWall(clickPositionCanvas: any, canvasWidth: number): any {
             x: xBoard,
             y: yBoard
           },
-          is_horizontal: true
+          isHorizontal: true
         }
       }
   }

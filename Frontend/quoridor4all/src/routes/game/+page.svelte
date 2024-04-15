@@ -7,94 +7,25 @@
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
   import revertPreview from './Board.svelte';
 
-  // let players: any[] = [
-  //   {
-  //     position: {
-  //       x: 4,
-  //       y: 8,
-  //     },
-  //     number_of_available_walls: 6,
-  //     goal: {
-  //       y: 0,
-  //     },
-  //     player_name: "Player 1",
-  //     color: "red",
-  //   },
-  //   {
-  //     position: {
-  //       x: 0,
-  //       y: 4,
-  //     },
-  //     number_of_available_walls: 6,
-  //     goal: {
-  //       x: 8,
-  //     },
-  //     player_name: "Player 2",
-  //     color: "yellow",
-  //   },
-  //   {
-  //     position: {
-  //       x: 4,
-  //       y: 0,
-  //     },
-  //     number_of_available_walls: 6,
-  //     goal: {
-  //       y: 8,
-  //     },
-  //     player_name: "Player 3",
-  //     color: "blue",
-  //   },
-  //   {
-  //     position: {
-  //       x: 8,
-  //       y: 4,
-  //     },
-  //     number_of_available_walls: 6,
-  //     goal: {
-  //       x: 0,
-  //     },
-  //     player_name: "Player 4",
-  //     color: "green",
-  //   },
-  // ];
-
   function cancelMove(){
     // revertPreview();
   }
-
-  onMount(() => {
-    //fetch data from backend, players should be created in backend
-
-    // players = $playersStore.map((player) => {
-    //   return {
-    //     position: {
-    //       x: 0,
-    //       y: 0
-    //     },
-    //     number_of_available_walls: 6,
-    //     goal: null,
-    //     player_name: player,
-    //   };
-    // });
-
-    // console.log(players);
-  });
 </script>
 
 <div class="bg-gray-900">
   <div class="grid grid-cols-6 gap-4">
     <div class="col-start-2 col-span-4 text-center">
       <PlayerViewVertical
-        player_name={$players[2].player_name}
-        number_of_available_walls={$players[2].number_of_available_walls}
+        playerName={$players[2].playerName}
+        wallQuantity={$players[2].wallQuantity}
         color={$players[2].color}
       />
     </div>
 
     <div class="col-start-1 text-center">
       <PlayerViewHorizontal
-        player_name={$players[1].player_name}
-        number_of_available_walls={$players[1].number_of_available_walls}
+        playerName={$players[1].playerName}
+        wallQuantity={$players[1].wallQuantity}
         color={$players[1].color}
       />
     </div>
@@ -107,16 +38,16 @@
 
     <div class="col-start-6 text-center">
       <PlayerViewHorizontal
-        player_name={$players[3].player_name}
-        number_of_available_walls={$players[3].number_of_available_walls}
+        playerName={$players[3].playerName}
+        wallQuantity={$players[3].wallQuantity}
         color={$players[3].color}
       />
     </div>
 
     <div class="col-start-2 col-span-4 text-center">
       <PlayerViewVertical
-        player_name={$players[0].player_name}
-        number_of_available_walls={$players[0].number_of_available_walls}
+        playerName={$players[0].playerName}
+        wallQuantity={$players[0].wallQuantity}
         color={$players[0].color}
       />
     </div>

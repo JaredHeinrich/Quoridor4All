@@ -5,12 +5,12 @@ export const players = writable<{
     x: number,
     y: number,
   },
-  number_of_available_walls: number,
+  wallQuantity: number,
   goal: {
-    is_x_coordinate: boolean,
-    goal_line: number
+    isXCoordinate: boolean,
+    goalLine: number
   },
-  player_name: string,
+  playerName: string,
   color: string,
 }[]>([
   {
@@ -18,12 +18,12 @@ export const players = writable<{
       x: 4,
       y: 8,
     },
-    number_of_available_walls: 6,
+    wallQuantity: 6,
     goal: {
-      is_x_coordinate: false,
-      goal_line: 0,
+      isXCoordinate: false,
+      goalLine: 0,
     },
-    player_name: "Player 1",
+    playerName: "Player 1",
     color: "red",
   },
   {
@@ -31,12 +31,12 @@ export const players = writable<{
       x: 0,
       y: 4,
     },
-    number_of_available_walls: 6,
+    wallQuantity: 6,
     goal: {
-      is_x_coordinate: true,
-      goal_line: 8,
+      isXCoordinate: true,
+      goalLine: 8,
     },
-    player_name: "Player 2",
+    playerName: "Player 2",
     color: "yellow",
   },
   {
@@ -44,12 +44,12 @@ export const players = writable<{
       x: 4,
       y: 0,
     },
-    number_of_available_walls: 6,
+    wallQuantity: 6,
     goal: {
-      is_x_coordinate: false,
-      goal_line: 8,
+      isXCoordinate: false,
+      goalLine: 8,
     },
-    player_name: "Player 3",
+    playerName: "Player 3",
     color: "blue",
   },
   {
@@ -57,12 +57,12 @@ export const players = writable<{
       x: 8,
       y: 4,
     },
-    number_of_available_walls: 6,
+    wallQuantity: 6,
     goal: {
-      is_x_coordinate: true,
-      goal_line: 0,
+      isXCoordinate: true,
+      goalLine: 0,
     },
-    player_name: "Player 4",
+    playerName: "Player 4",
     color: "green",
   },
 ]);
@@ -72,42 +72,42 @@ export const walls = writable<{
     x: number, 
     y: number
   },
-  is_horizontal: boolean
+  isHorizontal: boolean
 }[]>([
   {
     position: {
       x: 5,
       y: 5,
     },
-    is_horizontal: true,
+    isHorizontal: true,
   },
   {
     position: {
       x: 0,
       y: 0,
     },
-    is_horizontal: false,
+    isHorizontal: false,
   },
   {
     position: {
       x: 7,
       y: 4,
     },
-    is_horizontal: true,
+    isHorizontal: true,
   },
   {
     position: {
       x: 1,
       y: 7,
     },
-    is_horizontal: false,
+    isHorizontal: false,
   },
   {
     position: {
       x: 4,
       y: 2,
     },
-    is_horizontal: true,
+    isHorizontal: true,
   },
 ]);
 
@@ -129,5 +129,5 @@ export const wallPreview = writable<{
     x: number, 
     y: number
   },
-  is_horizontal: boolean
+  isHorizontal: boolean
 }>();

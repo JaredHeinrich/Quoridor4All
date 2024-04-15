@@ -9,7 +9,7 @@
 
   export let xBoard: number;
   export let yBoard: number;
-  export let is_horizontal: boolean;
+  export let isHorizontal: boolean;
   export let isPreview: boolean;
 
   let color: string;
@@ -42,7 +42,7 @@
     let width: number;
     let height: number;
 
-    if (is_horizontal) {
+    if (isHorizontal) {
       topLeftCornerX = startOfSquare(xBoard);
       topLeftCornerY = endOfSquare(yBoard);
       height = wallWidthCanvas;
