@@ -1,17 +1,17 @@
-//file: coordinateCalculation.ts
-let size: number;
+import { size} from "../../store";
+import { get } from 'svelte/store';
+
 let canvasWidth: number;
 let squareWidthComparedToWallWidth: number;
 export let wallWidthCanvas: number;
 export let squareWidthCanvas: number;
   
-// Funktion zur Einstellung der Konfigurationen durch die Komponente
-export function setConfigurations(_size: number, _canvasWidth: number, _squareWidthComparedToWallWidth: number) {
-  size = _size;
+// general configurations
+export function setConfigurations(_canvasWidth: number, _squareWidthComparedToWallWidth: number) {
   canvasWidth =  _canvasWidth;
   squareWidthComparedToWallWidth = _squareWidthComparedToWallWidth;
 
-  let numberWallWidthsInCanvas = squareWidthComparedToWallWidth +(size - 1) * (squareWidthComparedToWallWidth + 1);
+  let numberWallWidthsInCanvas = squareWidthComparedToWallWidth +( get(size) - 1) * (squareWidthComparedToWallWidth + 1);
   wallWidthCanvas = canvasWidth / numberWallWidthsInCanvas;
   squareWidthCanvas = wallWidthCanvas * squareWidthComparedToWallWidth;
 }
@@ -34,6 +34,8 @@ export function endOfSquare(boardCoordinate: number): number {
   );
 }
 
+
+//canvas to board
 export function isAfterThisSquare(boardCoordinate: number, canvasCoordinate: number): boolean {
   return endOfSquare(boardCoordinate) <= canvasCoordinate && canvasCoordinate <= startOfSquare(boardCoordinate + 1)
 }

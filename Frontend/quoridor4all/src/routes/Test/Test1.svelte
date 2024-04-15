@@ -1,11 +1,11 @@
 <script lang="ts">
   import Test from "./Test.svelte";
   import CanvasComponentTest from "./canvasComponentTest.svelte";
-  import Canvas from "./game/Canvas.svelte";
-  import Wall from "./game/Wall.svelte";
-  import { setConfigurations } from "./game/coordinateCalculation";
-  import { canvasClick } from "./game/gameLogic";
-  import { count } from "./game/store";
+  import Canvas from "../game/Canvas.svelte";
+  import Wall from "../game/Wall.svelte";
+  import { setConfigurations } from "../game/coordinateCalculation";
+  import { canvasClick } from "../game/gameLogic";
+  import { count } from "../game/store";
   let test: number = 5;
 
   let radius: number = 50;
