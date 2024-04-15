@@ -1,6 +1,6 @@
 import { endOfSquare, startOfSquare, isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
 
-export function getPossiblePlayerMoves(playerIndex: number, players: any): any[] {
+function getPossiblePlayerMoves(playerIndex: number, players: any): any[] {
   let playerPosition = players[playerIndex].position;
 
   //all surrounding positions are possible moveDirections at first
@@ -75,22 +75,30 @@ export function isWallPositionValid(newWall: any, size: number, walls: any): boo
     return false;
   }
   for (let wall of walls) {
-    if (equalPos(wall.position, newWall.position)) {
-      //walls on same square always collide
+    if (isInConflictWith(newWall, wall)){
       return false;
-    }
-    if (newWall.isHorizontal && wall.isHorizontal && wall.position.y === newWall.position.y) {
-      //vertical wall on same row
-      const xDifference = Math.abs(wall.position.x - newWall.position.x);
-      if (xDifference <= 1) return false;
-    }
-    if (!newWall.isHorizontal && !wall.isHorizontal && wall.position.x === newWall.position.x) {
-      //horizontal wall on same column
-      const yDifference = Math.abs(wall.position.y - newWall.position.y);
-      if (yDifference <= 1) return false;
     }
   }
   return true;
+}
+
+function isInConflictWith(newWall: any, wall: any){
+  if (equalPos(wall.position, newWall.position)) {
+    //walls on same square always collide
+    return true;
+  }
+
+  if (newWall.isHorizontal && wall.isHorizontal && wall.position.y === newWall.position.y) {
+    //horizontal wall on same row
+    const xDifference = Math.abs(wall.position.x - newWall.position.x);
+    if (xDifference <= 1) return true;
+  }
+  if (!newWall.isHorizontal && !wall.isHorizontal && wall.position.x === newWall.position.x) {
+    //vertical wall on same column
+    const yDifference = Math.abs(wall.position.y - newWall.position.y);
+    if (yDifference <= 1) return true;
+  }
+  return false;
 }
 
 function equalPos(position1: any, position2: any) {

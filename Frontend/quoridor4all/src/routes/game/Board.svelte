@@ -14,6 +14,9 @@
   export let players: any[] = [];
   export let walls: any[] = [];
   export let currentPlayerIndex: number;
+  // export let instance: {revertPreview: Function} = {
+  //   revertPreview
+  // }; // funktioniert nicht wenn = {};
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
@@ -66,9 +69,14 @@
     }
   }
   function showPlayerPreviews() {
+    console.log("show pP")
     playerPreviews = getPlayerPreviews(currentPlayerIndex, players);
   }
   showPlayerPreviews();
+
+  export const revertPreview: Function = () => {
+    showPlayerPreviews();
+  }
 </script>
 
 <div id="outerDiv">

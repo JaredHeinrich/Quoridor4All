@@ -5,7 +5,7 @@
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
-
+  import revertPreview from './Board.svelte';
   let currentPlayerIndex = 0;
 
   let players: any[] = [];
@@ -99,8 +99,8 @@
     },
   ];
 
-  function revertPreview(){
-    //
+  function cancelMove(){
+    revertPreview();
   }
 
   onMount(() => {
@@ -163,8 +163,8 @@
     </div>
   </div>
   <div class="border-8 text-center border-gray-900">
-    <Button color="red" on:click={revertPreview}>Abbrechen</Button>
-    <Button color="blue">Bestätigen</Button>
+    <Button color="red" on:click={cancelMove}>Abbrechen</Button>
+    <Button color="blue" on:click={()=>{}}>Bestätigen</Button>
   </div>
   <div class="border-8 text-center border-gray-900">
     <Button color="dark">Zurück</Button>
