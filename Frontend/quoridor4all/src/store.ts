@@ -121,6 +121,7 @@ export const playerPreviews = writable<{
     y: number,
   },
   color: string,
+  isVisible: boolean,
 }[]>([]);
 
 export const wallPreview = writable<{

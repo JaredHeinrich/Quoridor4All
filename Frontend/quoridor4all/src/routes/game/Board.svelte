@@ -7,9 +7,9 @@
   import { setConfigurations } from "./coordinateCalculation";
   import {
     canvasClick,
-    getPlayerPreviews,
+    showPlayerPreviews,
   } from "./gameLogic";
-  import {currentPlayerIndex, size, walls, players} from "../../store";
+  import {currentPlayerIndex, size, walls, players, playerPreviews, wallPreview} from "../../store";
   import { get } from "svelte/store";
 
   // export let instance: object = {
@@ -24,11 +24,6 @@
 
   let grid = new Array($size).fill(0).map(() => new Array($size).fill(0));
 
-  let playerPreviews: any[] = [];
-  let wallPreview: {position: {x: number, y: number}, is_horizontal: boolean} = {
-    position: {x: 4, y: 4}, is_horizontal: true
-  };
-
   function handleClick(clickPosition: any) {
     let canvasWidth = document.getElementById("outerDiv")?.offsetWidth ?? 500; //div width or width inside of the canvas/inside configuration or last call onResize;
     let clickObject = canvasClick(
@@ -41,11 +36,11 @@
     }
 
     if (clickObject.clickedWall) {
-      wallPreview = clickObject.clickedWall;
+      $wallPreview = clickObject.clickedWall;
 
       //traditional for loop, because in foreach loop svelte does not register that the playerPreviews over all change since only the objects inside the array change
-      for (let i = 0; i < playerPreviews.length; i++) {
-        playerPreviews[i].isVisible = false;
+      for (let i = 0; i < $playerPreviews.length; i++) {
+        $playerPreviews[i].isVisible = false;
       }
       return;
     }
@@ -54,10 +49,7 @@
     }
   }
 
-  function showPlayerPreviews() {
-    console.log("show pP")
-    playerPreviews = getPlayerPreviews();
-  }
+  
   showPlayerPreviews();
 
   export const revertPreview: Function = () => {
@@ -93,22 +85,22 @@
       />
     {/each}
 
-    {#each playerPreviews as playerPreview, index}
+    {#each $playerPreviews as playerPreview, index}
       {#if playerPreview.isVisible}
         <Pawn
           xBoard={playerPreview.position.x}
           yBoard={playerPreview.position.y}
-          color={$players[playerPreview.playerIndex].color}
+          color={playerPreview.color}
           isPreview={true}
         />
       {/if}
     {/each}
-    {#if wallPreview}
+    {#if $wallPreview}
       <Wall
-        xBoard={wallPreview.position.x}
-        yBoard={wallPreview.position.y}
+        xBoard={$wallPreview.position.x}
+        yBoard={$wallPreview.position.y}
         isPreview={true}
-        is_horizontal={wallPreview.is_horizontal}
+        is_horizontal={$wallPreview.is_horizontal}
       />
     {/if}
   </Canvas>
