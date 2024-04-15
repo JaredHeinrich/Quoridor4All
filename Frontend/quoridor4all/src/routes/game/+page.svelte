@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { players } from "../../store";
   import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
