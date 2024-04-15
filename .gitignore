@@ -14,4 +14,4 @@ target/
 *.pdb
 
 # Node Modules
-Frontend/quoridor4all/node_modules/
+node_modules/
