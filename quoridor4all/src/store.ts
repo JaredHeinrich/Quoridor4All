@@ -109,6 +109,13 @@ export const walls = writable<{
     },
     isHorizontal: true,
   },
+  {
+    position: {
+      x: 3,
+      y: 5,
+    },
+    isHorizontal: false,
+  }
 ]);
 
 export const currentPlayerIndex = writable<number>(0);
