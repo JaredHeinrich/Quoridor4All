@@ -2,15 +2,21 @@
   import { Button } from "flowbite-svelte";
   import PlayerInput from "./PlayerInput.svelte";
   import {goto} from '$app/navigation';
-  import { players as playersStore } from '../store';
+  import { players } from '../store';
 
   const playerNames = ["Spieler 1", "Spieler 2", "Spieler 3", "Spieler 4"];
 
   async function startGame(){
-    //update playerNames
-    // playersStore.update();
+    
+    players.update(state => {
+      return state.map((player, index) => {
+        return {...player, playerName: playerNames[index]}
+      });
+    });
+    
+    goto('/game');
 
-    //till no backend connected
+
     goto('/game');
   }
 
