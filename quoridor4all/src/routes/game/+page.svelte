@@ -1,13 +1,15 @@
 <script lang="ts">
-  import { players } from "../../store";
+  import { players, wallPreview } from "../../store";
   import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
   import revertPreview from './Board.svelte';
+  import { showPlayerPreviews } from "./gameLogic";
 
   function cancelMove(){
-    // revertPreview();
+    showPlayerPreviews();
+    wallPreview.set(null);
   }
 </script>
 

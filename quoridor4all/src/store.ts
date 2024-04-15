@@ -137,4 +137,4 @@ export const wallPreview = writable<{
     y: number
   },
   isHorizontal: boolean
-}>();
+}|null>(null);
