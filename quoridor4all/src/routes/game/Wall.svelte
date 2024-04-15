@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onMount } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
   import {
     startOfSquare,
     endOfSquare,
@@ -22,15 +22,18 @@
 
   const { register, unregister } = getContext<{
     register: (fn: any) => void;
-    unregister: () => void;
+    unregister: (fn: any) => void;
   }>("Canvas");
 
   onMount(() => {
     register(draw);
 
     return () => {
-      unregister();
     };
+  });
+
+  onDestroy(() => {
+    unregister(draw);
   });
 
   function draw(ctx: CanvasRenderingContext2D) {
@@ -55,5 +58,7 @@
     ctx.fillStyle = color;
     ctx.rect(topLeftCornerX, topLeftCornerY, width, height);
     ctx.fill();
+
+    // console.log("end draw wall")
   }
 </script>

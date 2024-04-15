@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onMount } from "svelte";
+  import { getContext, onDestroy, onMount } from "svelte";
   import { centerOfSquare, squareWidthCanvas} from './coordinateCalculation';
 
   export let xBoard: number;
@@ -22,14 +22,17 @@
 
   
 
-  const { register, unregister} = getContext<{ register: (fn: any) => void, unregister: () => void }>('Canvas');
+  const { register, unregister} = getContext<{ register: (fn: any) => void, unregister: (fn: any) => void }>('Canvas');
 
   onMount(() => {
     register(draw);
 
     return () => {
-      unregister();
     }
+  });
+
+  onDestroy(() => {
+    unregister(draw);
   });
 
   function draw(ctx : CanvasRenderingContext2D) {

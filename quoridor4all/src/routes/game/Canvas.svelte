@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { updated } from "$app/stores";
   import { onMount, setContext } from "svelte";
 
   let width: number;
@@ -23,7 +22,7 @@
     let clickPosition = {
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
-    };
+    };    
     onClick(clickPosition);
   }
 
@@ -47,20 +46,19 @@
     
     handleResize();
 
-    function update() {
+    let update: Function = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       //draw something
       drawFunctions.forEach((drawFn) => {
         drawFn(ctx);
       });
 
-      frameId = requestAnimationFrame(update);
+      frameId = requestAnimationFrame(update as FrameRequestCallback );
     }
 
-    let frameId = requestAnimationFrame(update);
-
+    let frameId = requestAnimationFrame(update as FrameRequestCallback);
     return () => {
-      cancelAnimationFrame(update);
+      cancelAnimationFrame(frameId);
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('click', handleClick);
     };
