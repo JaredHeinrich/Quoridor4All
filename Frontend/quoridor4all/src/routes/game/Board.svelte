@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import Canvas from "./Canvas.svelte";
   import Pawn from "./Pawn.svelte";
   import Square from "./Square.svelte";
@@ -9,7 +8,7 @@
     canvasClick,
     showPlayerPreviews,
   } from "./gameLogic";
-  import {currentPlayerIndex, size, walls, players, playerPreviews, wallPreview} from "../../store";
+  import { size, walls, players, playerPreviews, wallPreview} from "../../store";
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
