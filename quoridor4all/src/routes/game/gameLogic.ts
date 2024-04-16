@@ -2,15 +2,17 @@ import { isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
 import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview } from "../../store"
 import { get } from 'svelte/store';
 
-function getPossiblePlayerMoves(): any[] {
+const UP: { x: number, y: number } = { x: 0, y: -1 }; 
+const DOWN: { x: number, y: number } = { x: 0, y: +1 }; 
+const LEFT: { x: number, y: number } = { x: -1, y: 0 }; 
+const RIGTH: { x: number, y: number } = { x: +1, y: 0 }; 
+
+function getPossibleNextPawnPositons(): { x: number, y: number }[] {
   let playerPosition = get(players)[get(currentPlayerIndex)].position;
 
   //all surrounding positions are possible moveDirections at first
   let possibleMoveDirections = [
-    { x: +1, y: 0 }, //right
-    { x: 0, y: +1 }, //down
-    { x: -1, y: 0 }, //left
-    { x: 0, y: -1 }, //up
+    UP, DOWN, LEFT, RIGTH
   ];
   let possibleMovePositions: any = [];
 
@@ -19,15 +21,25 @@ function getPossiblePlayerMoves(): any[] {
       x: playerPosition.x + possibleMoveDirection.x,
       y: playerPosition.y + possibleMoveDirection.y,
     };
-    // if (checkWallObstacle(possiblePosition, possibleMoveDirection)) {
-    //   return;
-    // }
+
+    if (positionOutOfBoard(possiblePosition)) {
+      return;
+    }
+
+    if (noWallObstacle(playerPosition, possibleMoveDirection)) {
+      return;
+    }
 
     //loop over player positions
 
     possibleMovePositions.push(possiblePosition);
   });
   return possibleMovePositions;
+}
+
+function positionOutOfBoard(position: { x: number, y: number }): boolean {
+  return position.x >= get(size) || position.y >= get(size) ||
+    position.x < 0 || position.y < 0
 }
 
 export function cancelMove(): void {
@@ -38,36 +50,64 @@ export function cancelMove(): void {
 
 export function showPlayerPreviews(): void {
   let playerPreviewsNew: any[] = [];
-  getPossiblePlayerMoves().forEach(
+  getPossibleNextPawnPositons().forEach(
     (playerMove: any) => {
       playerPreviewsNew.push({
         position: playerMove,
-        color: "red",
+        color: get(players)[get(currentPlayerIndex)].color,
       });
     });
   playerPreviews.set(playerPreviewsNew);
+  console.log(get(playerPreviews));
 }
 
-export function checkWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
+export function noWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
+  let conflict = false;
   for (let wall of get(walls)) {
-    if (moveDirection.x === 0 && !wall.isHorizontal) {
-      return false; // vertical wall can't hinder vertical movement in y dircetion
-    }
-    if (moveDirection.y === 0 && wall.isHorizontal) {
-      return false; // horizontal wall can't hinder horizontal movement in x direction
-    }
-
-    let possiblePosition = {
-      x: playerPosition.x + moveDirection.x,
-      y: playerPosition.y + moveDirection.y,
-    };
-
-    if ((wall.position = possiblePosition)) {
-      return false; // wall
+    if(wallConflictsMove(wall, playerPosition, moveDirection)){
+      conflict = true;
+      return conflict;
     }
   }
-  return true;
+  return conflict;
+}
 
+function wallConflictsMove(
+  wall: { position: { x: number, y: number }, isHorizontal: boolean },
+  playerPosition: { x: number, y: number },
+  moveDirection: {x: number, y: number}
+): boolean {
+  if (moveDirection.x === 0 && !wall.isHorizontal) {
+    return false; // vertical wall can't hinder vertical movement in y dircetion
+  }
+  if (moveDirection.y === 0 && wall.isHorizontal) {
+    return false; // horizontal wall can't hinder horizontal movement in x direction
+  }
+
+  //check which moveDirection it is and there if it is a conflict
+  if(equalPos(moveDirection, UP)){
+    if(wall.position.y === playerPosition.y - 1 && (wall.position.x === playerPosition.x -1 || wall.position.x === playerPosition.x)){
+      return true;
+    }
+  }
+  else if(equalPos(moveDirection, DOWN)){
+    if(wall.position.y === playerPosition.y && (wall.position.x === playerPosition.x -1 || wall.position.x === playerPosition.x)){
+      return true;
+    }
+  }
+
+  else if(equalPos(moveDirection, LEFT)){
+    if(wall.position.x === playerPosition.x - 1 && (wall.position.y === playerPosition.y -1 || wall.position.y === playerPosition.y)){
+      return true;
+    }
+  }
+
+  else if(equalPos(moveDirection, RIGTH)){
+    if(wall.position.x === playerPosition.x && (wall.position.y === playerPosition.y -1 || wall.position.y === playerPosition.y)){
+      return true;
+    }
+  }
+  return false;
 }
 
 export function isWallPositionValid(

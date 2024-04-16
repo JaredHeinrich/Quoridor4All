@@ -118,7 +118,7 @@ export const walls = writable<{
   }
 ]);
 
-export const currentPlayerIndex = writable<number>(0);
+export const currentPlayerIndex = writable<number>(3);
 
 export const size = readable<number>(9);
 
