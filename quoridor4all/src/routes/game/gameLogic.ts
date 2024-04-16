@@ -30,13 +30,13 @@ function getPossiblePlayerMoves(): any[] {
   return possibleMovePositions;
 }
 
-export function cancelMove(){
+export function cancelMove(): void {
   wallPreview.set(null);
   singlePlayerPreview.set(null);
   showPlayerPreviews();
 }
 
-export function showPlayerPreviews() {
+export function showPlayerPreviews(): void {
   let playerPreviewsNew: any[] = [];
   getPossiblePlayerMoves().forEach(
     (playerMove: any) => {
@@ -70,7 +70,14 @@ export function checkWallObstacle(playerPosition: { x: number, y: number }, move
 
 }
 
-export function isWallPositionValid(newWall: any): boolean {
+export function isWallPositionValid(
+  newWall: {
+    position: {
+      x: number,
+      y: number
+    },
+    isHorizontal: boolean
+  }): boolean {
   if (
     newWall.position.x >= get(size) - 1 ||
     newWall.position.y >= get(size) - 1 ||
@@ -88,7 +95,21 @@ export function isWallPositionValid(newWall: any): boolean {
   return true;
 }
 
-function isInConflict(newWall: any, wall: any) {
+function isInConflict(
+  newWall: {
+    position: {
+      x: number,
+      y: number
+    },
+    isHorizontal: boolean
+  },
+  wall: {
+    position: {
+      x: number,
+      y: number
+    },
+    isHorizontal: boolean
+  }) {
   if (equalPos(wall.position, newWall.position)) {
     //walls on same square always collide
     return true;
@@ -111,13 +132,13 @@ function equalPos(position1: { x: number, y: number }, position2: { x: number, y
   return position1.x === position2.x && position1.y === position2.y
 }
 
-function getClickWall(clickPositionCanvas: {x: number, y: number}, canvasWidth: number): {
+function getClickWall(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): {
   position: {
     x: number,
     y: number
   },
   isHorizontal: boolean
-}|null {
+} | null {
   for (let yBoard = 0; yBoard < get(size) - 1; yBoard++) {
     for (let xBoard = 0; xBoard < get(size) - 1; xBoard++)
       if (
@@ -145,14 +166,14 @@ function getClickWall(clickPositionCanvas: {x: number, y: number}, canvasWidth: 
   return null;
 }
 
-export function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): void{
+export function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): void {
   //first test if click is a wall
   let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
   if (clickedWall) {
     if (isWallPositionValid(clickedWall)) {
       //set preview wall
       wallPreview.set(clickedWall);
-
+      singlePlayerPreview.set(null);
       playerPreviews.set([]);
     }
     return;
@@ -163,19 +184,25 @@ export function showClickedPreview(clickPositionCanvas: { x: number, y: number }
   let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
   if (clickedPawnPosition) {
     //test if pawn is in current playerPreviews.
-    if(isInPlayerPreviews(clickedPawnPosition)){
+    if (isInPlayerPreviews(clickedPawnPosition)) {
+      singlePlayerPreview.set({
+        position: clickedPawnPosition,
+        color: get(players)[get(currentPlayerIndex)].color,
+      })
+      playerPreviews.set([]);
+      wallPreview.set(null);
       console.log("correct Position:", clickedPawnPosition);
     }
-    
+
   }
   return;
 }
 
-function isInPlayerPreviews(position: {x: number, y: number}): boolean{
+function isInPlayerPreviews(position: { x: number, y: number }): boolean {
   let previews = get(playerPreviews)
   let inPlayerPreviews: boolean = false;
-  for(let i = 0; i < previews.length; i++){
-    if(equalPos(previews[i].position, position)){
+  for (let i = 0; i < previews.length; i++) {
+    if (equalPos(previews[i].position, position)) {
       inPlayerPreviews = true;
       return true
     }
@@ -184,15 +211,15 @@ function isInPlayerPreviews(position: {x: number, y: number}): boolean{
 }
 
 
-function getClickPawnPosition(clickPositionCanvas: {x: number, y: number}, canvasWidth: number): {x: number, y: number}|null {
+function getClickPawnPosition(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): { x: number, y: number } | null {
   for (let yBoard = 0; yBoard < get(size); yBoard++) {
     for (let xBoard = 0; xBoard < get(size); xBoard++)
       if (
         isInThisSquare(xBoard, clickPositionCanvas.x) &&
         isInThisSquare(yBoard, clickPositionCanvas.y)) {
         return {
-            x: xBoard,
-            y: yBoard
+          x: xBoard,
+          y: yBoard
         }
       }
   }

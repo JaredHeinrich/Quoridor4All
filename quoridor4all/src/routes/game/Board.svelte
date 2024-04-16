@@ -4,11 +4,15 @@
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
   import { setConfigurations } from "./coordinateCalculation";
+  import { showClickedPreview, showPlayerPreviews } from "./gameLogic";
   import {
-    showClickedPreview,
-    showPlayerPreviews,
-  } from "./gameLogic";
-  import { size, walls, players, playerPreviews, wallPreview} from "../../store";
+    size,
+    walls,
+    players,
+    playerPreviews,
+    wallPreview,
+    singlePlayerPreview,
+  } from "../../store";
 
   let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
@@ -54,13 +58,22 @@
     {/each}
 
     {#each $playerPreviews as playerPreview, index}
-        <Pawn
-          xBoard={playerPreview.position.x}
-          yBoard={playerPreview.position.y}
-          color={playerPreview.color}
-          isPreview={true}
-        />
+      <Pawn
+        xBoard={playerPreview.position.x}
+        yBoard={playerPreview.position.y}
+        color={playerPreview.color}
+        isPreview={true}
+      />
     {/each}
+
+    {#if $singlePlayerPreview}
+      <Pawn
+        xBoard={$singlePlayerPreview.position.x}
+        yBoard={$singlePlayerPreview.position.y}
+        color={$singlePlayerPreview.color}
+        isPreview={false}
+      />
+    {/if}
     {#if $wallPreview}
       <Wall
         xBoard={$wallPreview.position.x}
