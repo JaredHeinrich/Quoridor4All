@@ -128,8 +128,15 @@ export const playerPreviews = writable<{
     y: number,
   },
   color: string,
-  isVisible: boolean,
 }[]>([]);
+
+export const singlePlayerPreview = writable<{
+  position: {
+    x: number,
+    y: number,
+  },
+  color: string,
+}|null>(null);
 
 export const wallPreview = writable<{
   position: {

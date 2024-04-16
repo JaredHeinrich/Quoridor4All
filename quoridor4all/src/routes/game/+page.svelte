@@ -1,16 +1,10 @@
 <script lang="ts">
-  import { players, wallPreview } from "../../store";
+  import { players} from "../../store";
   import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
-  import revertPreview from './Board.svelte';
-  import { showPlayerPreviews } from "./gameLogic";
-
-  function cancelMove(){
-    showPlayerPreviews();
-    wallPreview.set(null);
-  }
+  import { cancelMove } from "./gameLogic";
 </script>
 
 <div class="bg-gray-900">

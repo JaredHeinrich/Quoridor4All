@@ -1,5 +1,5 @@
 import { isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
-import { players, currentPlayerIndex, size, walls, playerPreviews } from "../../store"
+import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview } from "../../store"
 import { get } from 'svelte/store';
 
 function getPossiblePlayerMoves(): any[] {
@@ -30,23 +30,25 @@ function getPossiblePlayerMoves(): any[] {
   return possibleMovePositions;
 }
 
+export function cancelMove(){
+  wallPreview.set(null);
+  singlePlayerPreview.set(null);
+  showPlayerPreviews();
+}
+
 export function showPlayerPreviews() {
   let playerPreviewsNew: any[] = [];
   getPossiblePlayerMoves().forEach(
     (playerMove: any) => {
-      console.log("player preview getPossiblePlayerMoves");
       playerPreviewsNew.push({
         position: playerMove,
         color: "red",
-        isVisible: true,
       });
     });
-  console.log("Player Previews New: ", playerPreviewsNew);
   playerPreviews.set(playerPreviewsNew);
-  console.log("PlayerPreviews", get(playerPreviews));
 }
 
-export function checkWallObstacle(playerPosition: any, moveDirection: any): boolean {
+export function checkWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
   for (let wall of get(walls)) {
     if (moveDirection.x === 0 && !wall.isHorizontal) {
       return false; // vertical wall can't hinder vertical movement in y dircetion
@@ -79,14 +81,14 @@ export function isWallPositionValid(newWall: any): boolean {
     return false;
   }
   for (let wall of get(walls)) {
-    if (isInConflictWith(newWall, wall)) {
+    if (isInConflict(newWall, wall)) {
       return false;
     }
   }
   return true;
 }
 
-function isInConflictWith(newWall: any, wall: any) {
+function isInConflict(newWall: any, wall: any) {
   if (equalPos(wall.position, newWall.position)) {
     //walls on same square always collide
     return true;
@@ -105,36 +107,17 @@ function isInConflictWith(newWall: any, wall: any) {
   return false;
 }
 
-function equalPos(position1: any, position2: any) {
+function equalPos(position1: { x: number, y: number }, position2: { x: number, y: number }): boolean {
   return position1.x === position2.x && position1.y === position2.y
 }
 
-export function canvasClick(clickPositionCanvas: any, canvasWidth: number) {
-  let clickedWall = isClickWall(clickPositionCanvas, canvasWidth);
-  if (clickedWall) {
-    if (isWallPositionValid(clickedWall)) {
-      //set preview wall
-      return {
-        isValidClick: true,
-        clickedWall: clickedWall
-      };
-    }
-    return { isValidClick: false };
-    //maybe error message, that wall cannot be put on this position
-  }
-
-  let clickedPawn = isClickPawn(clickPositionCanvas, canvasWidth);
-  if (clickedPawn) {
-    //maybe additional check if clicked position is a possible pawn move
-    return {
-      isValidClick: true,
-      clickedPawn: clickedPawn
-    };
-  }
-  return { isValidClick: false }
-}
-
-function isClickWall(clickPositionCanvas: any, canvasWidth: number): any {
+function getClickWall(clickPositionCanvas: {x: number, y: number}, canvasWidth: number): {
+  position: {
+    x: number,
+    y: number
+  },
+  isHorizontal: boolean
+}|null {
   for (let yBoard = 0; yBoard < get(size) - 1; yBoard++) {
     for (let xBoard = 0; xBoard < get(size) - 1; xBoard++)
       if (
@@ -159,21 +142,59 @@ function isClickWall(clickPositionCanvas: any, canvasWidth: number): any {
         }
       }
   }
-  return false;
+  return null;
 }
 
-function isClickPawn(clickPositionCanvas: any, canvasWidth: number): any {
-  for (let yBoard = 0; yBoard < get(size) - 1; yBoard++) {
-    for (let xBoard = 0; xBoard < get(size) - 1; xBoard++)
+export function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): void{
+  //first test if click is a wall
+  let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
+  if (clickedWall) {
+    if (isWallPositionValid(clickedWall)) {
+      //set preview wall
+      wallPreview.set(clickedWall);
+
+      playerPreviews.set([]);
+    }
+    return;
+    //maybe error message, that wall cannot be put on this position
+  }
+
+  //test if clickPosition is a Preview
+  let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
+  if (clickedPawnPosition) {
+    //test if pawn is in current playerPreviews.
+    if(isInPlayerPreviews(clickedPawnPosition)){
+      console.log("correct Position:", clickedPawnPosition);
+    }
+    
+  }
+  return;
+}
+
+function isInPlayerPreviews(position: {x: number, y: number}): boolean{
+  let previews = get(playerPreviews)
+  let inPlayerPreviews: boolean = false;
+  for(let i = 0; i < previews.length; i++){
+    if(equalPos(previews[i].position, position)){
+      inPlayerPreviews = true;
+      return true
+    }
+  }
+  return inPlayerPreviews;
+}
+
+
+function getClickPawnPosition(clickPositionCanvas: {x: number, y: number}, canvasWidth: number): {x: number, y: number}|null {
+  for (let yBoard = 0; yBoard < get(size); yBoard++) {
+    for (let xBoard = 0; xBoard < get(size); xBoard++)
       if (
         isInThisSquare(xBoard, clickPositionCanvas.x) &&
         isInThisSquare(yBoard, clickPositionCanvas.y)) {
         return {
-          position: {
             x: xBoard,
             y: yBoard
-          },
         }
       }
   }
+  return null;
 }
