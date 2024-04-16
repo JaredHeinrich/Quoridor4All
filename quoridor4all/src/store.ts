@@ -28,8 +28,8 @@ export const players = writable<{
   },
   {
     position: {
-      x: 0,
-      y: 4,
+      x: 4, //0
+      y: 5, //4
     },
     wallQuantity: 6,
     goal: {
@@ -41,8 +41,8 @@ export const players = writable<{
   },
   {
     position: {
-      x: 4,
-      y: 0,
+      x: 6, //4
+      y: 5, //0
     },
     wallQuantity: 6,
     goal: {
@@ -54,8 +54,8 @@ export const players = writable<{
   },
   {
     position: {
-      x: 8,
-      y: 4,
+      x: 5, //8
+      y: 5, //4
     },
     wallQuantity: 6,
     goal: {
@@ -115,6 +115,13 @@ export const walls = writable<{
       y: 5,
     },
     isHorizontal: false,
+  },
+  {
+    position: {
+      x: 4,
+      y: 4,
+    },
+    isHorizontal: true,
   }
 ]);
 

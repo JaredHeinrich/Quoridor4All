@@ -2,10 +2,10 @@ import { isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
 import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview } from "../../store"
 import { get } from 'svelte/store';
 
-const UP: { x: number, y: number } = { x: 0, y: -1 }; 
-const DOWN: { x: number, y: number } = { x: 0, y: +1 }; 
-const LEFT: { x: number, y: number } = { x: -1, y: 0 }; 
-const RIGTH: { x: number, y: number } = { x: +1, y: 0 }; 
+const UP: { x: number, y: number } = { x: 0, y: -1 };
+const DOWN: { x: number, y: number } = { x: 0, y: +1 };
+const LEFT: { x: number, y: number } = { x: -1, y: 0 };
+const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
 
 function getPossibleNextPawnPositons(): { x: number, y: number }[] {
   let playerPosition = get(players)[get(currentPlayerIndex)].position;
@@ -17,24 +17,75 @@ function getPossibleNextPawnPositons(): { x: number, y: number }[] {
   let possibleMovePositions: any = [];
 
   possibleMoveDirections.forEach((possibleMoveDirection) => {
-    let possiblePosition = {
-      x: playerPosition.x + possibleMoveDirection.x,
-      y: playerPosition.y + possibleMoveDirection.y,
-    };
 
-    if (positionOutOfBoard(possiblePosition)) {
-      return;
-    }
 
-    if (noWallObstacle(playerPosition, possibleMoveDirection)) {
-      return;
-    }
 
-    //loop over player positions
+    let possibleNewPositions: { x: number, y: number }[] = getPossiblePositionsForDirection(possibleMoveDirection, playerPosition)
+    //check if possibleMovePosition is already taken by another pawn
 
-    possibleMovePositions.push(possiblePosition);
+    //append found positions to all Positions
+    possibleNewPositions.forEach((possiblePosition) => {
+      possibleMovePositions.push(possiblePosition);
+    });
   });
   return possibleMovePositions;
+}
+
+function getPossiblePositionsForDirection(
+  moveDirection: { x: number, y: number },
+  playerPosition: { x: number, y: number },
+): { x: number, y: number }[] {
+
+  let possiblePosition = {
+    x: playerPosition.x + moveDirection.x,
+    y: playerPosition.y + moveDirection.y,
+  };
+
+  if (positionOutOfBoard(possiblePosition)) {
+    return [];
+  }
+
+  if (isWallObstacle(playerPosition, moveDirection)) {
+    return [];
+  }
+
+  if (isPositionTaken(possiblePosition)) {
+    console.log("position taken");
+
+    //if no wall behind blocking player
+    if (isWallObstacle(possiblePosition, moveDirection)) {
+      console.log("player infront of wall")
+      if (moveDirection.x === 0) //up or down
+      {
+        return getPossiblePositionsForDirection(LEFT, possiblePosition)
+          .concat(getPossiblePositionsForDirection(RIGTH, possiblePosition))
+      }
+      else if (moveDirection.y === 0) //left or right
+      {
+        return getPossiblePositionsForDirection(UP, possiblePosition)
+          .concat(getPossiblePositionsForDirection(DOWN, possiblePosition))
+      } else { throw Error("Direction must have one coordinate === 0") }
+      return [];
+    }
+    else {
+      console.log("no wall obstacle behind player")
+      return getPossiblePositionsForDirection(possiblePosition, moveDirection);
+    }
+    //wenn hinter einem der player eine wand ist, dann prüfe für die 
+
+    //return getPossiblePositionsForDirection()
+  }
+
+  return [possiblePosition];
+}
+
+function isPositionTaken(position: { x: number, y: number }): boolean {
+  for (let player of get(players)) {
+    if (equalPos(player.position, position)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function positionOutOfBoard(position: { x: number, y: number }): boolean {
@@ -61,21 +112,19 @@ export function showPlayerPreviews(): void {
   console.log(get(playerPreviews));
 }
 
-export function noWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
-  let conflict = false;
+export function isWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
   for (let wall of get(walls)) {
-    if(wallConflictsMove(wall, playerPosition, moveDirection)){
-      conflict = true;
-      return conflict;
+    if (wallConflictsMove(wall, playerPosition, moveDirection)) {
+      return true;
     }
   }
-  return conflict;
+  return false;
 }
 
 function wallConflictsMove(
   wall: { position: { x: number, y: number }, isHorizontal: boolean },
   playerPosition: { x: number, y: number },
-  moveDirection: {x: number, y: number}
+  moveDirection: { x: number, y: number }
 ): boolean {
   if (moveDirection.x === 0 && !wall.isHorizontal) {
     return false; // vertical wall can't hinder vertical movement in y dircetion
@@ -85,25 +134,25 @@ function wallConflictsMove(
   }
 
   //check which moveDirection it is and there if it is a conflict
-  if(equalPos(moveDirection, UP)){
-    if(wall.position.y === playerPosition.y - 1 && (wall.position.x === playerPosition.x -1 || wall.position.x === playerPosition.x)){
+  if (equalPos(moveDirection, UP)) {
+    if (wall.position.y === playerPosition.y - 1 && (wall.position.x === playerPosition.x - 1 || wall.position.x === playerPosition.x)) {
       return true;
     }
   }
-  else if(equalPos(moveDirection, DOWN)){
-    if(wall.position.y === playerPosition.y && (wall.position.x === playerPosition.x -1 || wall.position.x === playerPosition.x)){
-      return true;
-    }
-  }
-
-  else if(equalPos(moveDirection, LEFT)){
-    if(wall.position.x === playerPosition.x - 1 && (wall.position.y === playerPosition.y -1 || wall.position.y === playerPosition.y)){
+  else if (equalPos(moveDirection, DOWN)) {
+    if (wall.position.y === playerPosition.y && (wall.position.x === playerPosition.x - 1 || wall.position.x === playerPosition.x)) {
       return true;
     }
   }
 
-  else if(equalPos(moveDirection, RIGTH)){
-    if(wall.position.x === playerPosition.x && (wall.position.y === playerPosition.y -1 || wall.position.y === playerPosition.y)){
+  else if (equalPos(moveDirection, LEFT)) {
+    if (wall.position.x === playerPosition.x - 1 && (wall.position.y === playerPosition.y - 1 || wall.position.y === playerPosition.y)) {
+      return true;
+    }
+  }
+
+  else if (equalPos(moveDirection, RIGTH)) {
+    if (wall.position.x === playerPosition.x && (wall.position.y === playerPosition.y - 1 || wall.position.y === playerPosition.y)) {
       return true;
     }
   }
