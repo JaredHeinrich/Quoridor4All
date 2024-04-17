@@ -57,14 +57,14 @@ impl Game {
     pub fn get_valid_next_positions(&self) -> Vec<(i16,i16)> {
         let mut res: Vec<(i16,i16)> = Vec::new();
         let pawn_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
-        res.append(&mut self.check_step(Direction::Up, pawn_pos, 0));
-        res.append(&mut self.check_step(Direction::Right, pawn_pos, 0));
-        res.append(&mut self.check_step(Direction::Down, pawn_pos, 0));
-        res.append(&mut self.check_step(Direction::Left, pawn_pos, 0));
+        res.append(&mut self.check_step(&Direction::Up, pawn_pos, 0));
+        res.append(&mut self.check_step(&Direction::Right, pawn_pos, 0));
+        res.append(&mut self.check_step(&Direction::Down, pawn_pos, 0));
+        res.append(&mut self.check_step(&Direction::Left, pawn_pos, 0));
         res
     }
 
-    fn check_step(&self, move_direction: Direction, pawn_position: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
+    fn check_step(&self, move_direction: &Direction, pawn_position: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
         let mut res = Vec::new();
         if jumps > NUMBER_OF_PLAYERS as i16 - 1 {
             return res;
@@ -74,11 +74,11 @@ impl Game {
         if !new_pos.is_on_pawn_grid(self) {
             return res;
         };
-        if self.does_wall_block_move(move_direction, pawn_position) {
+        if self.does_wall_block_move(&move_direction, pawn_position) {
             return res;
         }
         let mut new_pos_on_pawn = false;
-        for pawn in self.pawns {
+        for pawn in self.pawns.iter() {
             if pawn.position() == new_pos {
                 new_pos_on_pawn = true;
                 break;
@@ -92,12 +92,12 @@ impl Game {
     }
 
 
-    fn check_jump(&self, move_direction: Direction, pawn_pos: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
+    fn check_jump(&self, move_direction: &Direction, pawn_pos: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
         let mut res = Vec::new();
         res.append(&mut self.check_step(move_direction, pawn_pos, jumps));
         if res.len() == 0 {
-            res.append(&mut self.check_step(move_direction.turn_left(), pawn_pos, jumps));
-            res.append(&mut self.check_step(move_direction.turn_right(), pawn_pos, jumps));
+            res.append(&mut self.check_step(&move_direction.turn_left(), pawn_pos, jumps));
+            res.append(&mut self.check_step(&move_direction.turn_right(), pawn_pos, jumps));
         }
         res
     }
@@ -140,7 +140,7 @@ impl Game {
         true
     }
 
-    fn does_wall_block_move(&self, move_direction: Direction, pawn_pos: (i16, i16)) -> bool{
+    fn does_wall_block_move(&self, move_direction: &Direction, pawn_pos: (i16, i16)) -> bool{
         let mut blocking_walls: Vec<Wall> = Vec::new();
         match move_direction {
             Direction::Up => {
@@ -184,7 +184,7 @@ impl Game {
                 }
             },
         }
-        for wall in self.walls {
+        for wall in self.walls.iter() {
             if blocking_walls.contains(&wall) {
                 return true;
             }

@@ -5,7 +5,6 @@ use std::sync::Mutex;
 use tauri::State;
 
 pub mod commands;
-pub mod models;
 pub mod touple_util;
 pub mod enums;
 pub mod structs;
