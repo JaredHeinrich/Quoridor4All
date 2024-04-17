@@ -29,7 +29,7 @@ async fn main() {
     let db_pool = sqlx::sqlite::SqlitePool::connect(DB_URL).await.expect("unable to connect");
     tauri::Builder::default()
         .manage(GameState { game: Mutex::new(None), current_possible_moves: Mutex::new(None), db_pool: Mutex::new(db_pool) })
-        .invoke_handler(tauri::generate_handler![start_game])
+        .invoke_handler(tauri::generate_handler![start_game, get_player_names])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
