@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 use super::{pawn::Pawn, history::GameHistory, wall::Wall};
 use crate::enums::{Color, Side, Direction};
 use crate::touple_util::ToupleUtil;
 use crate::NUMBER_OF_PLAYERS;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Player {
     pub player_name: String,
     pub pawn_color: Color,
