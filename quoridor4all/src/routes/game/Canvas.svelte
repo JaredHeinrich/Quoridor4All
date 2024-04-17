@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, setContext } from "svelte";
+  import { showClickedPreview } from "./gameLogic";
 
   let width: number;
 
@@ -15,15 +16,14 @@
     },
   });
 
-  export let onClick: Function;
-
   function handleClick(event: any) {
     let boundingRect = canvas.getBoundingClientRect(); 
     let clickPosition = {
       x: event.clientX - boundingRect.left,
       y: event.clientY - boundingRect.top
     };    
-    onClick(clickPosition);
+    let canvasWidth: number = canvas.parentElement.offsetWidth; //div width or width inside of the canvas/inside configuration or last call onResize;
+    showClickedPreview(clickPosition, canvasWidth);
   }
 
   export let onResize: Function;

@@ -4,7 +4,7 @@
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
-  import { cancelMove } from "./gameLogic";
+  import { cancelMove, doTurn } from "./gameLogic";
 </script>
 
 <div class="bg-gray-900">
@@ -49,10 +49,10 @@
   </div>
   <div class="border-8 text-center border-gray-900">
     <Button color="red" on:click={cancelMove}>Abbrechen</Button>
-    <Button color="blue" on:click={()=>{}}>Bestätigen</Button>
+    <Button color="blue" on:click={doTurn}>Bestätigen</Button>
   </div>
   <div class="border-8 text-center border-gray-900">
-    <Button color="dark">Zurück</Button>
+    <Button color="dark">Zug Zurück</Button>
     <Button color="dark">Spiel abbrechen</Button>
     <Button color="dark">Spielregeln</Button>
   </div>

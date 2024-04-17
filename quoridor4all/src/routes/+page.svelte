@@ -6,17 +6,12 @@
 
   const playerNames = ["Spieler 1", "Spieler 2", "Spieler 3", "Spieler 4"];
 
-  async function startGame(){
-    
+  function startGame(){
     players.update(state => {
       return state.map((player, index) => {
         return {...player, playerName: playerNames[index]}
       });
     });
-    
-    goto('/game');
-
-
     goto('/game');
   }
 

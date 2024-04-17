@@ -7,26 +7,78 @@ const DOWN: { x: number, y: number } = { x: 0, y: +1 };
 const LEFT: { x: number, y: number } = { x: -1, y: 0 };
 const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
 
+
+export function doTurn(): void {
+  //backend
+}
+
+export function undoLastTurn(): void{
+  //backend
+}
+
+export function cancelMove(): void {
+  wallPreview.set(null);
+  singlePlayerPreview.set(null);
+  showPlayerPreviews();
+}
+
+export function showPlayerPreviews(): void {
+  let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
+  //get all possible next pawn moves and add each one to playerPreviews
+  getPossibleNextPawnPositons().forEach(
+    (position) => {
+      playerPreviewsNew.push({
+        position,
+        color: get(players)[get(currentPlayerIndex)].color,
+      });
+    });
+  playerPreviews.set(playerPreviewsNew);
+}
+
+export function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): void {
+  //first test if click is a wall
+  let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
+  if (clickedWall) {
+    if (isWallPositionValid(clickedWall)) {
+      //set preview wall and reset player previews
+      wallPreview.set(clickedWall);
+      singlePlayerPreview.set(null);
+      playerPreviews.set([]);
+    }
+    //definitely wall click -->can finish here
+    return;
+  }
+
+  //test if clickPosition is a Preview
+  let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
+  if (clickedPawnPosition) {
+    //test if pawn is in current playerPreviews.
+    if (isInPlayerPreviews(clickedPawnPosition)) {
+      // only show one player preview (singlePlayerPreview)
+      singlePlayerPreview.set({
+        position: clickedPawnPosition,
+        color: get(players)[get(currentPlayerIndex)].color,
+      })
+      //reset other previews
+      playerPreviews.set([]);
+      wallPreview.set(null);
+    }
+  }
+  return;
+}
+
 function getPossibleNextPawnPositons(): { x: number, y: number }[] {
   let playerPosition = get(players)[get(currentPlayerIndex)].position;
 
   //all surrounding positions are possible moveDirections at first
-  let possibleMoveDirections = [
-    UP, DOWN, LEFT, RIGTH
-  ];
-  let possibleMovePositions: any = [];
+  let possibleMoveDirections = [UP, DOWN, LEFT, RIGTH];
+  let possibleMovePositions: { x: number, y: number }[] = [];
 
   possibleMoveDirections.forEach((possibleMoveDirection) => {
-
-
-
     let possibleNewPositions: { x: number, y: number }[] = getPossiblePositionsForDirection(possibleMoveDirection, playerPosition)
-    //check if possibleMovePosition is already taken by another pawn
 
     //append found positions to all Positions
-    possibleNewPositions.forEach((possiblePosition) => {
-      possibleMovePositions.push(possiblePosition);
-    });
+    possibleMovePositions = possibleMovePositions.concat(possibleNewPositions);
   });
   return possibleMovePositions;
 }
@@ -49,33 +101,34 @@ function getPossiblePositionsForDirection(
     return [];
   }
 
+  //check if possiblePosition is already taken by another pawn
   if (isPositionTaken(possiblePosition)) {
-    console.log("position taken");
 
-    //if no wall behind blocking player
+    //if blocking player is infront of a wall
     if (isWallObstacle(possiblePosition, moveDirection)) {
-      console.log("player infront of wall")
+
       if (moveDirection.x === 0) //up or down
       {
+        //player can move left or right from blocking player
         return getPossiblePositionsForDirection(LEFT, possiblePosition)
           .concat(getPossiblePositionsForDirection(RIGTH, possiblePosition))
       }
       else if (moveDirection.y === 0) //left or right
       {
+        //player can move up or down from blocking player
         return getPossiblePositionsForDirection(UP, possiblePosition)
           .concat(getPossiblePositionsForDirection(DOWN, possiblePosition))
-      } else { throw Error("Direction must have one coordinate === 0") }
-      return [];
+      } else {
+        throw Error("Direction must have one coordinate === 0")
+      }
     }
     else {
-      console.log("no wall obstacle behind player")
+      //no wall obstacle behind player --> jump over and try behind player
       return getPossiblePositionsForDirection(possiblePosition, moveDirection);
     }
-    //wenn hinter einem der player eine wand ist, dann prüfe für die 
-
-    //return getPossiblePositionsForDirection()
   }
 
+  //position is valid, as there is no reason for not valid position
   return [possiblePosition];
 }
 
@@ -93,26 +146,7 @@ function positionOutOfBoard(position: { x: number, y: number }): boolean {
     position.x < 0 || position.y < 0
 }
 
-export function cancelMove(): void {
-  wallPreview.set(null);
-  singlePlayerPreview.set(null);
-  showPlayerPreviews();
-}
-
-export function showPlayerPreviews(): void {
-  let playerPreviewsNew: any[] = [];
-  getPossibleNextPawnPositons().forEach(
-    (playerMove: any) => {
-      playerPreviewsNew.push({
-        position: playerMove,
-        color: get(players)[get(currentPlayerIndex)].color,
-      });
-    });
-  playerPreviews.set(playerPreviewsNew);
-  console.log(get(playerPreviews));
-}
-
-export function isWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
+function isWallObstacle(playerPosition: { x: number, y: number }, moveDirection: { x: number, y: number }): boolean {
   for (let wall of get(walls)) {
     if (wallConflictsMove(wall, playerPosition, moveDirection)) {
       return true;
@@ -159,7 +193,7 @@ function wallConflictsMove(
   return false;
 }
 
-export function isWallPositionValid(
+function isWallPositionValid(
   newWall: {
     position: {
       x: number,
@@ -176,6 +210,7 @@ export function isWallPositionValid(
     // wall is (at least partially) outside of the board
     return false;
   }
+  //check if it conflicts with any existing wall
   for (let wall of get(walls)) {
     if (isInConflict(newWall, wall)) {
       return false;
@@ -198,21 +233,21 @@ function isInConflict(
       y: number
     },
     isHorizontal: boolean
-  }) {
+  }): boolean {
   if (equalPos(wall.position, newWall.position)) {
     //walls on same square always collide
     return true;
   }
 
   if (newWall.isHorizontal && wall.isHorizontal && wall.position.y === newWall.position.y) {
-    //horizontal wall on same row
+    //horizontal wall on same row --> if x difference is <=1: collision
     const xDifference = Math.abs(wall.position.x - newWall.position.x);
-    if (xDifference <= 1) return true;
+    return xDifference <= 1;
   }
   if (!newWall.isHorizontal && !wall.isHorizontal && wall.position.x === newWall.position.x) {
-    //vertical wall on same column
+    //vertical wall on same column --> if y difference is <=1: collision
     const yDifference = Math.abs(wall.position.y - newWall.position.y);
-    if (yDifference <= 1) return true;
+    return yDifference <= 1;
   }
   return false;
 }
@@ -221,6 +256,7 @@ function equalPos(position1: { x: number, y: number }, position2: { x: number, y
   return position1.x === position2.x && position1.y === position2.y
 }
 
+//check if a click on a canvas was on a wall, returns clicked wall or null
 function getClickWall(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): {
   position: {
     x: number,
@@ -255,50 +291,14 @@ function getClickWall(clickPositionCanvas: { x: number, y: number }, canvasWidth
   return null;
 }
 
-export function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): void {
-  //first test if click is a wall
-  let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
-  if (clickedWall) {
-    if (isWallPositionValid(clickedWall)) {
-      //set preview wall
-      wallPreview.set(clickedWall);
-      singlePlayerPreview.set(null);
-      playerPreviews.set([]);
-    }
-    return;
-    //maybe error message, that wall cannot be put on this position
-  }
-
-  //test if clickPosition is a Preview
-  let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
-  if (clickedPawnPosition) {
-    //test if pawn is in current playerPreviews.
-    if (isInPlayerPreviews(clickedPawnPosition)) {
-      singlePlayerPreview.set({
-        position: clickedPawnPosition,
-        color: get(players)[get(currentPlayerIndex)].color,
-      })
-      playerPreviews.set([]);
-      wallPreview.set(null);
-      console.log("correct Position:", clickedPawnPosition);
-    }
-
-  }
-  return;
-}
-
 function isInPlayerPreviews(position: { x: number, y: number }): boolean {
-  let previews = get(playerPreviews)
-  let inPlayerPreviews: boolean = false;
-  for (let i = 0; i < previews.length; i++) {
-    if (equalPos(previews[i].position, position)) {
-      inPlayerPreviews = true;
+  for (let preview of get(playerPreviews)) {
+    if (equalPos(preview.position, position)) {
       return true
     }
   }
-  return inPlayerPreviews;
+  return false;
 }
-
 
 function getClickPawnPosition(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): { x: number, y: number } | null {
   for (let yBoard = 0; yBoard < get(size); yBoard++) {
@@ -314,3 +314,4 @@ function getClickPawnPosition(clickPositionCanvas: { x: number, y: number }, can
   }
   return null;
 }
+

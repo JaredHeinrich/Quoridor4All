@@ -4,7 +4,7 @@
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
   import { setConfigurations } from "./coordinateCalculation";
-  import { showClickedPreview, showPlayerPreviews } from "./gameLogic";
+  import { showPlayerPreviews } from "./gameLogic";
   import {
     size,
     walls,
@@ -13,8 +13,9 @@
     wallPreview,
     singlePlayerPreview,
   } from "../../store";
+  import { onMount } from "svelte";
 
-  let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
+  const squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
   function handleResize(width: number) {
     setConfigurations(width, squareWidthComparedToWallWidth);
@@ -22,16 +23,13 @@
 
   let grid = new Array($size).fill(0).map(() => new Array($size).fill(0));
 
-  function handleClick(clickPosition: any) {
-    let canvasWidth = document.getElementById("outerDiv")?.offsetWidth ?? 500; //div width or width inside of the canvas/inside configuration or last call onResize;
-    showClickedPreview(clickPosition, canvasWidth);
-  }
-
-  showPlayerPreviews();
+  onMount(()=>{
+    showPlayerPreviews();
+  });
 </script>
 
-<div id="outerDiv">
-  <Canvas onClick={handleClick} onResize={handleResize}>
+<div>
+  <Canvas onResize={handleResize}>
     <!-- Grid -->
     {#each grid as row, yBoard}
       {#each row as cell, xBoard}
@@ -74,6 +72,7 @@
         isPreview={false}
       />
     {/if}
+    
     {#if $wallPreview}
       <Wall
         xBoard={$wallPreview.position.x}
