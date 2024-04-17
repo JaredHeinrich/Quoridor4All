@@ -29,7 +29,7 @@ export const players = writable<{
   {
     position: {
       x: 0,
-      y: 4,
+      y: 4, 
     },
     wallQuantity: 6,
     goal: {
@@ -41,8 +41,8 @@ export const players = writable<{
   },
   {
     position: {
-      x: 4,
-      y: 0,
+      x: 4, 
+      y: 0, 
     },
     wallQuantity: 6,
     goal: {
@@ -54,8 +54,8 @@ export const players = writable<{
   },
   {
     position: {
-      x: 8,
-      y: 4,
+      x: 8, 
+      y: 4, 
     },
     wallQuantity: 6,
     goal: {
@@ -115,6 +115,13 @@ export const walls = writable<{
       y: 5,
     },
     isHorizontal: false,
+  },
+  {
+    position: {
+      x: 4,
+      y: 4,
+    },
+    isHorizontal: true,
   }
 ]);
 
@@ -128,8 +135,15 @@ export const playerPreviews = writable<{
     y: number,
   },
   color: string,
-  isVisible: boolean,
 }[]>([]);
+
+export const singlePlayerPreview = writable<{
+  position: {
+    x: number,
+    y: number,
+  },
+  color: string,
+}|null>(null);
 
 export const wallPreview = writable<{
   position: {
@@ -138,3 +152,5 @@ export const wallPreview = writable<{
   },
   isHorizontal: boolean
 }|null>(null);
+
+export const gameRunning = writable<boolean>(false);

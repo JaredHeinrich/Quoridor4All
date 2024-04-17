@@ -6,6 +6,6 @@
 </script>
     
 <div>
-  <Label for="player_name" class="mb-2">Spieler {playerNumber}</Label>
+  <Label for="player_name" class="mb-2 text-gray-200">Spieler {playerNumber}</Label>
   <Input bind:value={playerName} type="text" id="player_name" placeholder="Spieler {playerNumber}" required />
 </div>
