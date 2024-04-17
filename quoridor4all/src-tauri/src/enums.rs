@@ -1,4 +1,6 @@
-#[derive(Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Side {
     Bottom,
     Left,
@@ -47,7 +49,7 @@ impl Direction {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Color {
     Yellow,
     Orange,
