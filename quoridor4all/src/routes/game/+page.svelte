@@ -1,10 +1,20 @@
 <script lang="ts">
-  import { players} from "../../store";
+  import { gameRunning, players} from "../../store";
   import Board from "./Board.svelte";
   import { Button } from "flowbite-svelte";
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
-  import { cancelMove, doTurn } from "./gameLogic";
+  import { cancelMove, doTurn, undoLastTurn } from "./gameLogic";
+  import { goto } from "$app/navigation";
+
+  function cancelGame(): void{
+    gameRunning.set(false);
+    goto("/");
+  }
+
+  function gotoRules(): void{
+    goto("/rules")
+  }
 </script>
 
 <div class="bg-gray-900">
@@ -52,8 +62,15 @@
     <Button color="blue" on:click={doTurn}>Bestätigen</Button>
   </div>
   <div class="border-8 text-center border-gray-900">
-    <Button color="dark">Zug Zurück</Button>
-    <Button color="dark">Spiel abbrechen</Button>
-    <Button color="dark">Spielregeln</Button>
+    <Button color="dark" on:click={undoLastTurn}>Zug Zurück</Button>
+    <Button color="dark" on:click={cancelGame}>Spiel abbrechen</Button>
+    <Button color="dark" on:click={gotoRules} >Spielregeln</Button>
   </div>
 </div>
+
+<style>
+  div {
+    width: 100%;
+    height: 100%;
+  }
+</style>

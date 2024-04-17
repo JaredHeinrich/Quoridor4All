@@ -152,3 +152,5 @@ export const wallPreview = writable<{
   },
   isHorizontal: boolean
 }|null>(null);
+
+export const gameRunning = writable<boolean>(false);
