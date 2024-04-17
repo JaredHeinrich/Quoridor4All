@@ -4,13 +4,18 @@
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
   import { setConfigurations } from "./coordinateCalculation";
+  import { showPlayerPreviews } from "./gameLogic";
   import {
-    canvasClick,
-    showPlayerPreviews,
-  } from "./gameLogic";
-  import { size, walls, players, playerPreviews, wallPreview} from "../../store";
+    size,
+    walls,
+    players,
+    playerPreviews,
+    wallPreview,
+    singlePlayerPreview,
+  } from "../../store";
+  import { onMount } from "svelte";
 
-  let squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
+  const squareWidthComparedToWallWidth = 4; // 4 times bigger squares than walls
 
   function handleResize(width: number) {
     setConfigurations(width, squareWidthComparedToWallWidth);
@@ -18,42 +23,13 @@
 
   let grid = new Array($size).fill(0).map(() => new Array($size).fill(0));
 
-  function handleClick(clickPosition: any) {
-    let canvasWidth = document.getElementById("outerDiv")?.offsetWidth ?? 500; //div width or width inside of the canvas/inside configuration or last call onResize;
-    let clickObject = canvasClick(
-      clickPosition,
-      canvasWidth
-    ) ?? { isValidClick: false };
-
-    if (!clickObject.isValidClick) {
-      return;
-    }
-
-    if (clickObject.clickedWall) {
-      $wallPreview = clickObject.clickedWall;
-
-      //traditional for loop, because in foreach loop svelte does not register that the playerPreviews over all change since only the objects inside the array change
-      for (let i = 0; i < $playerPreviews.length; i++) {
-        $playerPreviews[i].isVisible = false;
-      }
-      return;
-    }
-
-    if (clickObject.clickedPawn) {
-    }
-  }
-
-  
-  showPlayerPreviews();
-
-  export const revertPreview: Function = () => {
+  onMount(()=>{
     showPlayerPreviews();
-    //wallPreview = {};
-  }
+  });
 </script>
 
-<div id="outerDiv">
-  <Canvas onClick={handleClick} onResize={handleResize}>
+<div>
+  <Canvas onResize={handleResize}>
     <!-- Grid -->
     {#each grid as row, yBoard}
       {#each row as cell, xBoard}
@@ -80,15 +56,23 @@
     {/each}
 
     {#each $playerPreviews as playerPreview, index}
-      {#if playerPreview.isVisible}
-        <Pawn
-          xBoard={playerPreview.position.x}
-          yBoard={playerPreview.position.y}
-          color={playerPreview.color}
-          isPreview={true}
-        />
-      {/if}
+      <Pawn
+        xBoard={playerPreview.position.x}
+        yBoard={playerPreview.position.y}
+        color={playerPreview.color}
+        isPreview={true}
+      />
     {/each}
+
+    {#if $singlePlayerPreview}
+      <Pawn
+        xBoard={$singlePlayerPreview.position.x}
+        yBoard={$singlePlayerPreview.position.y}
+        color={$singlePlayerPreview.color}
+        isPreview={false}
+      />
+    {/if}
+    
     {#if $wallPreview}
       <Wall
         xBoard={$wallPreview.position.x}
