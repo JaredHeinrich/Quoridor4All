@@ -1,3 +1,5 @@
+use std::{i16, ops::DerefMut, result};
+
 use tauri::State;
 
 use crate::{structs::game::{Game, Player}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
@@ -50,4 +52,39 @@ pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<(
         },
     };
     Ok(result)
+}
+
+#[tauri::command]
+pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: (i16,i16)) -> Result<(i16,i16), String> {
+    let mut moves_lock = state.current_possible_moves.lock().await;
+    let mut game_lock = state.game.lock().await;
+    let result: Result<(i16,i16), String> = match moves_lock.as_ref() {
+        //if there are buffered positions use them
+        Some(allowed_moves) => {
+            match game_lock.deref_mut() {
+                Some(g) => {
+                    g.move_current_pawn(movement, allowed_moves)
+                },
+                None => return Err("no game running".to_string()),
+            }
+        },
+        //if there are no buffered next positions calculate them
+        None => {
+            match game_lock.deref_mut() {
+                Some(g) => {
+                    let allowed_moves = g.get_valid_next_positions();
+                    g.move_current_pawn(movement, &allowed_moves)
+                },
+                None => return Err("no game running".to_string()),
+            }
+        }
+    };
+    match result {
+        Ok(_) => {
+            //wenn der move erfolgreich war die gepufferten moves entfernen.
+            *moves_lock = None;
+        },
+        _ => {},
+    }
+    result
 }
