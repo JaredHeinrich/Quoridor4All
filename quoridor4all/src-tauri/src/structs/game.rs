@@ -2,7 +2,7 @@ use std::i16;
 
 use serde::{Deserialize, Serialize};
 
-use super::history::{Move, WallMove};
+use super::history::{Move, PawnMove};
 use super::{pawn::Pawn, history::GameHistory, wall::Wall};
 use crate::enums::{Color, Side, Direction};
 use crate::vector_util::{VectorUtil, Vector};
