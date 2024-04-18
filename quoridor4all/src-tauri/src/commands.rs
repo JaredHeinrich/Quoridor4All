@@ -2,7 +2,7 @@ use std::{i16, ops::DerefMut};
 
 use tauri::State;
 
-use crate::{structs::{game::{Game, Player}, wall::Wall}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
+use crate::{structs::{game::{Game, Player}, wall::Wall}, vector_util::Vector, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
 
 #[tauri::command]
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
@@ -36,7 +36,7 @@ pub async fn get_player_names<'a>(state: State<'a, GameState>) -> Result<Vec<Str
 }
 
 #[tauri::command]
-pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<(i16,i16)>, String> {
+pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<Vector>, String> {
     let mut moves_lock = state.current_possible_moves.lock().await;
     let game_lock = state.game.lock().await;
     let result = match moves_lock.as_ref() {
@@ -55,10 +55,10 @@ pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<(
 }
 
 #[tauri::command]
-pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: (i16,i16)) -> Result<(i16,i16), String> {
+pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: Vector) -> Result<Vector, String> {
     let mut moves_lock = state.current_possible_moves.lock().await;
     let mut game_lock = state.game.lock().await;
-    let result: Result<(i16,i16), String> = match moves_lock.as_ref() {
+    let result: Result<Vector, String> = match moves_lock.as_ref() {
         //if there are buffered positions use them
         Some(allowed_moves) => {
             match game_lock.deref_mut() {
