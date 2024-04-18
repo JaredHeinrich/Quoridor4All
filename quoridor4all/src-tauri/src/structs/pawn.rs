@@ -1,10 +1,10 @@
 use crate::enums::{Side, Color};
 use crate::structs::goal::Goal;
-use crate::touple_util::ToupleUtil;
+use crate::vector_util::{VectorUtil, Vector};
 
 #[derive(Clone)]
 pub struct Pawn {
-    position: (i16, i16),
+    position: Vector,
     number_of_available_walls: i16,
     goal: Goal,
     player_name: String,
@@ -18,7 +18,7 @@ impl Pawn {
                player_name: String,
                pawn_color: Color
                ) -> Self{
-        let position: (i16,i16) = Self::get_start_coordinate(board_size, &pawn_side);
+        let position: Vector = Self::get_start_coordinate(board_size, &pawn_side);
         let goal: Goal = Goal::new(&pawn_side, board_size);
         Self{
             position,
@@ -28,19 +28,19 @@ impl Pawn {
             pawn_color,
         }
     }
-    fn get_start_coordinate(board_size: i16, pawn_side: &Side) -> (i16,i16) {
+    fn get_start_coordinate(board_size: i16, pawn_side: &Side) -> Vector {
         let board_start: i16 = 0; //lowest index of board
         let board_end: i16 = board_size -1; //board_end is the highest index of the board
         let half_board: i16 = board_end/2; //half_board is the index at the half of the board | Example board_size = 9 => 0 1 2 3 4 5 6 7 8 => half_board = 4
         match pawn_side {
-            Side::Bottom => (half_board,board_end),
-            Side::Left => (board_start,half_board),
-            Side::Top => (half_board,board_start),
-            Side::Right => (board_end,half_board),
+            Side::Bottom => Vector::new(half_board,board_end),
+            Side::Left => Vector::new(board_start,half_board),
+            Side::Top => Vector::new(half_board,board_start),
+            Side::Right => Vector::new(board_end,half_board),
         }
     }
     //getter
-    pub fn position(&self) -> (i16, i16) {
+    pub fn position(&self) -> Vector {
         self.position
     }
     pub fn number_of_available_walls(&self) -> i16 {
@@ -53,7 +53,7 @@ impl Pawn {
         &self.player_name
     }
     //getter
-    pub fn move_pawn(&mut self, movement: (i16, i16)) {
+    pub fn move_pawn(&mut self, movement: Vector) {
         self.position = self.position.add(movement);
     }
     pub fn inc_number_of_walls(&mut self) {

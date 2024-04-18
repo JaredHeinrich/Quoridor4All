@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::vector_util::Vector;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Side {
@@ -15,12 +16,12 @@ pub enum Direction {
     Left,
 }
 impl Direction {
-    pub fn to_vector(&self) -> (i16,i16) {
+    pub fn to_vector(&self) -> Vector {
         match self {
-            Self::Up => (0,-1),
-            Self::Right => (1,0),
-            Self::Down => (0,1),
-            Self::Left => (-1,0),
+            Self::Up => Vector::new(0,-1),
+            Self::Right => Vector::new(1,0),
+            Self::Down => Vector::new(0,1),
+            Self::Left => Vector::new(-1,0),
         }
     }
     pub fn revert(&self) -> Self {

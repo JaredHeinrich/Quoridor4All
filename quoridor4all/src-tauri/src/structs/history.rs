@@ -1,3 +1,4 @@
+use crate::vector_util::Vector;
 #[derive(Clone)]
 pub enum Move {
     WallMove(WallMove),
@@ -6,12 +7,12 @@ pub enum Move {
 
 #[derive(Clone)]
 pub struct WallMove {
-    position: (i16,i16)
+    position: Vector
 }
 
 #[derive(Clone)]
 pub struct PawnMove {
-    movement: (i16,i16),
+    movement: Vector,
 }
 
 #[derive(Clone)]

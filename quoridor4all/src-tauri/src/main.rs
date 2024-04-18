@@ -6,9 +6,10 @@ use async_std::sync::Mutex;
 use sqlx::{Pool, Sqlite};
 use structs::game::Game;
 use commands::*;
+use vector_util::Vector;
 
 pub mod commands;
-pub mod touple_util;
+pub mod vector_util;
 pub mod enums;
 pub mod structs;
 pub mod db;
@@ -19,7 +20,7 @@ const DB_URL: &str = "sqlite://sqlite.db";
 
 pub struct GameState {
     pub game: Mutex<Option<Game>>,
-    pub current_possible_moves: Mutex<Option<Vec<(i16,i16)>>>,
+    pub current_possible_moves: Mutex<Option<Vec<Vector>>>,
     pub db_pool: Mutex<Pool<Sqlite>> 
 }
 

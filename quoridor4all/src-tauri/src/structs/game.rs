@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{pawn::Pawn, history::GameHistory, wall::Wall};
 use crate::enums::{Color, Side, Direction};
-use crate::touple_util::ToupleUtil;
+use crate::vector_util::{VectorUtil, Vector};
 use crate::NUMBER_OF_PLAYERS;
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -49,7 +49,7 @@ impl Game {
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
-    pub fn move_current_pawn(&mut self, movement: (i16,i16), allowed_moves: &Vec<(i16,i16)>) -> Result<(i16,i16),String> {
+    pub fn move_current_pawn(&mut self, movement: Vector, allowed_moves: &Vec<Vector>) -> Result<Vector,String> {
         if !allowed_moves.contains(&movement) {
             return Err("not a valid move".to_string());
         }
@@ -59,8 +59,8 @@ impl Game {
         Ok(new_pos)
     }
 
-    pub fn get_valid_next_positions(&self) -> Vec<(i16,i16)> {
-        let mut res: Vec<(i16,i16)> = Vec::new();
+    pub fn get_valid_next_positions(&self) -> Vec<Vector> {
+        let mut res: Vec<Vector> = Vec::new();
         let pawn_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
         res.append(&mut self.check_step(&Direction::Up, pawn_pos, 0));
         res.append(&mut self.check_step(&Direction::Right, pawn_pos, 0));
@@ -69,7 +69,7 @@ impl Game {
         res
     }
 
-    fn check_step(&self, move_direction: &Direction, pawn_position: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
+    fn check_step(&self, move_direction: &Direction, pawn_position: Vector, jumps: i16) -> Vec<Vector> {
         let mut res = Vec::new();
         if jumps > NUMBER_OF_PLAYERS as i16 - 1 {
             return res;
@@ -97,7 +97,7 @@ impl Game {
     }
 
 
-    fn check_jump(&self, move_direction: &Direction, pawn_pos: (i16,i16), jumps: i16) -> Vec<(i16,i16)> {
+    fn check_jump(&self, move_direction: &Direction, pawn_pos: Vector, jumps: i16) -> Vec<Vector> {
         let mut res = Vec::new();
         res.append(&mut self.check_step(move_direction, pawn_pos, jumps));
         if res.len() == 0 {
@@ -145,12 +145,12 @@ impl Game {
         true
     }
 
-    fn does_wall_block_move(&self, move_direction: &Direction, pawn_pos: (i16, i16)) -> bool{
+    fn does_wall_block_move(&self, move_direction: &Direction, pawn_pos: Vector) -> bool{
         let mut blocking_walls: Vec<Wall> = Vec::new();
         match move_direction {
             Direction::Up => {
-                let pos_a = pawn_pos.add((-1,-1));
-                let pos_b = pawn_pos.add((0,-1));
+                let pos_a = pawn_pos.add(Vector::new(-1,-1));
+                let pos_b = pawn_pos.add(Vector::new(0,-1));
                 if pos_a.is_on_wall_grid(self) {
                     blocking_walls.push(Wall::new(pos_a, true))
                 }
@@ -159,7 +159,7 @@ impl Game {
                 }
             },
             Direction::Right => {
-                let pos_a = pawn_pos.add((0,-1));
+                let pos_a = pawn_pos.add(Vector::new(0,-1));
                 let pos_b = pawn_pos;
                 if pos_a.is_on_wall_grid(self) {
                     blocking_walls.push(Wall::new(pos_a, false))
@@ -169,7 +169,7 @@ impl Game {
                 }
             },
             Direction::Down => {
-                let pos_a = pawn_pos.add((-1,0));
+                let pos_a = pawn_pos.add(Vector::new(-1,0));
                 let pos_b = pawn_pos;
                 if pos_a.is_on_wall_grid(self) {
                     blocking_walls.push(Wall::new(pos_a, true))
@@ -179,8 +179,8 @@ impl Game {
                 }
             },
             Direction::Left => {
-                let pos_a = pawn_pos.add((-1,-1));
-                let pos_b = pawn_pos.add((-1,0));
+                let pos_a = pawn_pos.add(Vector::new(-1,-1));
+                let pos_b = pawn_pos.add(Vector::new(-1,0));
                 if pos_a.is_on_wall_grid(self) {
                     blocking_walls.push(Wall::new(pos_a, false))
                 }
