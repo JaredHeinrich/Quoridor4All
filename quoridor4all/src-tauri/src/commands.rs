@@ -1,6 +1,6 @@
 use tauri::State;
 
-use crate::{structs::game::{Game, Player}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
+use crate::{structs::{game::{Game, Player}, wall::Wall}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
 
 #[tauri::command]
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
@@ -50,4 +50,14 @@ pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<(
         },
     };
     Ok(result)
+}
+
+#[tauri::command]
+pub async fn check_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<bool, String> {
+    let game_lock = state.game.lock().await;
+    let res: bool = match game_lock.as_ref() {
+        Some(g) => g.is_wall_valid(&wall),
+        None => return Err("no game running".to_string()),
+    };
+    Ok(res)
 }
