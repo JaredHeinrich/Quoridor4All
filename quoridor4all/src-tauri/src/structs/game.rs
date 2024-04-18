@@ -1,3 +1,5 @@
+use std::i16;
+
 use serde::{Deserialize, Serialize};
 
 use super::{pawn::Pawn, history::GameHistory, wall::Wall};
@@ -47,13 +49,14 @@ impl Game {
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
-    pub fn move_current_pawn(&mut self, movement: (i16,i16), allowed_moves: &Vec<(i16,i16)>) -> Result<u32,String> {
+    pub fn move_current_pawn(&mut self, movement: (i16,i16), allowed_moves: &Vec<(i16,i16)>) -> Result<(i16,i16),String> {
         if !allowed_moves.contains(&movement) {
             return Err("not a valid move".to_string());
         }
         self.pawns.get_mut(self.current_pawn.get()).unwrap().move_pawn(movement);
+        let new_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
         self.current_pawn.set_next();
-        Ok(0)
+        Ok(new_pos)
     }
 
     pub fn get_valid_next_positions(&self) -> Vec<(i16,i16)> {
