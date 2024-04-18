@@ -3,32 +3,15 @@
   let leaderBordNames = ["Player 1", "Player 2", "Player 3"];
 </script>
 
-<style>
-  .winner {
-    font-size: 3em;
-    color: red;
-    text-align: center;
-  }
-  
-  .mostWins {
-    font-size: 2em;
-    list-style-type: none;
-    text-align: center;
-  }
-  
-  .mostWins li {
-    margin: 10px auto;
-  }
-</style>
-
-<div class="winner">
-  Der Sieger ist: {currentWinnerName} 🎉
-  <img src='/img/winning.gif' alt='Congratulations image' />
+<div class="text-white p-8 rounded-lg text-center">
+  <p class="text-lg">Der Sieger ist:</p>
+  <p class="text-4xl font-bold text-gradient"> {currentWinnerName} 🎉</p>
+  <img src='/winning.gif' alt='Congratulations image' class="mx-auto mt-4" aria-hidden="true" />
 </div>
 
-<ul class="mostWins">
-  Die 3 häufigsten Gewinner sind:
-  {#each leaderBordNames as player }
-    <li>{player}</li>
+<ul class="bg-gray-900 text-white p-8 rounded-lg mt-8">
+  <p class="text-lg">All Time Best:</p>
+  {#each leaderBordNames as player, i }
+    <li class="{i === 0 ? 'text-lg text-red-500' : i === 1 ? 'text-base' : 'text-sm'}">{player}</li>
   {/each}
 </ul>
