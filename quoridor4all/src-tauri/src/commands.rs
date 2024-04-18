@@ -98,3 +98,11 @@ pub async fn check_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<b
     };
     Ok(res)
 }
+#[tauri::command]
+pub async fn place_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<(), String> {
+    let mut game_lock = state.game.lock().await;
+    match game_lock.as_mut() {
+        Some(g) => g.place_wall(wall),
+        None => return Err("no game running".to_string()),
+    }
+}

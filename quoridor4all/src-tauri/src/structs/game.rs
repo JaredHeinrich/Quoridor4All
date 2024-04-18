@@ -2,7 +2,8 @@ use std::i16;
 
 use serde::{Deserialize, Serialize};
 
-use super::{history::{GameHistory, Move, PawnMove, WallMove}, pawn::Pawn, wall::Wall};
+use super::history::{Move, PawnMove};
+use super::{pawn::Pawn, history::GameHistory, wall::Wall};
 use crate::enums::{Color, Side, Direction};
 use crate::vector_util::{VectorUtil, Vector};
 use crate::NUMBER_OF_PLAYERS;
@@ -130,14 +131,14 @@ impl Game {
         true
     }
 
-    pub fn place_wall(&mut self, new_wall: Wall) -> Result<u32,String>{
+    pub fn place_wall(&mut self, new_wall: Wall) -> Result<(),String>{
         if !self.is_wall_valid(&new_wall) {
             return Err("wall is not valid".to_string());
         }
         self.pawns.get_mut(self.current_pawn.get()).unwrap().dec_number_of_walls();
         self.walls.push(new_wall);
         self.current_pawn.set_next();
-        Ok(0)
+        Ok(())
     }
 
     pub fn check_pawn_paths(&self) -> bool {
