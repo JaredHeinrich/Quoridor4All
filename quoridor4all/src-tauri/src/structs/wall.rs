@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::touple_util::ToupleUtil;
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Wall {
     position: (i16, i16),
     is_horizontal: bool, //if wall isnt horizontal it is vertical
