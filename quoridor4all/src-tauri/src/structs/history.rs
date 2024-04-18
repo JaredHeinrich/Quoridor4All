@@ -10,9 +10,25 @@ pub struct WallMove {
     position: Vector
 }
 
+impl WallMove {
+    pub fn new(position: Vector) -> Self {
+        Self{
+            position
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct PawnMove {
     movement: Vector,
+}
+
+impl PawnMove {
+    pub fn new(movement: Vector) -> Self {
+        Self{
+            movement
+        }
+    }
 }
 
 #[derive(Clone)]

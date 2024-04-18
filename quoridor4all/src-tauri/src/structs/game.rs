@@ -50,13 +50,16 @@ impl Game {
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
-    pub fn move_current_pawn(&mut self, movement: Vector, allowed_moves: &Vec<Vector>) -> Result<Vector,String> {
-        if !allowed_moves.contains(&movement) {
+    pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<Vector,String> {
+        if !allowed_positions.contains(&new_position) {
             return Err("not a valid move".to_string());
         }
-        self.pawns.get_mut(self.current_pawn.get()).unwrap().move_pawn(movement);
-        let new_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
+        let pawn = self.pawns.get_mut(self.current_pawn.get()).unwrap();
+        let movement: Vector = new_position.subtract(pawn.position());
+        pawn.move_pawn(movement);
+        let new_pos = pawn.position();
         self.current_pawn.set_next();
+        self.history.add_move(Move::PawnMove(PawnMove::new(movement)));
         Ok(new_pos)
     }
 
