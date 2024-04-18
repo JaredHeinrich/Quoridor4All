@@ -32,3 +32,22 @@ pub async fn get_player_names<'a>(state: State<'a, GameState>) -> Result<Vec<Str
         .collect();
     Ok(result)
 }
+
+#[tauri::command]
+pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<(i16,i16)>, String> {
+    let mut moves_lock = state.current_possible_moves.lock().await;
+    let game_lock = state.game.lock().await;
+    let result = match moves_lock.as_ref() {
+        Some(m) => m.to_vec(),
+        None => {
+            let game = match game_lock.as_ref() {
+                Some(g) => g.clone(),
+                None => return Err("no game running".to_string()),
+            };
+            let res = game.get_valid_next_positions();
+            *moves_lock = Some(res.clone());
+            res.to_vec()
+        },
+    };
+    Ok(result)
+}
