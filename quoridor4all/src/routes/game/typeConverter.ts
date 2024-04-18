@@ -15,5 +15,5 @@ export function wallToRust(wall: {
   return {
     position: wall.position,
     is_horizontal: wall.isHorizontal
-  }.
+  };
 }

@@ -74,55 +74,55 @@ export const walls = writable<{
   },
   isHorizontal: boolean
 }[]>([
-  {
-    position: {
-      x: 5,
-      y: 5,
-    },
-    isHorizontal: true,
-  },
-  {
-    position: {
-      x: 0,
-      y: 0,
-    },
-    isHorizontal: false,
-  },
-  {
-    position: {
-      x: 7,
-      y: 4,
-    },
-    isHorizontal: true,
-  },
-  {
-    position: {
-      x: 1,
-      y: 7,
-    },
-    isHorizontal: false,
-  },
-  {
-    position: {
-      x: 4,
-      y: 2,
-    },
-    isHorizontal: true,
-  },
-  {
-    position: {
-      x: 3,
-      y: 5,
-    },
-    isHorizontal: false,
-  },
-  {
-    position: {
-      x: 4,
-      y: 4,
-    },
-    isHorizontal: true,
-  }
+  // {
+  //   position: {
+  //     x: 5,
+  //     y: 5,
+  //   },
+  //   isHorizontal: true,
+  // },
+  // {
+  //   position: {
+  //     x: 0,
+  //     y: 0,
+  //   },
+  //   isHorizontal: false,
+  // },
+  // {
+  //   position: {
+  //     x: 7,
+  //     y: 4,
+  //   },
+  //   isHorizontal: true,
+  // },
+  // {
+  //   position: {
+  //     x: 1,
+  //     y: 7,
+  //   },
+  //   isHorizontal: false,
+  // },
+  // {
+  //   position: {
+  //     x: 4,
+  //     y: 2,
+  //   },
+  //   isHorizontal: true,
+  // },
+  // {
+  //   position: {
+  //     x: 3,
+  //     y: 5,
+  //   },
+  //   isHorizontal: false,
+  // },
+  // {
+  //   position: {
+  //     x: 4,
+  //     y: 4,
+  //   },
+  //   isHorizontal: true,
+  // }
 ]);
 
 export const currentPlayerIndex = writable<number>(0);

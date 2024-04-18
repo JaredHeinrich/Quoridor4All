@@ -12,12 +12,25 @@ const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
 
 export async function doTurn(): Promise<void> {
   if(get(singlePlayerPreview)){
-    let result: number[][] = await invoke("move_pawn", get(singlePlayerPreview)?.position);
+    let position: {x: number, y: number}|undefined = get(singlePlayerPreview)?.position;
+    let newPosition: {x: number, y: number} = await invoke("move_pawn", {new_position: position} );
+    console.log("result do turn", newPosition);
+    
+    players.update((players) => {
+      const index = get(currentPlayerIndex);
+      players[index].position = newPosition; // Update Position of the player
+      return players;
+    });
+
+    currentPlayerIndex.set(get(currentPlayerIndex) + 1 % 4);
   }
   else if(get(wallPreview)){
 
   }
   
+  showPlayerPreviews();
+  wallPreview.set(null);
+  singlePlayerPreview.set(null);
 }
 
 export function undoLastTurn(): void {
@@ -77,15 +90,8 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
 }
 
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
-  let result: number[][] = await invoke("get_possible_moves");
-  console.log("direction", result);
-  let possiblePosition: { x: number, y: number }[] = result.map((possiblePosition) => {
-    return {
-      x: possiblePosition[0],
-      y: possiblePosition[1]
-    }
-  });
-  console.log(possiblePosition);
+  let possiblePosition: { x: number, y: number }[] = await invoke("get_possible_moves");
+  console.log("possiblePosition", possiblePosition);
   return possiblePosition;
 }
 
@@ -96,8 +102,10 @@ async function checkWallBackend(newWall: {
       },
       isHorizontal: boolean
     }): Promise<boolean> {
-  let wallRust = wallToRust(newWall); 
-  let valid: boolean = await invoke("check_wall", wallRust);
+  let wall = wallToRust(newWall); 
+  console.log(wall)
+  let valid: boolean = await invoke("check_wall", {wall: wall});
+  console.log("wall valid", valid);
   return valid;
 }
 
