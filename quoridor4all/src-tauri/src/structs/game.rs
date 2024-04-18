@@ -2,6 +2,7 @@ use std::i16;
 
 use serde::{Deserialize, Serialize};
 
+use super::history::{Move, PawnMove};
 use super::{pawn::Pawn, history::GameHistory, wall::Wall};
 use crate::enums::{Color, Side, Direction};
 use crate::vector_util::{VectorUtil, Vector};
@@ -49,13 +50,16 @@ impl Game {
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
-    pub fn move_current_pawn(&mut self, movement: Vector, allowed_moves: &Vec<Vector>) -> Result<Vector,String> {
-        if !allowed_moves.contains(&movement) {
+    pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<Vector,String> {
+        if !allowed_positions.contains(&new_position) {
             return Err("not a valid move".to_string());
         }
-        self.pawns.get_mut(self.current_pawn.get()).unwrap().move_pawn(movement);
-        let new_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
+        let pawn = self.pawns.get_mut(self.current_pawn.get()).unwrap();
+        let movement: Vector = new_position.subtract(pawn.position());
+        pawn.move_pawn(movement);
+        let new_pos = pawn.position();
         self.current_pawn.set_next();
+        self.history.add_move(Move::PawnMove(PawnMove::new(movement)));
         Ok(new_pos)
     }
 
@@ -127,14 +131,14 @@ impl Game {
         true
     }
 
-    pub fn place_wall(&mut self, new_wall: Wall) -> Result<u32,String>{
+    pub fn place_wall(&mut self, new_wall: Wall) -> Result<(),String>{
         if !self.is_wall_valid(&new_wall) {
             return Err("wall is not valid".to_string());
         }
         self.pawns.get_mut(self.current_pawn.get()).unwrap().dec_number_of_walls();
         self.walls.push(new_wall);
         self.current_pawn.set_next();
-        Ok(0)
+        Ok(())
     }
 
     pub fn check_pawn_paths(&self) -> bool {
