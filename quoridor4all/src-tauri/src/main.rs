@@ -19,7 +19,7 @@ const DB_URL: &str = "sqlite://sqlite.db";
 
 pub struct GameState {
     pub game: Mutex<Option<Game>>,
-    pub current_possible_moves: Mutex<Option<(i16,i16)>>,
+    pub current_possible_moves: Mutex<Option<Vec<(i16,i16)>>>,
     pub db_pool: Mutex<Pool<Sqlite>> 
 }
 
