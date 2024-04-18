@@ -1,8 +1,8 @@
-use std::{i16, ops::DerefMut, result};
+use std::{i16, ops::DerefMut};
 
 use tauri::State;
 
-use crate::{structs::game::{Game, Player}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
+use crate::{structs::{game::{Game, Player}, wall::Wall}, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
 
 #[tauri::command]
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
@@ -87,4 +87,14 @@ pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: (i16,i16)) -> 
         _ => {},
     }
     result
+}
+
+#[tauri::command]
+pub async fn check_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<bool, String> {
+    let game_lock = state.game.lock().await;
+    let res: bool = match game_lock.as_ref() {
+        Some(g) => g.is_wall_valid(&wall),
+        None => return Err("no game running".to_string()),
+    };
+    Ok(res)
 }
