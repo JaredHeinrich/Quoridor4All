@@ -2,7 +2,7 @@ use std::ops::DerefMut;
 
 use tauri::State;
 
-use crate::{structs::{game::{Game, Player}, wall::Wall}, vector_util::Vector, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
+use crate::{structs::{game::{Game, Player}, history::Move, wall::Wall}, vector_util::Vector, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
 
 #[tauri::command]
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
@@ -102,8 +102,34 @@ pub async fn check_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<b
 #[tauri::command]
 pub async fn place_wall<'a>(state: State<'a, GameState>, wall: Wall) -> Result<(), String> {
     let mut game_lock = state.game.lock().await;
-    match game_lock.as_mut() {
+    let mut moves_lock = state.current_possible_moves.lock().await;
+    let result = match game_lock.as_mut() {
         Some(g) => g.place_wall(wall),
         None => return Err("no game running".to_string()),
-    }
+    };
+    match result {
+        Ok(_) => {
+            //wenn der move erfolgreich war die gepufferten moves entfernen.
+            *moves_lock = None;
+        },
+        _ => {},
+    };
+    result
+}
+#[tauri::command]
+pub async fn undo_last_move<'a>(state: State<'a, GameState>) -> Result<(Vector, bool), String> {
+    let mut game_lock = state.game.lock().await;
+    let mut moves_lock = state.current_possible_moves.lock().await;
+    let result = match game_lock.as_mut() {
+        Some(g) => g.undo_last_move(),
+        None => return Err("no game running".to_string()),
+    };
+    match result {
+        Ok(_) => {
+            //wenn der move erfolgreich zurückgesetzt wurde werden die gepufferten moves entfernen.
+            *moves_lock = None;
+        },
+        _ => {},
+    };
+    result
 }

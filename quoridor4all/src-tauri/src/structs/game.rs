@@ -2,10 +2,10 @@ use std::i16;
 
 use serde::{Deserialize, Serialize};
 
-use super::history::{Move, PawnMove};
-use super::{history::GameHistory, pawn::Pawn, wall::Wall};
-use crate::enums::{Color, Direction, Side};
-use crate::vector_util::{Vector, VectorUtil};
+use super::history::{Move, PawnMove, WallMove};
+use super::{pawn::Pawn, history::GameHistory, wall::Wall};
+use crate::enums::{Color, Side, Direction};
+use crate::vector_util::{VectorUtil, Vector};
 use crate::NUMBER_OF_PLAYERS;
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -57,11 +57,39 @@ impl Game {
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
-    pub fn move_current_pawn(
-        &mut self,
-        new_position: Vector,
-        allowed_positions: &Vec<Vector>,
-    ) -> Result<Vector, String> {
+  
+    pub fn undo_last_move(&mut self) -> Result<(Vector, bool),String> {
+    //Vector is either the new pawn position or the wall position. Bool indicates if the move was a
+    //PawnMove or a WallMove
+        let last_move_opt = self.history.pop_last_move();
+        let last_move = match last_move_opt {
+            Some(m) => m,
+            None => return Err("no move to undo".to_string())
+        };
+        let result = match &last_move {
+            Move::PawnMove(pm) => {
+                let reverse_movement = pm.movement().revert();
+                let current_pawn = self.pawns.get_mut(self.current_pawn.get()).unwrap();
+                current_pawn.move_pawn(reverse_movement);
+                let new_pos = current_pawn.position();
+                (new_pos, true)
+            },
+            Move::WallMove(_) => {
+                let wall = self.walls.pop();
+                match wall {
+                    None => return Err("no wall to remove".to_string()),
+                    Some(w) => {
+                        let wall_position = w.position();
+                        (wall_position, false)
+                    },
+                }
+            }
+        };
+        self.current_pawn.set_prev();
+        Ok(result)
+
+    }
+    pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<Vector,String> {
         if !allowed_positions.contains(&new_position) {
             return Err("not a valid move".to_string());
         }
@@ -150,12 +178,10 @@ impl Game {
         if !self.is_wall_valid(&new_wall) {
             return Err("wall is not valid".to_string());
         }
-        self.pawns
-            .get_mut(self.current_pawn.get())
-            .unwrap()
-            .dec_number_of_walls();
-        self.walls.push(new_wall);
+        self.pawns.get_mut(self.current_pawn.get()).unwrap().dec_number_of_walls();
+        self.walls.push(new_wall.clone());
         self.current_pawn.set_next();
+        self.history.add_move(Move::WallMove(WallMove::new(new_wall.position())));
         Ok(())
     }
 

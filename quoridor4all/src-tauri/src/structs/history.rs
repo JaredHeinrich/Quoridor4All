@@ -16,6 +16,9 @@ impl WallMove {
             position
         }
     }
+    pub fn position(&self) -> Vector {
+        self.position
+    }
 }
 
 #[derive(Clone)]
@@ -29,6 +32,9 @@ impl PawnMove {
             movement
         }
     }
+    pub fn movement(&self) -> Vector {
+        self.movement
+    }
 }
 
 #[derive(Clone)]
@@ -41,7 +47,7 @@ impl GameHistory {
             moves: Vec::new()
         }
     }
-    pub fn undo_last_move(&mut self) -> Option<Move> {
+    pub fn pop_last_move(&mut self) -> Option<Move> {
         self.moves.pop()
     }
     pub fn add_move(&mut self, player_move: Move) {
