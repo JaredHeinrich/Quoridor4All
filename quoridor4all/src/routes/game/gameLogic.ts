@@ -25,12 +25,12 @@ export async function doTurn(): Promise<void> {
       return players;
     });
 
-    currentPlayerIndex.set((currentIndex + 1 )% 4);
+    nextPlayer();
   }
   //check if there is a picked wall and if current player is allowed to set the wall
   else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
     let wall = wallToRust(pickedWallPreview); //type conversion
-
+    await invoke("place_wall", { wall: wall });
     //set the new wall
     walls.update((existingWalls) => {
       existingWalls.push(pickedWallPreview || { position: { x: 0, y: 0 }, isHorizontal: true }); //should not happen, just for typesafety
@@ -42,7 +42,7 @@ export async function doTurn(): Promise<void> {
       players[currentIndex].wallQuantity = players[currentIndex].wallQuantity - 1;
       return players;
     });
-    currentPlayerIndex.set((currentIndex + 1) % 4);
+    nextPlayer();
   }
 
   showPlayerPreviews();
@@ -56,13 +56,17 @@ export async function undoLastTurn(): Promise<void> {
   if(result[1]){  //player move
     console.log("result[1]", result[1])
     console.log("result[0]", result[0])
+   
+  } else { // wall move
+    console.log("result[1]", result[1])
+    console.log("result[0]", result[0])
+
     walls.update((walls)=>{
       walls.pop();
       return walls;
     })
-  } else{
-    console.log("result[1]", result[1])
-    console.log("result[0]", result[0])
+
+
   }
 }
 
@@ -116,6 +120,10 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
     }
   }
   return;
+}
+
+async function nextPlayer(){
+  currentPlayerIndex.set((get(currentPlayerIndex) + 1 )% 4);
 }
 
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
