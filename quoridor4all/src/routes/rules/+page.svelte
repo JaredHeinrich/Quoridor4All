@@ -1,19 +1,7 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-  import { gameRunning} from "../../store";
-  import { goto } from "$app/navigation";
-  function continueGame(): void{
-    if($gameRunning){
-      goto("/game");
-    }else{
-      goto("/");
-    }
-  }
-
-  function cancelGame(): void{
-    gameRunning.set(false);
-    goto("/");
-  }
+  import { continueGame, cancelGame} from "../navigation";
+  
 </script>
 <div class="bg-gray-900 text-gray-200 p-4">
   <h2 class="text-2xl font-bold mb-4">Spielregeln</h2>

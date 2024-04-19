@@ -1,21 +1,13 @@
 <script lang="ts">
-  import { Button } from "flowbite-svelte";
+  import { Button, P } from "flowbite-svelte";
   import PlayerInput from "./PlayerInput.svelte";
-  import {goto} from '$app/navigation';
-  import { players, gameRunning } from '../store';
-
-  const playerNames = ["Spieler 1", "Spieler 2", "Spieler 3", "Spieler 4"];
-
-  function startGame(){
-    players.update(state => {
-      return state.map((player, index) => {
-        return {...player, playerName: playerNames[index]}
-      });
-    });
-    gameRunning.set(true);
-    goto('/game');
+  import {startGame, toRules} from "./navigation";
+  
+  function start(){
+    startGame(playerNames);
   }
 
+  const playerNames = ["Spieler 1", "Spieler 2", "Spieler 3", "Spieler 4"];
 </script>
 
 <form class="p-10 bg-gray-900 text-gray-200">
@@ -27,8 +19,11 @@
     {/each}
 
     <div>
-      <Button type="button" on:click={startGame}>Start</Button>
-      <Button color="dark" on:click={()=>{goto("/rules")}} >Spielregeln</Button>
+      <Button type="button" on:click={start}>Start</Button>
+      <Button
+        color="dark"
+        on:click={toRules}>Spielregeln</Button
+      >
     </div>
   </div>
 </form>
