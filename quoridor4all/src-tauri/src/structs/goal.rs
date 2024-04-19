@@ -43,4 +43,12 @@ impl Goal {
         self.goal_line
     }
     //getter
+    
+    pub fn is_in_goal_line(&self, position: Vector) -> bool {
+        match self.is_x_coordinate {
+            true => position.x() == self.goal_line(),
+            false => position.y() == self.goal_line(),
+        }
+    }
+    
 }
