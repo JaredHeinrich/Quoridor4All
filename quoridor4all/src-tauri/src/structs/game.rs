@@ -142,6 +142,11 @@ impl Game {
     }
 
     pub fn check_pawn_paths(&self) -> bool {
+        for pawn_index in 0..NUMBER_OF_PLAYERS {
+            if !self.check_pawn_path(pawn_index) {
+                return false;
+            }
+        }
         true
     }
 
