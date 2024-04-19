@@ -25,7 +25,7 @@ export async function doTurn(): Promise<void> {
       return players;
     });
 
-    currentPlayerIndex.set((currentIndex + 1 )% 4);
+    nextPlayer();
   }
   //check if there is a picked wall and if current player is allowed to set the wall
   else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
@@ -40,7 +40,7 @@ export async function doTurn(): Promise<void> {
       players[currentIndex].wallQuantity = players[currentIndex].wallQuantity - 1;
       return players;
     });
-    currentPlayerIndex.set((currentIndex + 1) % 4);
+    nextPlayer();
   }
 
   showPlayerPreviews();
@@ -118,11 +118,15 @@ async function checkWallBackend(newWall: {
   },
   isHorizontal: boolean
 }): Promise<boolean> {
-  let wall = wallToRust(newWall);
+  let wall = wallToRust(newWall); //type conversion
   console.log(wall)
   let valid: boolean = await invoke("check_wall", { wall: wall });
   console.log("wall valid", valid);
   return valid;
+}
+
+function nextPlayer(){
+  currentPlayerIndex.set((get(currentPlayerIndex) + 1) % 4);
 }
 
 // function getPossibleNextPawnPositons(): { x: number, y: number }[] {
