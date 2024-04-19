@@ -1,4 +1,4 @@
-use std::{i16, ops::DerefMut};
+use std::ops::DerefMut;
 
 use tauri::State;
 
