@@ -4,10 +4,10 @@ import { get } from 'svelte/store';
 import { invoke } from "@tauri-apps/api/tauri";
 import { wallToRust } from "./typeConverter"
 
-const UP: { x: number, y: number } = { x: 0, y: -1 };
-const DOWN: { x: number, y: number } = { x: 0, y: +1 };
-const LEFT: { x: number, y: number } = { x: -1, y: 0 };
-const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
+// const UP: { x: number, y: number } = { x: 0, y: -1 };
+// const DOWN: { x: number, y: number } = { x: 0, y: +1 };
+// const LEFT: { x: number, y: number } = { x: -1, y: 0 };
+// const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
 
 
 export async function doTurn(): Promise<void> {
@@ -25,22 +25,24 @@ export async function doTurn(): Promise<void> {
       return players;
     });
 
-    currentPlayerIndex.set((currentIndex + 1 )% 4);
+    nextPlayer();
   }
   //check if there is a picked wall and if current player is allowed to set the wall
   else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
     let wall = wallToRust(pickedWallPreview); //type conversion
     await invoke("place_wall", { wall: wall });
+    //set the new wall
     walls.update((existingWalls) => {
       existingWalls.push(pickedWallPreview || { position: { x: 0, y: 0 }, isHorizontal: true }); //should not happen, just for typesafety
       return existingWalls;
     })
-    console.log("current index: ", currentIndex)
+
+    //reduce the wall quantity of the current Player
     players.update((players) => {
       players[currentIndex].wallQuantity = players[currentIndex].wallQuantity - 1;
       return players;
     });
-    currentPlayerIndex.set((currentIndex + 1) % 4);
+    nextPlayer();
   }
 
   showPlayerPreviews();
@@ -48,8 +50,24 @@ export async function doTurn(): Promise<void> {
   singlePlayerPreview.set(null);
 }
 
-export function undoLastTurn(): void {
-  //backend
+export async function undoLastTurn(): Promise<void> {
+  let result: any = await invoke("undo_last_move");
+  console.log(result);
+  if(result[1]){  //player move
+    console.log("undo player move")
+    console.log("result[1]", result[1])
+    console.log("result[0]", result[0])
+    previousPlayer();
+  } else { // wall move
+    walls.update((walls)=>{
+      walls.pop();
+      return walls;
+    })
+    previousPlayer();
+
+  }
+
+  cancelMove();
 }
 
 export function cancelMove(): void {
@@ -62,7 +80,6 @@ export async function showPlayerPreviews(): Promise<void> {
   let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
   //get all possible next pawn moves and add each one to playerPreviews
   let possibleMoves = await getPossibleMovesBackend();
-  console.log("current Player Index", get(currentPlayerIndex));
   possibleMoves.forEach(
     (position) => {
       playerPreviewsNew.push({
@@ -105,9 +122,21 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   return;
 }
 
+async function nextPlayer(){
+  currentPlayerIndex.set((get(currentPlayerIndex) + 1 )% 4);
+}
+
+async function  previousPlayer() {
+  const currentIndex = get(currentPlayerIndex);
+  if(currentIndex == 0){
+    currentPlayerIndex.set(3)
+  }else{
+    currentPlayerIndex.set( currentIndex - 1)
+  }
+}
+
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
   let possiblePosition: { x: number, y: number }[] = await invoke("get_possible_moves");
-  console.log("possiblePosition", possiblePosition);
   return possiblePosition;
 }
 
@@ -119,9 +148,7 @@ async function checkWallBackend(newWall: {
   isHorizontal: boolean
 }): Promise<boolean> {
   let wall = wallToRust(newWall);
-  console.log(wall)
   let valid: boolean = await invoke("check_wall", { wall: wall });
-  console.log("wall valid", valid);
   return valid;
 }
 
