@@ -1,8 +1,8 @@
 import { isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
-import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview } from "../../store"
+import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview, gameRunning } from "../../store"
 import { get } from 'svelte/store';
 import { invoke } from "@tauri-apps/api/tauri";
-import {wallToRust} from "./typeConverter"
+import { wallToRust } from "./typeConverter"
 
 const UP: { x: number, y: number } = { x: 0, y: -1 };
 const DOWN: { x: number, y: number } = { x: 0, y: +1 };
@@ -11,23 +11,38 @@ const RIGTH: { x: number, y: number } = { x: +1, y: 0 };
 
 
 export async function doTurn(): Promise<void> {
-  if(get(singlePlayerPreview)){
-    let position: {x: number, y: number}|undefined = get(singlePlayerPreview)?.position;
-    let newPosition: {x: number, y: number} = await invoke("move_pawn", {new_position: position} );
+  let currentIndex = get(currentPlayerIndex);
+  let pickedPawnPreview = get(singlePlayerPreview);
+  let pickedWallPreview = get(wallPreview);
+
+  if (pickedPawnPreview) {
+    let position: { x: number, y: number } = pickedPawnPreview.position;
+    let newPosition: { x: number, y: number } = await invoke("move_pawn", { new_position: position });
     console.log("result do turn", newPosition);
-    
+
     players.update((players) => {
-      const index = get(currentPlayerIndex);
-      players[index].position = newPosition; // Update Position of the player
+      players[currentIndex].position = newPosition; // Update Position of the player
       return players;
     });
 
-    currentPlayerIndex.set(get(currentPlayerIndex) + 1 % 4);
+    currentPlayerIndex.set((currentIndex + 1 )% 4);
   }
-  else if(get(wallPreview)){
+  //check if there is a picked wall and if current player is allowed to set the wall
+  else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
+    let wall = wallToRust(pickedWallPreview); //type conversion
+    await invoke("place_wall", { wall: wall });
+    walls.update((existingWalls) => {
+      existingWalls.push(pickedWallPreview || { position: { x: 0, y: 0 }, isHorizontal: true }); //should not happen, just for typesafety
+      return existingWalls;
+    })
+    console.log("current index: ", currentIndex)
+    players.update((players) => {
+      players[currentIndex].wallQuantity = players[currentIndex].wallQuantity - 1;
+      return players;
+    });
+    currentPlayerIndex.set((currentIndex + 1) % 4);
+  }
 
-  }
-  
   showPlayerPreviews();
   wallPreview.set(null);
   singlePlayerPreview.set(null);
@@ -47,6 +62,7 @@ export async function showPlayerPreviews(): Promise<void> {
   let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
   //get all possible next pawn moves and add each one to playerPreviews
   let possibleMoves = await getPossibleMovesBackend();
+  console.log("current Player Index", get(currentPlayerIndex));
   possibleMoves.forEach(
     (position) => {
       playerPreviewsNew.push({
@@ -96,15 +112,15 @@ async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
 }
 
 async function checkWallBackend(newWall: {
-      position: {
-        x: number,
-        y: number
-      },
-      isHorizontal: boolean
-    }): Promise<boolean> {
-  let wall = wallToRust(newWall); 
+  position: {
+    x: number,
+    y: number
+  },
+  isHorizontal: boolean
+}): Promise<boolean> {
+  let wall = wallToRust(newWall);
   console.log(wall)
-  let valid: boolean = await invoke("check_wall", {wall: wall});
+  let valid: boolean = await invoke("check_wall", { wall: wall });
   console.log("wall valid", valid);
   return valid;
 }
@@ -357,3 +373,69 @@ function getClickPawnPosition(clickPositionCanvas: { x: number, y: number }, can
   return null;
 }
 
+
+
+export function initializeGame() {
+  players.set([
+    {
+      position: {
+        x: 4,
+        y: 8,
+      },
+      wallQuantity: 6,
+      goal: {
+        isXCoordinate: false,
+        goalLine: 0,
+      },
+      playerName: "Player 1",
+      color: "red",
+    },
+    {
+      position: {
+        x: 0,
+        y: 4,
+      },
+      wallQuantity: 6,
+      goal: {
+        isXCoordinate: true,
+        goalLine: 8,
+      },
+      playerName: "Player 2",
+      color: "yellow",
+    },
+    {
+      position: {
+        x: 4,
+        y: 0,
+      },
+      wallQuantity: 6,
+      goal: {
+        isXCoordinate: false,
+        goalLine: 8,
+      },
+      playerName: "Player 3",
+      color: "blue",
+    },
+    {
+      position: {
+        x: 8,
+        y: 4,
+      },
+      wallQuantity: 6,
+      goal: {
+        isXCoordinate: true,
+        goalLine: 0,
+      },
+      playerName: "Player 4",
+      color: "green",
+    },
+  ]);
+
+  walls.set([]);
+  currentPlayerIndex.set(0);
+
+  playerPreviews.set([]);
+  singlePlayerPreview.set(null);
+  wallPreview.set(null);
+  gameRunning.set(false);
+}
