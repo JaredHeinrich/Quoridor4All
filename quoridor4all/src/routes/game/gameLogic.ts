@@ -54,20 +54,20 @@ export async function undoLastTurn(): Promise<void> {
   let result: any = await invoke("undo_last_move");
   console.log(result);
   if(result[1]){  //player move
+    console.log("undo player move")
     console.log("result[1]", result[1])
     console.log("result[0]", result[0])
-   
+    previousPlayer();
   } else { // wall move
-    console.log("result[1]", result[1])
-    console.log("result[0]", result[0])
-
     walls.update((walls)=>{
       walls.pop();
       return walls;
     })
-
+    previousPlayer();
 
   }
+
+  cancelMove();
 }
 
 export function cancelMove(): void {
@@ -124,6 +124,15 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
 
 async function nextPlayer(){
   currentPlayerIndex.set((get(currentPlayerIndex) + 1 )% 4);
+}
+
+async function  previousPlayer() {
+  const currentIndex = get(currentPlayerIndex);
+  if(currentIndex == 0){
+    currentPlayerIndex.set(3)
+  }else{
+    currentPlayerIndex.set( currentIndex - 1)
+  }
 }
 
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
