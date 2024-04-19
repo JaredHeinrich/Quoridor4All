@@ -174,19 +174,22 @@ impl Game {
 
         //first position is already visited
         visited_positions.push(current_position.clone());
-        let mut index: usize = 0;   //index to go over all visited_positions and add possible possitions for all positions in visited_positions
+        let mut index: usize = 0; //index to go over all visited_positions and add possible possitions for all positions in visited_positions
 
         //if for all visited_positions all possible neighbor positions are checked
         while visited_positions.get(index).is_some() {
             current_position = visited_positions[index].clone();
 
             //current position is a goal -->path found
-            if self.pawns[pawn_index].goal().is_in_goal_line(&current_position) {
+            if self.pawns[pawn_index]
+                .goal()
+                .is_in_goal_line(current_position)
+            {
                 return true;
             }
 
             //get neighbour positions which are valid
-            let valid_positions = self.get_valid_next_positions_without_other(&current_position, pawn_index);
+            let valid_positions = self.get_valid_next_positions_without_other(current_position);
 
             //add valid_positions to visited_positions if not already in visited_positions
             for position in valid_positions {
@@ -202,31 +205,34 @@ impl Game {
     }
 
     //get_valid_neighbor_positions
-    fn get_valid_next_positions_without_other(&self, pawn_index: usize) -> Vec<Vector> {
-        let mut res: Vec<Vector> = Vec::new();
-        let pawn_pos = self.pawns.get(pawn_index).unwrap().position();
+    fn get_valid_next_positions_without_other(&self, pawn_pos: Vector) -> Vec<Vector> {
+        let directions = [
+            &Direction::Up,
+            &Direction::Right,
+            &Direction::Down,
+            &Direction::Left,
+        ];
 
-        res.push(&mut self.check_step_without_other(&Direction::Up, pawn_pos));
-        res.push(&mut self.check_step_without_other(&Direction::Right, pawn_pos));
-        res.push(&mut self.check_step_without_other(&Direction::Down, pawn_pos));
-        res.push(&mut self.check_step_without_other(&Direction::Left, pawn_pos));
-        res
+        directions
+            .iter()
+            .filter_map(|dir| self.check_step_without_other(dir, pawn_pos))
+            .collect()
     }
 
     fn check_step_without_other(
         &self,
         move_direction: &Direction,
         pawn_position: Vector,
-    ) -> Vector {
+    ) -> Option<Vector> {
         let movement = move_direction.to_vector();
         let new_pos = pawn_position.add(movement);
         if !new_pos.is_on_pawn_grid(self) {
-            return;
+            return None;
         };
         if self.does_wall_block_move(&move_direction, pawn_position) {
-            return;
+            return None;
         }
-        new_pos
+        Some(new_pos)
     }
 
     fn does_wall_block_move(&self, move_direction: &Direction, pawn_pos: Vector) -> bool {
