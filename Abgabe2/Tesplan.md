@@ -12,9 +12,9 @@ Kompatibilität
 Die Backend-Logik-Funktionalität ist größtenteils durch Unit-Tests abgedeckt. Dies bietet sich an, da die Anforderungen an die Logik durch die festen Spielregeln nicht ändern und die Logik gut auf logische Fehler automatisch überprüfbar.
 Der Frontend-Code lässt sich dagegen schlecht mit Unit-Tests überprüfen, da Fehler schwerer definiert werden können und es eher veränderte Anforderungen ohne absolute Wahrheit gibt. Daher wird die Funktionalität in manuellen End-to-End-Tests mitgetestet.
 
-
-1. Eingabe von Spielernamen
-    1. Spielstart
+1.Spielstart
+    1. Eingabe von Spielernamen
+    1. Spielstart funktioniert
 2. Spiel Spielen, Mit jedem Spieler
     1. Anzeige der möglichen Züge überprüfen
     2. Wand setzen (nicht in Konflikt mit anderer Wand)
@@ -37,6 +37,7 @@ Der Frontend-Code lässt sich dagegen schlecht mit Unit-Tests überprüfen, da F
     1. richtiger Name angezeigt
     2. Leaderboard überprüfen
     3. Navigation zurück zu Start überprüfen
+4. Allgemein Usability durch unvertraute Person
    
 ## Test Touren
 1. Couch Potato Tour/Garbage Collector Tour: möglichst schnell alles durchklicken (immer geradeauslaufen, bis zum Sieg)
