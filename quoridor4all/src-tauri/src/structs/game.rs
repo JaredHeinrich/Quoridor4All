@@ -236,7 +236,7 @@ impl Game {
         Ok(())
     }
 
-    //überprüft, ob alle Figuren ihr Ziel erreichen können.
+    //checks if all pawns can reach the according goal line
     pub fn check_pawn_paths(&self) -> bool {
         for pawn_index in 0..NUMBER_OF_PLAYERS {
             if !self.check_pawn_path(pawn_index) {
@@ -251,15 +251,16 @@ impl Game {
         let mut visited_positions = Vec::new();
         let mut current_position = self.pawns[pawn_index].position();
 
-        //first position is already visited
+        //erste Position wurde bereits berücksichtigt
         visited_positions.push(current_position.clone());
-        let mut index: usize = 0; //index to go over all visited_positions and add possible possitions for all positions in visited_positions
+        let mut index: usize = 0; //index um über visited_positions rüberzuiterieren und für jede vorhandene Position die angrenzenden validen Positionen hinzuzufügen
 
-        //if for all visited_positions all possible neighbor positions are checked
+        //wenn für alle visited_positons alle Nachbarn überprüft und hinzugefügt worden sind, endet die while-Schleife -->alle möglichen Felder abgesucht
         while visited_positions.get(index).is_some() {
+            //betrachte die aktuelle Position
             current_position = visited_positions[index].clone();
 
-            //current position is a goal -->path found
+            //wenn aktuelle Position im Ziel liegt, wurde ein Pfad gefunden
             if self.pawns[pawn_index]
                 .goal()
                 .is_in_goal_line(current_position)
@@ -267,17 +268,17 @@ impl Game {
                 return true;
             }
 
-            //get neighbour positions which are valid
+            //Hole dir alle validen Nachbarpositionen
             let valid_positions = self.get_valid_next_positions_without_other(current_position);
 
-            //add valid_positions to visited_positions if not already in visited_positions
+            //Füge Nachbarpositionen hinzu, wenn diese nicht bereits in visited_positions enthalten sind
             for position in valid_positions {
                 if !visited_positions.contains(&position) {
                     visited_positions.push(position);
                 }
             }
 
-            //next position in visited_positions
+            //nächste position in visited_positions auswählen
             index += 1;
         }
         false
@@ -298,7 +299,7 @@ impl Game {
             .collect()
     }
 
-    //seliges vorgehen wie bei check_step, jedoch ohne beachtung der anderen Figuren.
+    //selbes vorgehen wie bei check_step, jedoch ohne beachtung der anderen Figuren.
     fn check_step_without_other(
         &self,
         move_direction: &Direction,
