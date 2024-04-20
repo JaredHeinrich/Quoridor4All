@@ -17,7 +17,7 @@ export async function doTurn(): Promise<void> {
 
   if (pickedPawnPreview) {
     let position: { x: number, y: number } = pickedPawnPreview.position;
-    let newPosition: { x: number, y: number } = await invoke("move_pawn", { new_position: position });
+    let newPosition: { x: number, y: number } = await invoke("move_pawn", { movement: position });
     console.log("result do turn", newPosition);
 
     players.update((players) => {
@@ -45,19 +45,33 @@ export async function doTurn(): Promise<void> {
     nextPlayer();
   }
 
-  showPlayerPreviews();
+  await showPlayerPreviews();
   wallPreview.set(null);
   singlePlayerPreview.set(null);
 }
 
 export async function undoLastTurn(): Promise<void> {
   let result: any = await invoke("undo_last_move");
-  console.log(result);
-  if(result[1]){  //player move
-    console.log("undo player move")
-    console.log("result[1]", result[1])
-    console.log("result[0]", result[0])
+
+  const isPlayerMove = result[1];
+
+  if(isPlayerMove){  //player move
+    const newPosition: {x: number, y: number} = result[0];
+    console.log("new Position:", newPosition);
+    const currentIndex = get(currentPlayerIndex);
+    const lastIndex = (currentIndex == 0)?(3):(currentIndex - 1);
+    
+    console.log("last index", lastIndex);
+    players.update((players)=>{
+      players[lastIndex].position = newPosition;
+      return players;
+    });
+
+    console.log("players", get(players));
+    console.log("playerPreviews before", get(playerPreviews))
+    console.log("playerindex", get(currentPlayerIndex))
     previousPlayer();
+    console.log("payerindex:", get(currentPlayerIndex))
   } else { // wall move
     walls.update((walls)=>{
       walls.pop();
@@ -67,13 +81,15 @@ export async function undoLastTurn(): Promise<void> {
 
   }
 
-  cancelMove();
+  await cancelMove();
+  console.log("playerPreviews after", get(playerPreviews))
+
 }
 
-export function cancelMove(): void {
+export async function cancelMove(): Promise<void> {
   wallPreview.set(null);
   singlePlayerPreview.set(null);
-  showPlayerPreviews();
+  await showPlayerPreviews();
 }
 
 export async function showPlayerPreviews(): Promise<void> {
@@ -122,11 +138,11 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   return;
 }
 
-async function nextPlayer(){
+function nextPlayer(){
   currentPlayerIndex.set((get(currentPlayerIndex) + 1 )% 4);
 }
 
-async function  previousPlayer() {
+function  previousPlayer() {
   const currentIndex = get(currentPlayerIndex);
   if(currentIndex == 0){
     currentPlayerIndex.set(3)
