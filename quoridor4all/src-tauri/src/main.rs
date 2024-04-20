@@ -8,6 +8,9 @@ use structs::game::Game;
 use commands::*;
 use vector_util::Vector;
 
+#[cfg(test)]
+pub mod tests;
+
 pub mod commands;
 pub mod vector_util;
 pub mod enums;
@@ -33,12 +36,4 @@ async fn main() {
         .invoke_handler(tauri::generate_handler![start_game, get_player_names, get_possible_moves, check_wall, place_wall, move_pawn, undo_last_move])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-#[cfg(test)]
-mod test {
-    #[test]
-    fn first_test(){
-        assert!(true);
-    }
 }

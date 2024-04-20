@@ -28,6 +28,24 @@ impl Pawn {
             pawn_color,
         }
     }
+//only for tests
+    #[cfg(test)]
+    pub fn test_new(
+        position: Vector,
+        number_of_available_walls: i16,
+        goal: Goal,
+        player_name: String,
+        pawn_color: Color
+        ) -> Self{
+        Self{
+            position,
+            number_of_available_walls,
+            goal,
+            player_name,
+            pawn_color,
+        }
+    }
+
     fn get_start_coordinate(board_size: i16, pawn_side: &Side) -> Vector {
         let board_start: i16 = 0; //lowest index of board
         let board_end: i16 = board_size -1; //board_end is the highest index of the board
@@ -63,5 +81,36 @@ impl Pawn {
     pub fn dec_number_of_walls(&mut self) {
         let number_of_walls = &mut self.number_of_available_walls;
         *number_of_walls = *number_of_walls - 1;
+    }
+}
+
+#[cfg(test)]
+pub mod tests {
+    use super::Pawn;
+    use crate::{enums::Side::*, vector_util::Vector};
+
+    #[test]
+    fn get_start_coordinate_bottom() {
+        let act_start_coordinate = Pawn::get_start_coordinate(9, &Bottom);
+        let exp_start_coordinate = Vector::new(4,8);
+        assert_eq!(act_start_coordinate, exp_start_coordinate);
+    }
+    #[test]
+    fn get_start_coordinate_left() {
+        let act_start_coordinate = Pawn::get_start_coordinate(9, &Left);
+        let exp_start_coordinate = Vector::new(0,4);
+        assert_eq!(act_start_coordinate, exp_start_coordinate);
+    }
+    #[test]
+    fn get_start_coordinate_top() {
+        let act_start_coordinate = Pawn::get_start_coordinate(9, &Top);
+        let exp_start_coordinate = Vector::new(4,0);
+        assert_eq!(act_start_coordinate, exp_start_coordinate);
+    }
+    #[test]
+    fn get_start_coordinate_right() {
+        let act_start_coordinate = Pawn::get_start_coordinate(9, &Right);
+        let exp_start_coordinate = Vector::new(8,4);
+        assert_eq!(act_start_coordinate, exp_start_coordinate);
     }
 }

@@ -54,6 +54,24 @@ impl Game {
         }
     }
 
+    //only for tests
+    #[cfg(test)]
+    pub fn test_new(
+        pawns: Vec<Pawn>,
+        current_pawn: CurrentPawn,
+        history: GameHistory,
+        board_size: i16,
+        walls: Vec<Wall>
+        ) -> Self {
+        Self{
+            pawns,
+            current_pawn,
+            history,
+            board_size,
+            walls,
+        }
+    }
+
     pub fn board_size(&self) -> i16 {
         self.board_size
     }
@@ -120,7 +138,7 @@ impl Game {
         jumps: i16,
     ) -> Vec<Vector> {
         let mut res = Vec::new();
-        if jumps > NUMBER_OF_PLAYERS as i16 - 1 {
+        if jumps >= NUMBER_OF_PLAYERS as i16 {
             return res;
         }
         let movement = move_direction.to_vector();
@@ -315,8 +333,8 @@ impl Game {
 } // impl Game
 
 #[derive(Clone)]
-struct CurrentPawn(usize);
-impl CurrentPawn {
+pub struct CurrentPawn(pub usize);
+impl CurrentPawn{
     fn get(&self) -> usize {
         self.0
     }
@@ -331,5 +349,353 @@ impl CurrentPawn {
     }
     fn set_prev(&mut self) {
         self.0 = (self.0 + NUMBER_OF_PLAYERS - 1) % NUMBER_OF_PLAYERS;
+    }
+}
+
+#[cfg(test)]
+pub mod tests{
+    use crate::{enums::{Direction::*, Color::*}, structs::{goal::Goal, history::GameHistory, pawn::Pawn, wall::Wall}, vector_util::Vector};
+
+    use super::{CurrentPawn, Game};
+
+    #[test]
+    fn does_wall_block_move_positive_up_1 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,3), true),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Up, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_up_2 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(4,3), true),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Up, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_right_1 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(4,4), false),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Right, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_right_2 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(4,3), false),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Right, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_down_1 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(4,4), true),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Down, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_down_2 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,4), true),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Down, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_left_1 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,3), false),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Left, Vector::new(4,4)));
+    }
+
+    #[test]
+    fn does_wall_block_move_positive_left_2 () {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,4), false),
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        assert!(game.does_wall_block_move(&Left, Vector::new(4,4)));
+    }
+    #[test]
+    fn check_jump_empty() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_jump(&Up, Vector::new(4,4), 1);
+        let exp_move = Vector::new(4,3);
+        let not_exp_move = Vector::new(2,2);
+        assert!(act_moves.contains(&exp_move));
+        assert!(!act_moves.contains(&not_exp_move));
+    }
+
+    #[test]
+    fn check_jump_blocked_by_border() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_jump(&Up, Vector::new(4,0), 1);
+        let exp_move_1 = Vector::new(3,0);
+        let exp_move_2 = Vector::new(5,0);
+        let not_exp_move = Vector::new(2,2);
+        assert!(act_moves.contains(&exp_move_1));
+        assert!(act_moves.contains(&exp_move_2));
+        assert!(!act_moves.contains(&not_exp_move));
+    }
+
+    #[test]
+    fn check_jump_corner() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_jump(&Up, Vector::new(0,0), 1);
+        let exp_move_1 = Vector::new(1,0);
+        let not_exp_move = Vector::new(2,2);
+        assert!(act_moves.contains(&exp_move_1));
+        assert!(!act_moves.contains(&not_exp_move));
+    }
+
+    #[test]
+    fn check_step_empty() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_step(&Up, Vector::new(4,4), 0);
+        let exp_move = Vector::new(4,3);
+        assert!(act_moves.contains(&exp_move));
+    }
+
+    #[test]
+    fn check_step_on_pawn() {
+        let pawns = vec![
+            Pawn::test_new(
+                Vector::new(4,3),
+                10,
+                Goal::test_new(false, 0),
+                "Player 1".to_string(),
+                Red
+                )
+        ];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_step(&Up, Vector::new(4,4), 0);
+        let exp_move = Vector::new(4,2);
+        assert!(act_moves.contains(&exp_move));
+    }
+
+    #[test]
+    fn check_step_with_wall() {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,3), true)
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_step(&Up, Vector::new(4,4), 0);
+        let not_exp_move = Vector::new(4,3);
+        assert!(act_moves.len() == 0);
+        assert!(!act_moves.contains(&not_exp_move));
+    }
+
+    #[test]
+    fn check_step_max_jumps() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.check_step(&Up, Vector::new(4,4), 4);
+        let not_exp_move = Vector::new(4,3);
+        assert!(act_moves.len() == 0);
+        assert!(!act_moves.contains(&not_exp_move));
+    }
+
+    #[test]
+    fn check_step_without_other_empty() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_move = game.check_step_without_other(&Up, Vector::new(4,4));
+        let exp_move = Vector::new(4,3);
+        let act_move = act_move.unwrap();
+        assert_eq!(act_move, exp_move);
+    }
+
+    #[test]
+    fn check_step_without_other_with_pawn() {
+        let pawns = vec![
+            Pawn::test_new(
+                Vector::new(4,3),
+                10,
+                Goal::test_new(false, 0),
+                "Player 1".to_string(),
+                Red
+                )
+        ];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_move = game.check_step_without_other(&Up, Vector::new(4,4));
+        let exp_move = Vector::new(4,3);
+        let act_move = act_move.unwrap();
+        assert_eq!(act_move, exp_move);
+    }
+
+    #[test]
+    fn check_step_without_other_with_wall() {
+        let pawns = vec![];
+        let walls = vec![
+            Wall::new(Vector::new(3,3), true)
+        ];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_move = game.check_step_without_other(&Up, Vector::new(4,4));
+        let exp_move = None;
+        assert_eq!(act_move, exp_move);
+    }
+
+    #[test]
+    fn get_valid_next_positions_without_other_empty() {
+        let pawns = vec![];
+        let walls = vec![];
+        let game = Game::test_new(
+            pawns,
+            CurrentPawn(0),
+            GameHistory::new(),
+            9,
+            walls
+            );
+        let act_moves = game.get_valid_next_positions_without_other(Vector::new(4,4));
+        let exp_move_1 = Vector::new(4,3);
+        let exp_move_2 = Vector::new(4,5);
+        let exp_move_3 = Vector::new(3,4);
+        let exp_move_4 = Vector::new(5,4);
+        assert!(act_moves.contains(&exp_move_1));
+        assert!(act_moves.contains(&exp_move_2));
+        assert!(act_moves.contains(&exp_move_3));
+        assert!(act_moves.contains(&exp_move_4));
     }
 }
