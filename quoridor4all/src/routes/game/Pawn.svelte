@@ -19,7 +19,7 @@
     //lower alpha value for preview
     color = "rgba(" + colorMap[color] + ", 0.3)";
   } else {
-    color = "rgb(" + colorMap[color] + ")";
+    color = "rgba(" + colorMap[color] + ", 1)";
   }
 
   const { register, unregister } = getContext<{
