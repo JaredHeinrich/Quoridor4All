@@ -3,7 +3,9 @@ Valentin Czekalla
 
 ## Größte Risiken
 Spiellogik falsch
+
 Nutererfahrung (Uninituitiv)
+
 Kompatibilität
 
 ## Vorgehensweise
