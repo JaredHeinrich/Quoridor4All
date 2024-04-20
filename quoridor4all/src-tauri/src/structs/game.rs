@@ -107,7 +107,7 @@ impl Game {
         Ok(result)
 
     }
-    pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<Vector,String> {
+    pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<(Vector, bool, String),String> {
         if !allowed_positions.contains(&new_position) {
             return Err("not a valid move".to_string());
         }
@@ -115,10 +115,12 @@ impl Game {
         let movement: Vector = new_position.subtract(pawn.position());
         pawn.move_pawn(movement);
         let new_pos = pawn.position();
+        let did_win = pawn.goal().is_in_goal_line(new_pos);
+        let player_name = pawn.player_name();
         self.current_pawn.set_next();
         self.history
             .add_move(Move::PawnMove(PawnMove::new(movement)));
-        Ok(new_pos)
+        Ok((new_pos, did_win, player_name.to_string()))
     }
 
     pub fn get_valid_next_positions(&self) -> Vec<Vector> {
