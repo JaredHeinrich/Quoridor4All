@@ -8,7 +8,7 @@ use crate::{db::models::DbPlayer, structs::{game::{Game, Player}, history::Move,
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
     let pool = state.db_pool.lock().await;
     let _result = sqlx::query("
-                INSERT OR IGNORE INTO players (names, wins)
+                INSERT OR IGNORE INTO players (name, wins)
                 VALUES ($1, 0), ($2, 0), ($3, 0), ($4, 0);
                 ")
         .bind(&players[0].player_name)

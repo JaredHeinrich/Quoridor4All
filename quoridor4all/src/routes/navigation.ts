@@ -46,7 +46,13 @@ export function continueGame(): void{
   }
 }
 
-export function cancelGame(): void{
+export async function cancelGame(): Promise<void>{
+  await invoke("cancel_game");
   gameRunning.set(false);
   goto("/");
+}
+
+export function toWin(): void{
+  gameRunning.set(false);
+  goto("/win");
 }

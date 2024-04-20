@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, P } from "flowbite-svelte";
   import PlayerInput from "./PlayerInput.svelte";
-  import {startGame, toRules} from "./navigation";
+  import {startGame, toRules, toWin} from "./navigation";
   
   function start(){
     startGame(playerNames);
