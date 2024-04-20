@@ -1,5 +1,7 @@
 import { readable, writable } from 'svelte/store';
 
+export const playerNames = writable<string[]>(["Spieler 1", "Spieler 2", "Spieler 3", "Spieler 4"])
+
 export const players = writable<{
   position: {
     x: number,
@@ -23,7 +25,7 @@ export const players = writable<{
       isXCoordinate: false,
       goalLine: 0,
     },
-    playerName: "Player 1",
+    playerName: "Spieler 1",
     color: "red",
   },
   {
@@ -36,7 +38,7 @@ export const players = writable<{
       isXCoordinate: true,
       goalLine: 8,
     },
-    playerName: "Player 2",
+    playerName: "spieler 2",
     color: "yellow",
   },
   {
@@ -49,7 +51,7 @@ export const players = writable<{
       isXCoordinate: false,
       goalLine: 8,
     },
-    playerName: "Player 3",
+    playerName: "Spieler 3",
     color: "blue",
   },
   {
@@ -62,7 +64,7 @@ export const players = writable<{
       isXCoordinate: true,
       goalLine: 0,
     },
-    playerName: "Player 4",
+    playerName: "Spieler 4",
     color: "green",
   },
 ]);
@@ -73,57 +75,7 @@ export const walls = writable<{
     y: number
   },
   isHorizontal: boolean
-}[]>([
-  // {
-  //   position: {
-  //     x: 5,
-  //     y: 5,
-  //   },
-  //   isHorizontal: true,
-  // },
-  // {
-  //   position: {
-  //     x: 0,
-  //     y: 0,
-  //   },
-  //   isHorizontal: false,
-  // },
-  // {
-  //   position: {
-  //     x: 7,
-  //     y: 4,
-  //   },
-  //   isHorizontal: true,
-  // },
-  // {
-  //   position: {
-  //     x: 1,
-  //     y: 7,
-  //   },
-  //   isHorizontal: false,
-  // },
-  // {
-  //   position: {
-  //     x: 4,
-  //     y: 2,
-  //   },
-  //   isHorizontal: true,
-  // },
-  // {
-  //   position: {
-  //     x: 3,
-  //     y: 5,
-  //   },
-  //   isHorizontal: false,
-  // },
-  // {
-  //   position: {
-  //     x: 4,
-  //     y: 4,
-  //   },
-  //   isHorizontal: true,
-  // }
-]);
+}[]>([]);
 
 export const currentPlayerIndex = writable<number>(0);
 
