@@ -8,6 +8,7 @@ use crate::enums::{Color, Side, Direction};
 use crate::vector_util::{VectorUtil, Vector};
 use crate::NUMBER_OF_PLAYERS;
 
+//Darstellung eines Spieler wie er im UI erstellt wird.
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Player {
     pub player_name: String,
@@ -25,11 +26,13 @@ pub struct Game {
 }
 
 impl Game {
+    //konstruktor
     pub fn new(
         board_size: i16,
         number_of_walls_per_player: i16,
         players: [Player; NUMBER_OF_PLAYERS],
     ) -> Self {
+        //für jeden spieler wird ein pawn erstellt.
         let pawns: Vec<Pawn> = players
             .into_iter()
             .map(|player| {
@@ -45,6 +48,7 @@ impl Game {
         let current_pawn: CurrentPawn = CurrentPawn(0);
         let history: GameHistory = GameHistory::new();
         let walls: Vec<Wall> = Vec::new();
+        //initialisierung von Walls, history und CurrentPawn
         Self {
             pawns,
             current_pawn,
@@ -54,7 +58,8 @@ impl Game {
         }
     }
 
-    //only for tests
+    //konstruktor für unit test für direkteren zugriff auf die werte der attribute.
+    //wird nur für Tests kompiliert.
     #[cfg(test)]
     pub fn test_new(
         pawns: Vec<Pawn>,
@@ -107,6 +112,9 @@ impl Game {
         Ok(result)
 
     }
+    //bewegt die Figur des Aktuellen Spielers zu der neuen Position.
+    //allowed_positions sind die Positionen, welche erlaubt wären. Diese müssen entweder aus dem
+    //Puffer entnommen oder vorher neu berechnet werden.
     pub fn move_current_pawn(&mut self, new_position: Vector, allowed_positions: &Vec<Vector>) -> Result<(Vector, bool, String),String> {
         if !allowed_positions.contains(&new_position) {
             return Err("not a valid move".to_string());
@@ -123,6 +131,7 @@ impl Game {
         Ok((new_pos, did_win, player_name.to_string()))
     }
 
+    //gibt alle möglichen Züge für die Figur des aktullen Spielers zurück.
     pub fn get_valid_next_positions(&self) -> Vec<Vector> {
         let mut res: Vec<Vector> = Vec::new();
         let pawn_pos = self.pawns.get(self.current_pawn.get()).unwrap().position();
@@ -133,6 +142,13 @@ impl Game {
         res
     }
 
+    //gibt die Möglichen neuen positionen zurück, welche es für eine bewegung in die mitgegeben
+    //richtung gibt.
+    //pawn_position: gibt die Position an von der aus die Züge berechnet werden.
+    //jumps: die Möglichen positionen werdne rekursiv berechnet. Es ist möglich, über eine andere
+    //Spielfigur zu springen. Bei einer bestimmten anordnung der Figuren und wänden, kann es zu
+    //einer endlosen rekursion kommen, daher wird abgebrochen, wenn versucht wird öfter zu
+    //springen, als es Spieler gibt.
     fn check_step(
         &self,
         move_direction: &Direction,
@@ -145,12 +161,15 @@ impl Game {
         }
         let movement = move_direction.to_vector();
         let new_pos = pawn_position.add(movement);
+        //wenn der Zug das Feld verlässt einen leeren vec zurückgeben.
         if !new_pos.is_on_pawn_grid(self) {
             return res;
         };
+        //wenn der Zug durch eine Wand blockiert wird einen leeren vec zurückgeben.
         if self.does_wall_block_move(&move_direction, pawn_position) {
             return res;
         }
+        //überprüfen, ob der Zug auf einer anderen Figur landet.
         let mut new_pos_on_pawn = false;
         for pawn in self.pawns.iter() {
             if pawn.position() == new_pos {
@@ -158,16 +177,22 @@ impl Game {
                 break;
             }
         }
+        //wenn der Zug auf einer anderen Figur landet, das überspringen behandeln und die jump zahl
+        //um 1 erhöhen.
         if new_pos_on_pawn {
             return self.check_jump(move_direction, new_pos, jumps + 1);
         }
+        //wenn kein sonderfall auftritt einen vec mit der neuen position zurückgeben.
         res.push(new_pos);
         res
     }
 
+    //behandelt sprünge.
     fn check_jump(&self, move_direction: &Direction, pawn_pos: Vector, jumps: i16) -> Vec<Vector> {
         let mut res = Vec::new();
+        //versucht die Figur gerade zu überspringen.
         res.append(&mut self.check_step(move_direction, pawn_pos, jumps));
+        //falls dass nicht klappt auch nach links und rechts versuchen.
         if res.len() == 0 {
             res.append(&mut self.check_step(&move_direction.turn_left(), pawn_pos, jumps));
             res.append(&mut self.check_step(&move_direction.turn_right(), pawn_pos, jumps));
@@ -175,6 +200,7 @@ impl Game {
         res
     }
 
+    //prüft ob eine wand erlaubt ist.
     pub fn is_wall_valid(&self, new_wall: &Wall) -> bool {
         let new_wall_pos = new_wall.position();
         if !new_wall_pos.is_on_wall_grid(self) {
@@ -185,6 +211,8 @@ impl Game {
                 return false;
             }
         }
+        //erzeugt eine kopie des Spiels und fügt dort die Wand ein.
+        //dann wird überprüft, ob alle Spieler ihr Ziel noch erreichen können.
         let new_wall = new_wall.clone();
         let mut temp_game = self.clone();
         temp_game.walls.push(new_wall);
@@ -194,10 +222,13 @@ impl Game {
         true
     }
 
+    //plaziert eine Wand.
     pub fn place_wall(&mut self, new_wall: Wall) -> Result<(), String> {
         if !self.is_wall_valid(&new_wall) {
             return Err("wall is not valid".to_string());
         }
+        //veringert die wände des aktullen spielers, plaziert die Wand, lässt den nächsten Spieler
+        //spielen und fügt den Zug in die history hinzu.
         self.pawns.get_mut(self.current_pawn.get()).unwrap().dec_number_of_walls();
         self.walls.push(new_wall.clone());
         self.current_pawn.set_next();
@@ -205,6 +236,7 @@ impl Game {
         Ok(())
     }
 
+    //überprüft, ob alle Figuren ihr Ziel erreichen können.
     pub fn check_pawn_paths(&self) -> bool {
         for pawn_index in 0..NUMBER_OF_PLAYERS {
             if !self.check_pawn_path(pawn_index) {
@@ -214,6 +246,7 @@ impl Game {
         true
     }
 
+    //überprüft, ob es für die durch den index gegebene Figur einen Pfad ans Ziel gibt.
     pub fn check_pawn_path(&self, pawn_index: usize) -> bool {
         let mut visited_positions = Vec::new();
         let mut current_position = self.pawns[pawn_index].position();
@@ -250,7 +283,7 @@ impl Game {
         false
     }
 
-    //get_valid_neighbor_positions
+    //get_valid_neighbor_positions ohne beachtung der anderen Figuren
     fn get_valid_next_positions_without_other(&self, pawn_pos: Vector) -> Vec<Vector> {
         let directions = [
             &Direction::Up,
@@ -265,6 +298,7 @@ impl Game {
             .collect()
     }
 
+    //seliges vorgehen wie bei check_step, jedoch ohne beachtung der anderen Figuren.
     fn check_step_without_other(
         &self,
         move_direction: &Direction,
@@ -281,9 +315,12 @@ impl Game {
         Some(new_pos)
     }
 
+    //überprüft, ob eine Bewegung durch einen Wand auf dem Feld blockiert wird.
     fn does_wall_block_move(&self, move_direction: &Direction, pawn_pos: Vector) -> bool {
         let mut blocking_walls: Vec<Wall> = Vec::new();
         match move_direction {
+            //wenn die Bewegung nach oben gerichtet ist, sind pos_a, pos_b positionen, auf welchen
+            //eine wagerechte Wand den Zug blockieren würde.
             Direction::Up => {
                 let pos_a = pawn_pos.add(Vector::new(-1, -1));
                 let pos_b = pawn_pos.add(Vector::new(0, -1));
@@ -294,6 +331,7 @@ impl Game {
                     blocking_walls.push(Wall::new(pos_b, true))
                 }
             }
+            //... senkrechte Wand ...
             Direction::Right => {
                 let pos_a = pawn_pos.add(Vector::new(0, -1));
                 let pos_b = pawn_pos;
@@ -304,6 +342,7 @@ impl Game {
                     blocking_walls.push(Wall::new(pos_b, false))
                 }
             }
+            //... wagerechte Wand ...
             Direction::Down => {
                 let pos_a = pawn_pos.add(Vector::new(-1, 0));
                 let pos_b = pawn_pos;
@@ -314,6 +353,7 @@ impl Game {
                     blocking_walls.push(Wall::new(pos_b, true))
                 }
             }
+            //... senkrechte Wand ...
             Direction::Left => {
                 let pos_a = pawn_pos.add(Vector::new(-1, -1));
                 let pos_b = pawn_pos.add(Vector::new(-1, 0));
@@ -325,6 +365,7 @@ impl Game {
                 }
             }
         }
+        //überprüfen, ob die Wände auf dem Feld eine Blockierende enthalten.
         for wall in self.walls.iter() {
             if blocking_walls.contains(&wall) {
                 return true;
@@ -337,23 +378,29 @@ impl Game {
 #[derive(Clone)]
 pub struct CurrentPawn(pub usize);
 impl CurrentPawn{
+    //wer ist gerade dran?
     fn get(&self) -> usize {
         self.0
     }
+    //wer ist nachher dran?
     fn get_next(&self) -> usize {
         (self.0 + 1) % NUMBER_OF_PLAYERS
     }
+    //wer war vorher dran?
     fn get_prev(&self) -> usize {
         (self.0 + NUMBER_OF_PLAYERS - 1) % NUMBER_OF_PLAYERS
     }
+    //der Nächste ist dran.
     fn set_next(&mut self) {
         self.0 = (self.0 + 1) % NUMBER_OF_PLAYERS;
     }
+    //der vorherige ist dran (z.B. bei undo_last_move).
     fn set_prev(&mut self) {
         self.0 = (self.0 + NUMBER_OF_PLAYERS - 1) % NUMBER_OF_PLAYERS;
     }
 }
 
+//Tests für private Methoden.
 #[cfg(test)]
 pub mod tests{
     use crate::{enums::{Direction::*, Color::*}, structs::{goal::Goal, history::GameHistory, pawn::Pawn, wall::Wall}, vector_util::Vector};

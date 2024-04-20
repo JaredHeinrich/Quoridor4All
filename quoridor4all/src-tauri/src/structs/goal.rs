@@ -7,27 +7,31 @@ pub struct Goal {
     goal_line: i16
 }
 impl Goal {
-    //constructor: takes player_side and board_size and returns goal of the player
+    //konstruktor
     pub fn new(player_side: &Side, board_size: i16) -> Self {
         match player_side {
+            //wenn der Spieler unten startet, ist sein ziel nach oben zu kommen, also y-koordinate == 0
             Side::Bottom => {
                 Self{
                     is_x_coordinate: false,
                     goal_line: 0,
                 }
             },
+            //...
             Side::Left => {
                 Self{
                     is_x_coordinate: true,
                     goal_line: board_size - 1,
                 }
             },
+            //...
             Side::Top => {
                 Self{
                     is_x_coordinate: false,
                     goal_line: board_size - 1,
                 }
             },
+            //...
             Side::Right => {
                 Self{
                     is_x_coordinate: true,
@@ -37,6 +41,8 @@ impl Goal {
         }
     }
 
+    //konstruktor für unit tests, um direkteren zugriff auf die werte der atribute zu haben.
+    //wird nur bei ausführung der Tests kompiliert.
     #[cfg(test)]
     pub fn test_new(
         is_x_coordinate: bool,
@@ -57,6 +63,7 @@ impl Goal {
     }
     //getter
 
+    //gibt zurück, ob sich der Punkt eines Ortsvektors auf der Ziellinie befindet.
     pub fn is_in_goal_line(&self, position: Vector) -> bool {
         match self.is_x_coordinate {
             true => position.x() == self.goal_line(),

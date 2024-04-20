@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use crate::vector_util::Vector;
 
+//Eine Seite des Spielfeldes
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Side {
     Bottom,
@@ -9,6 +10,7 @@ pub enum Side {
     Right,
 }
 
+//Eine Richtung in welche sich z.B. der Spieler bewegen kann. 
 #[derive(Debug, PartialEq)]
 pub enum Direction {
     Up,
@@ -17,6 +19,8 @@ pub enum Direction {
     Left,
 }
 impl Direction {
+
+    //Die Richtung in einen Einheitsvector umwandeln.
     pub fn to_vector(&self) -> Vector {
         match self {
             Self::Up => Vector::new(0,-1),
@@ -25,6 +29,7 @@ impl Direction {
             Self::Left => Vector::new(-1,0),
         }
     }
+    //Die Richtung umkehren
     pub fn revert(&self) -> Self {
         match self {
             Self::Up => Self::Down,
@@ -33,6 +38,7 @@ impl Direction {
             Self::Right => Self::Left,
         }
     }
+    //Die Richtung nach links drehen
     pub fn turn_left(&self) -> Self {
         match self {
             Self::Up => Self::Left,
@@ -41,6 +47,7 @@ impl Direction {
             Self::Left => Self::Down,
         }
     }
+    //Die Richtung nach rechts drehen
     pub fn turn_right(&self) -> Self {
         match self {
             Self::Up => Self::Right,
@@ -51,6 +58,7 @@ impl Direction {
     }
 }
 
+//Darstellung einer Farbe. (Momentan noch keine Wirkliche Verwendung)
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Color {
     Yellow,
