@@ -32,9 +32,10 @@ async fn create_schema() {
     pool.close().await;
 }
 pub mod models {
+    use serde::{Deserialize, Serialize};
     use sqlx::prelude::FromRow;
 
-    #[derive(Debug, FromRow)]
+    #[derive(Debug, FromRow, Serialize, Deserialize)]
     pub struct DbPlayer {
         name: String,
         wins: u32
