@@ -45,9 +45,7 @@ export async function doTurn(): Promise<void> {
     nextPlayer();
   }
 
-  await showPlayerPreviews();
-  wallPreview.set(null);
-  singlePlayerPreview.set(null);
+  await cancelMove();
 }
 
 export async function undoLastTurn(): Promise<void> {
