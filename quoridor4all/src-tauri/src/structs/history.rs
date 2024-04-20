@@ -1,11 +1,11 @@
 use crate::vector_util::Vector;
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Move {
     WallMove(WallMove),
     PawnMove(PawnMove),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct WallMove {
     position: Vector
 }
@@ -18,7 +18,7 @@ impl WallMove {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PawnMove {
     movement: Vector,
 }
