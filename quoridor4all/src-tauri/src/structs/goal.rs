@@ -1,7 +1,7 @@
 use crate::enums::Side;
 use crate::vector_util::Vector;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Goal {
     is_x_coordinate: bool, //defines if goal_line sets the x or the y coordinate of the goal line
     goal_line: i16
@@ -36,6 +36,18 @@ impl Goal {
             },
         }
     }
+
+    #[cfg(test)]
+    pub fn test_new(
+        is_x_coordinate: bool,
+        goal_line: i16
+        ) -> Self {
+        Self{
+            is_x_coordinate,
+            goal_line,
+        }
+    }
+
     //getter
     pub fn is_x_coordinate(&self) -> bool {
         self.is_x_coordinate

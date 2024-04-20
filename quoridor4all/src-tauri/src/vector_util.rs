@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::structs::game::Game;
 
-#[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Debug)]
 pub struct Vector {
     x: i16,
     y: i16,
