@@ -55,7 +55,7 @@ pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<V
 }
 
 #[tauri::command]
-pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: Vector) -> Result<Vector, String> {
+pub async fn move_pawn<'a>(state: State<'a, GameState>, new_position: Vector) -> Result<Vector, String> {
     let mut moves_lock = state.current_possible_moves.lock().await;
     let mut game_lock = state.game.lock().await;
     let result: Result<Vector, String> = match moves_lock.as_ref() {
@@ -63,7 +63,7 @@ pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: Vector) -> Res
         Some(allowed_moves) => {
             match game_lock.deref_mut() {
                 Some(g) => {
-                    g.move_current_pawn(movement, allowed_moves)
+                    g.move_current_pawn(new_position, allowed_moves)
                 },
                 None => return Err("no game running".to_string()),
             }
@@ -73,7 +73,7 @@ pub async fn move_pawn<'a>(state: State<'a, GameState>, movement: Vector) -> Res
             match game_lock.deref_mut() {
                 Some(g) => {
                     let allowed_moves = g.get_valid_next_positions();
-                    g.move_current_pawn(movement, &allowed_moves)
+                    g.move_current_pawn(new_position, &allowed_moves)
                 },
                 None => return Err("no game running".to_string()),
             }
@@ -124,12 +124,6 @@ pub async fn undo_last_move<'a>(state: State<'a, GameState>) -> Result<(Vector, 
         Some(g) => g.undo_last_move(),
         None => return Err("no game running".to_string()),
     };
-    match result {
-        Ok(_) => {
-            //wenn der move erfolgreich zurückgesetzt wurde werden die gepufferten moves entfernen.
-            *moves_lock = None;
-        },
-        _ => {},
-    };
+    *moves_lock = None;
     result
 }
