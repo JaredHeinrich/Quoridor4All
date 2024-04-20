@@ -25,6 +25,5 @@
         on:click={toRules}>Spielregeln</Button
       >
     </div>
-    <Button on:click={toWin}>kdsafsdf</Button>
   </div>
 </form>

@@ -12,9 +12,9 @@ import { toWin } from "../navigation";
 
 
 export async function doTurn(): Promise<void> {
-  let currentIndex = get(currentPlayerIndex);
-  let pickedPawnPreview = get(singlePlayerPreview);
-  let pickedWallPreview = get(wallPreview);
+  const currentIndex = get(currentPlayerIndex);
+  const pickedPawnPreview = get(singlePlayerPreview);
+  const pickedWallPreview = get(wallPreview);
 
   if (pickedPawnPreview) {
     const position: { x: number, y: number } = pickedPawnPreview.position;
@@ -25,7 +25,6 @@ export async function doTurn(): Promise<void> {
 
     if(won){
       winnerName.set(get(players)[currentIndex].playerName);
-      console.log("Backend get top players: ", await invoke("get_top_players"))
       toWin();
       return;
     }
@@ -39,7 +38,7 @@ export async function doTurn(): Promise<void> {
   }
   //check if there is a picked wall and if current player is allowed to set the wall
   else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
-    let wall = wallToRust(pickedWallPreview); //type conversion
+    const wall = wallToRust(pickedWallPreview); //type conversion
     await invoke("place_wall", { wall: wall });
     //set the new wall
     walls.update((existingWalls) => {
@@ -59,7 +58,7 @@ export async function doTurn(): Promise<void> {
 }
 
 export async function undoLastTurn(): Promise<void> {
-  let result: any = await invoke("undo_last_move");
+  const result: any = await invoke("undo_last_move");
 
   const isPlayerMove = result[1];
 
@@ -103,9 +102,9 @@ async function showPlayerPreviews(): Promise<void> {
   //reset player previews first to not have two times the same playerPreviews shown
   playerPreviews.set([]);
 
-  let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
+  const playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
   //get all possible next pawn moves and add each one to playerPreviews
-  let possibleMoves = await getPossibleMovesBackend();
+  const possibleMoves = await getPossibleMovesBackend();
   possibleMoves.forEach(
     (position) => {
       playerPreviewsNew.push({
@@ -118,7 +117,7 @@ async function showPlayerPreviews(): Promise<void> {
 
 export async function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): Promise<void> {
   //first test if click is a wall
-  let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
+  const clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
   if (clickedWall) {
     if (await checkWallBackend(clickedWall)) {
       //set preview wall and reset player previews
@@ -131,7 +130,7 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   }
 
   //test if clickPosition is a Preview
-  let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
+  const clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
   if (clickedPawnPosition) {
     //test if pawn is in current playerPreviews.
     if (isInPlayerPreviews(clickedPawnPosition)) {
@@ -165,8 +164,7 @@ function previousPlayer() {
 }
 
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
-  let possiblePosition: { x: number, y: number }[] = await invoke("get_possible_moves");
-  return possiblePosition;
+  return await invoke("get_possible_moves");
 }
 
 async function checkWallBackend(newWall: {
@@ -176,9 +174,8 @@ async function checkWallBackend(newWall: {
   },
   isHorizontal: boolean
 }): Promise<boolean> {
-  let wall = wallToRust(newWall);
-  let valid: boolean = await invoke("check_wall", { wall: wall });
-  return valid;
+  const wall = wallToRust(newWall);
+  return await invoke("check_wall", { wall: wall });
 }
 
 function equalPos(position1: { x: number, y: number }, position2: { x: number, y: number }): boolean {
