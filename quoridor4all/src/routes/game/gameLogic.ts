@@ -17,7 +17,7 @@ export async function doTurn(): Promise<void> {
 
   if (pickedPawnPreview) {
     let position: { x: number, y: number } = pickedPawnPreview.position;
-    let newPosition: { x: number, y: number } = await invoke("move_pawn", { new_position: position });
+    let newPosition: { x: number, y: number } = await invoke("move_pawn", { newPosition: position });
     console.log("result do turn", newPosition);
 
     players.update((players) => {
