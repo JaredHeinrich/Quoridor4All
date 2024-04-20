@@ -25,6 +25,7 @@ export async function doTurn(): Promise<void> {
 
     if(won){
       winnerName.set(get(players)[currentIndex].playerName);
+      console.log("Backend get top players: ", await invoke("get_top_players"))
       toWin();
       return;
     }
