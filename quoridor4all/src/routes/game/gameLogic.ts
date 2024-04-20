@@ -18,7 +18,6 @@ export async function doTurn(): Promise<void> {
   if (pickedPawnPreview) {
     let position: { x: number, y: number } = pickedPawnPreview.position;
     let newPosition: { x: number, y: number } = await invoke("move_pawn", { newPosition: position });
-    console.log("result do turn", newPosition);
 
     players.update((players) => {
       players[currentIndex].position = newPosition; // Update Position of the player
@@ -45,38 +44,54 @@ export async function doTurn(): Promise<void> {
     nextPlayer();
   }
 
-  showPlayerPreviews();
-  wallPreview.set(null);
-  singlePlayerPreview.set(null);
+  await showPlayerPreviews();
 }
 
 export async function undoLastTurn(): Promise<void> {
   let result: any = await invoke("undo_last_move");
-  console.log(result);
-  if(result[1]){  //player move
-    console.log("undo player move")
-    console.log("result[1]", result[1])
-    console.log("result[0]", result[0])
+
+  const isPlayerMove = result[1];
+
+  //show backend result in frontend
+  if (isPlayerMove) {  //player move
+    const newPosition: { x: number, y: number } = result[0];
+    const currentIndex = get(currentPlayerIndex);
+    const lastIndex = (currentIndex == 0) ? (3) : (currentIndex - 1);
+
+    players.update((players) => {
+      players[lastIndex].position = newPosition;
+      return players;
+    });
+
     previousPlayer();
+
   } else { // wall move
-    walls.update((walls)=>{
+
+    walls.update((walls) => {
       walls.pop();
       return walls;
     })
+
     previousPlayer();
 
   }
 
-  cancelMove();
+  await showPlayerPreviews();
+
 }
 
-export function cancelMove(): void {
+export async function cancelMove(): Promise<void> {
+  await showPlayerPreviews();
+}
+
+async function showPlayerPreviews(): Promise<void> {
+  //other previews must not be showns
   wallPreview.set(null);
   singlePlayerPreview.set(null);
-  showPlayerPreviews();
-}
 
-export async function showPlayerPreviews(): Promise<void> {
+  //reset player previews first to not have two times the same playerPreviews shown
+  playerPreviews.set([]);
+
   let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
   //get all possible next pawn moves and add each one to playerPreviews
   let possibleMoves = await getPossibleMovesBackend();
@@ -109,6 +124,9 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   if (clickedPawnPosition) {
     //test if pawn is in current playerPreviews.
     if (isInPlayerPreviews(clickedPawnPosition)) {
+      //reset single player preview first to not show it twice
+      singlePlayerPreview.set(null);
+
       // only show one player preview (singlePlayerPreview)
       singlePlayerPreview.set({
         position: clickedPawnPosition,
@@ -122,16 +140,16 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   return;
 }
 
-async function nextPlayer(){
-  currentPlayerIndex.set((get(currentPlayerIndex) + 1 )% 4);
+function nextPlayer() {
+  currentPlayerIndex.set((get(currentPlayerIndex) + 1) % 4);
 }
 
-async function  previousPlayer() {
+function previousPlayer() {
   const currentIndex = get(currentPlayerIndex);
-  if(currentIndex == 0){
+  if (currentIndex == 0) {
     currentPlayerIndex.set(3)
-  }else{
-    currentPlayerIndex.set( currentIndex - 1)
+  } else {
+    currentPlayerIndex.set(currentIndex - 1)
   }
 }
 

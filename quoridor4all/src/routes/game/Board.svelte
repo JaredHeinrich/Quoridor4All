@@ -4,7 +4,7 @@
   import Square from "./Square.svelte";
   import Wall from "./Wall.svelte";
   import { setConfigurations } from "./coordinateCalculation";
-  import { showPlayerPreviews } from "./gameLogic";
+  import { cancelMove } from "./gameLogic";
   import {
     size,
     walls,
@@ -24,7 +24,7 @@
   let grid = new Array($size).fill(0).map(() => new Array($size).fill(0));
 
   onMount(()=>{
-    showPlayerPreviews();
+    cancelMove();
   });
 </script>
 
