@@ -1,14 +1,15 @@
 <script lang="ts">
   import { Button } from "flowbite-svelte";
-import { cancelGame } from "../navigation";
+  import { cancelGame } from "../navigation";
+  import { get } from "svelte/store";
+  import { winnerName } from "../../store";
 
-  let currentWinnerName: string = "Doris86";
   let leaderBordNames = ["Player 1", "Player 2", "Player 3"];
 </script>
 
 <div class="text-white p-8 rounded-lg text-center">
   <p class="text-lg">Der Sieger ist:</p>
-  <p class="text-4xl font-bold text-gradient"> {currentWinnerName} 🎉</p>
+  <p class="text-4xl font-bold text-gradient"> {get(winnerName)} 🎉</p>
   <img src='/winning.gif' alt='Congratulations image' class="mx-auto mt-4" aria-hidden="true" />
 </div>
 
