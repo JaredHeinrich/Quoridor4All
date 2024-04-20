@@ -23,6 +23,14 @@ impl Vector {
             y
         }
     }
+    
+    pub fn x(&self) -> i16 {
+        self.x
+    }
+
+    pub fn y(&self) -> i16 {
+        self.y
+    }
 }
 
 impl VectorUtil for Vector {

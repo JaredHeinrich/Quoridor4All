@@ -5,16 +5,7 @@
   import PlayerViewHorizontal from "./PlayerViewHorizontal.svelte";
   import PlayerViewVertical from "./PlayerViewVertical.svelte";
   import { cancelMove, doTurn, undoLastTurn } from "./gameLogic";
-  import { goto } from "$app/navigation";
-
-  function cancelGame(): void{
-    gameRunning.set(false);
-    goto("/");
-  }
-
-  function gotoRules(): void{
-    goto("/rules")
-  }
+  import {cancelGame, toRules} from "../navigation";
 </script>
 
 <div class="bg-gray-900">
@@ -64,7 +55,7 @@
   <div class="border-8 text-center border-gray-900">
     <Button color="dark" on:click={undoLastTurn}>Zug Zurück</Button>
     <Button color="dark" on:click={cancelGame}>Spiel abbrechen</Button>
-    <Button color="dark" on:click={gotoRules} >Spielregeln</Button>
+    <Button color="dark" on:click={toRules} >Spielregeln</Button>
   </div>
 </div>
 
