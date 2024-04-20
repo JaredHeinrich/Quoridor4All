@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { Button } from "flowbite-svelte";
+import { cancelGame } from "../navigation";
+
   let currentWinnerName: string = "Doris86";
   let leaderBordNames = ["Player 1", "Player 2", "Player 3"];
 </script>
@@ -15,3 +18,6 @@
     <li class="{i === 0 ? 'text-lg text-red-500' : i === 1 ? 'text-base' : 'text-sm'}">{player}</li>
   {/each}
 </ul>
+<div class="border-8 text-center border-gray-900">
+  <Button color="dark" on:click={cancelGame}>Startseite</Button>
+</div>

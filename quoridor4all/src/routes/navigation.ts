@@ -50,3 +50,8 @@ export function cancelGame(): void{
   gameRunning.set(false);
   goto("/");
 }
+
+export function toWin(): void{
+  gameRunning.set(false);
+  goto("/win");
+}
