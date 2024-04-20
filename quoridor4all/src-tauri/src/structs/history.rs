@@ -10,6 +10,7 @@ pub struct WallMove {
     position: Vector
 }
 
+//Zug in dem eine Wand gesetzt wurde
 impl WallMove {
     pub fn new(position: Vector) -> Self {
         Self{
@@ -21,6 +22,7 @@ impl WallMove {
     }
 }
 
+//Zug in dem eine Figur bewegt wurde.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PawnMove {
     movement: Vector,

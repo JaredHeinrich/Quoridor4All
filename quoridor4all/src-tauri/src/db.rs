@@ -2,6 +2,7 @@ use sqlx::{ migrate::MigrateDatabase, Sqlite, SqlitePool };
 
 use crate::DB_URL;
 
+//datenbank wird inital erstellt.
 pub async fn init() {
     if !Sqlite::database_exists(DB_URL).await.unwrap_or(false) {
         match Sqlite::create_database(DB_URL).await {
@@ -11,7 +12,7 @@ pub async fn init() {
     } else {
         println!("Database already exists");
     }
-
+    //Datenbank Tabellen werden angelegt.
     create_schema().await;
 }
 
@@ -35,6 +36,7 @@ pub mod models {
     use serde::{Deserialize, Serialize};
     use sqlx::prelude::FromRow;
 
+    //Represetation eines Datenbank Eintrags
     #[derive(Debug, FromRow, Serialize, Deserialize)]
     pub struct DbPlayer {
         name: String,
