@@ -106,3 +106,5 @@ export const wallPreview = writable<{
 }|null>(null);
 
 export const gameRunning = writable<boolean>(false);
+
+export const winnerName = writable<string>("");

@@ -1,8 +1,9 @@
 import { isAfterThisSquare, isInThisSquare } from "./coordinateCalculation";
-import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview, gameRunning } from "../../store"
+import { players, currentPlayerIndex, size, walls, playerPreviews, wallPreview, singlePlayerPreview, gameRunning, winnerName } from "../../store"
 import { get } from 'svelte/store';
 import { invoke } from "@tauri-apps/api/tauri";
 import { wallToRust } from "./typeConverter"
+import { toWin } from "../navigation";
 
 // const UP: { x: number, y: number } = { x: 0, y: -1 };
 // const DOWN: { x: number, y: number } = { x: 0, y: +1 };
@@ -11,13 +12,22 @@ import { wallToRust } from "./typeConverter"
 
 
 export async function doTurn(): Promise<void> {
-  let currentIndex = get(currentPlayerIndex);
-  let pickedPawnPreview = get(singlePlayerPreview);
-  let pickedWallPreview = get(wallPreview);
+  const currentIndex = get(currentPlayerIndex);
+  const pickedPawnPreview = get(singlePlayerPreview);
+  const pickedWallPreview = get(wallPreview);
 
   if (pickedPawnPreview) {
-    let position: { x: number, y: number } = pickedPawnPreview.position;
-    let newPosition: { x: number, y: number } = await invoke("move_pawn", { newPosition: position });
+    const position: { x: number, y: number } = pickedPawnPreview.position;
+    const result: any = await invoke("move_pawn", { newPosition: position });
+    const newPosition: { x: number, y: number } = result[0];
+    
+    const won: boolean = result[1];
+
+    if(won){
+      winnerName.set(get(players)[currentIndex].playerName);
+      toWin();
+      return;
+    }
 
     players.update((players) => {
       players[currentIndex].position = newPosition; // Update Position of the player
@@ -28,7 +38,7 @@ export async function doTurn(): Promise<void> {
   }
   //check if there is a picked wall and if current player is allowed to set the wall
   else if (pickedWallPreview && get(players)[currentIndex].wallQuantity > 0) {
-    let wall = wallToRust(pickedWallPreview); //type conversion
+    const wall = wallToRust(pickedWallPreview); //type conversion
     await invoke("place_wall", { wall: wall });
     //set the new wall
     walls.update((existingWalls) => {
@@ -48,7 +58,7 @@ export async function doTurn(): Promise<void> {
 }
 
 export async function undoLastTurn(): Promise<void> {
-  let result: any = await invoke("undo_last_move");
+  const result: any = await invoke("undo_last_move");
 
   const isPlayerMove = result[1];
 
@@ -92,9 +102,9 @@ async function showPlayerPreviews(): Promise<void> {
   //reset player previews first to not have two times the same playerPreviews shown
   playerPreviews.set([]);
 
-  let playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
+  const playerPreviewsNew: { position: { x: number, y: number }, color: string, }[] = [];
   //get all possible next pawn moves and add each one to playerPreviews
-  let possibleMoves = await getPossibleMovesBackend();
+  const possibleMoves = await getPossibleMovesBackend();
   possibleMoves.forEach(
     (position) => {
       playerPreviewsNew.push({
@@ -107,7 +117,7 @@ async function showPlayerPreviews(): Promise<void> {
 
 export async function showClickedPreview(clickPositionCanvas: { x: number, y: number }, canvasWidth: number): Promise<void> {
   //first test if click is a wall
-  let clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
+  const clickedWall = getClickWall(clickPositionCanvas, canvasWidth);
   if (clickedWall) {
     if (await checkWallBackend(clickedWall)) {
       //set preview wall and reset player previews
@@ -120,7 +130,7 @@ export async function showClickedPreview(clickPositionCanvas: { x: number, y: nu
   }
 
   //test if clickPosition is a Preview
-  let clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
+  const clickedPawnPosition = getClickPawnPosition(clickPositionCanvas, canvasWidth);
   if (clickedPawnPosition) {
     //test if pawn is in current playerPreviews.
     if (isInPlayerPreviews(clickedPawnPosition)) {
@@ -154,8 +164,7 @@ function previousPlayer() {
 }
 
 async function getPossibleMovesBackend(): Promise<{ x: number, y: number }[]> {
-  let possiblePosition: { x: number, y: number }[] = await invoke("get_possible_moves");
-  return possiblePosition;
+  return await invoke("get_possible_moves");
 }
 
 async function checkWallBackend(newWall: {
@@ -165,9 +174,8 @@ async function checkWallBackend(newWall: {
   },
   isHorizontal: boolean
 }): Promise<boolean> {
-  let wall = wallToRust(newWall);
-  let valid: boolean = await invoke("check_wall", { wall: wall });
-  return valid;
+  const wall = wallToRust(newWall);
+  return await invoke("check_wall", { wall: wall });
 }
 
 function equalPos(position1: { x: number, y: number }, position2: { x: number, y: number }): boolean {
@@ -233,6 +241,8 @@ function getClickPawnPosition(clickPositionCanvas: { x: number, y: number }, can
   return null;
 }
 
+
+
 export function initializeGame() {
   players.set([
     {
@@ -245,7 +255,7 @@ export function initializeGame() {
         isXCoordinate: false,
         goalLine: 0,
       },
-      playerName: "Player 1",
+      playerName: "Spieler 1",
       color: "red",
     },
     {
@@ -258,7 +268,7 @@ export function initializeGame() {
         isXCoordinate: true,
         goalLine: 8,
       },
-      playerName: "Player 2",
+      playerName: "Spieler 2",
       color: "yellow",
     },
     {
@@ -271,7 +281,7 @@ export function initializeGame() {
         isXCoordinate: false,
         goalLine: 8,
       },
-      playerName: "Player 3",
+      playerName: "Spieler 3",
       color: "blue",
     },
     {
@@ -284,7 +294,7 @@ export function initializeGame() {
         isXCoordinate: true,
         goalLine: 0,
       },
-      playerName: "Player 4",
+      playerName: "Spieler 4",
       color: "green",
     },
   ]);
@@ -297,6 +307,7 @@ export function initializeGame() {
   wallPreview.set(null);
   gameRunning.set(false);
 }
+
 
 // function getPossibleNextPawnPositons(): { x: number, y: number }[] {
 //   let playerPosition = get(players)[get(currentPlayerIndex)].position;
