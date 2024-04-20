@@ -4,7 +4,7 @@ Valentin Czekalla
 ## Größte Risiken
 Spiellogik falsch
 
-Nutererfahrung (Uninituitiv)
+Nutzererfahrung (intuitiv)
 
 Kompatibilität
 
