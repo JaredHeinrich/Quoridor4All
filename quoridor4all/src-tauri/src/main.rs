@@ -17,7 +17,7 @@ pub mod enums;
 pub mod structs;
 pub mod db;
 const NUMBER_OF_PLAYERS: usize = 4;
-const NUMBER_OF_WALLS_PER_PLAYER: i16 = 10;
+const NUMBER_OF_WALLS_PER_PLAYER: i16 = 6;
 const BOARD_SIZE: i16 = 9;
 const DB_URL: &str = "sqlite://sqlite.db";
 
@@ -33,7 +33,7 @@ async fn main() {
     let db_pool = sqlx::sqlite::SqlitePool::connect(DB_URL).await.expect("unable to connect");
     tauri::Builder::default()
         .manage(GameState { game: Mutex::new(None), current_possible_moves: Mutex::new(None), db_pool: Mutex::new(db_pool) })
-        .invoke_handler(tauri::generate_handler![start_game, get_player_names, get_possible_moves, check_wall, place_wall, move_pawn, undo_last_move])
+        .invoke_handler(tauri::generate_handler![start_game, get_player_names, get_possible_moves, check_wall, place_wall, move_pawn, undo_last_move, get_top_players, cancel_game])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

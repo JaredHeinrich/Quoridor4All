@@ -1,8 +1,8 @@
-use std::ops::DerefMut;
+use std::ops::{DerefMut, Neg};
 
 use tauri::State;
 
-use crate::{structs::{game::{Game, Player}, history::Move, wall::Wall}, vector_util::Vector, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
+use crate::{db::models::DbPlayer, structs::{game::{Game, Player}, history::Move, wall::Wall}, vector_util::Vector, GameState, BOARD_SIZE, NUMBER_OF_PLAYERS, NUMBER_OF_WALLS_PER_PLAYER};
 
 #[tauri::command]
 pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'a, GameState>) -> Result<(), String> {
@@ -126,4 +126,21 @@ pub async fn undo_last_move<'a>(state: State<'a, GameState>) -> Result<(Vector, 
     };
     *moves_lock = None;
     result
+}
+
+#[tauri::command]
+pub async fn get_top_players<'a>(state: State<'a, GameState>) -> Result<Vec<DbPlayer>, String> {
+    let pool = state.db_pool.lock().await;
+    let result: Result<Vec<DbPlayer>, String>= sqlx::query_as(" SELECT name, wins FROM players ORDER BY wins DESC LIMIT 3 ")
+        .fetch_all(&*pool).await.map_err(|err| {err.to_string()});
+    result
+}
+
+#[tauri::command]
+pub async fn cancel_game<'a>(state: State<'a, GameState>) -> Result<(), String> {
+    let mut game_lock = state.game.lock().await;
+    let mut moves_lock = state.current_possible_moves.lock().await;
+    *game_lock = None;
+    *moves_lock = None;
+    Ok(())
 }
