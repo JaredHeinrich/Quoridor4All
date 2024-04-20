@@ -69,9 +69,9 @@ impl Game {
         let result = match &last_move {
             Move::PawnMove(pm) => {
                 let reverse_movement = pm.movement().revert();
-                let current_pawn = self.pawns.get_mut(self.current_pawn.get()).unwrap();
-                current_pawn.move_pawn(reverse_movement);
-                let new_pos = current_pawn.position();
+                let prev_pawn = self.pawns.get_mut(self.current_pawn.get_prev()).unwrap();
+                prev_pawn.move_pawn(reverse_movement);
+                let new_pos = prev_pawn.position();
                 (new_pos, true)
             },
             Move::WallMove(_) => {
@@ -319,6 +319,12 @@ struct CurrentPawn(usize);
 impl CurrentPawn {
     fn get(&self) -> usize {
         self.0
+    }
+    fn get_next(&self) -> usize {
+        (self.0 + 1) % NUMBER_OF_PLAYERS
+    }
+    fn get_prev(&self) -> usize {
+        (self.0 + NUMBER_OF_PLAYERS - 1) % NUMBER_OF_PLAYERS
     }
     fn set_next(&mut self) {
         self.0 = (self.0 + 1) % NUMBER_OF_PLAYERS;
