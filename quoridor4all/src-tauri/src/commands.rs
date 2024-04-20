@@ -10,7 +10,7 @@ pub async fn start_game<'a>(players: [Player; NUMBER_OF_PLAYERS], state: State<'
     let pool = state.db_pool.lock().await;
     // die 4 Spieler in die Datenbank eintragen, falls es sie noch nicht gibt.
     let _result = sqlx::query("
-                INSERT OR IGNORE INTO players (names, wins)
+                INSERT OR IGNORE INTO players (name, wins)
                 VALUES ($1, 0), ($2, 0), ($3, 0), ($4, 0);
                 ")
         .bind(&players[0].player_name)

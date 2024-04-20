@@ -1,19 +1,20 @@
 
 import { invoke } from "@tauri-apps/api/tauri";
-import { players, gameRunning } from "../store";
+import { players, gameRunning, playerNames } from "../store";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 import { initializeGame } from "./game/gameLogic";
 
-export async function startGame(playerNames: string[]) {
+export async function startGame() {
   initializeGame();
   players.update((state) => {
     return state.map((player, index) => {
-      return { ...player, playerName: playerNames[index] };
+      return { ...player, playerName: get(playerNames)[index] };
     });
   });
   gameRunning.set(true);
-  let playersBackend: {
+
+  const playersBackend: {
     player_name: string,
     pawn_color: string,
     pawn_side: string,
@@ -46,7 +47,13 @@ export function continueGame(): void{
   }
 }
 
-export function cancelGame(): void{
+export async function cancelGame(): Promise<void>{
+  await invoke("cancel_game");
   gameRunning.set(false);
   goto("/");
+}
+
+export function toWin(): void{
+  gameRunning.set(false);
+  goto("/win");
 }
