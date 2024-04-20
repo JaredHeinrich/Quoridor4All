@@ -60,13 +60,15 @@ export async function doTurn(): Promise<void> {
 export async function undoLastTurn(): Promise<void> {
   const result: any = await invoke("undo_last_move");
 
+  const currentIndex = get(currentPlayerIndex);
+  const lastIndex = (currentIndex == 0) ? (3) : (currentIndex - 1);
+
   const isPlayerMove = result[1];
 
   //show backend result in frontend
   if (isPlayerMove) {  //player move
     const newPosition: { x: number, y: number } = result[0];
-    const currentIndex = get(currentPlayerIndex);
-    const lastIndex = (currentIndex == 0) ? (3) : (currentIndex - 1);
+    
 
     players.update((players) => {
       players[lastIndex].position = newPosition;
@@ -81,6 +83,11 @@ export async function undoLastTurn(): Promise<void> {
       walls.pop();
       return walls;
     })
+
+    players.update((players) => {
+      players[lastIndex].wallQuantity += 1;
+      return players;
+    });
 
     previousPlayer();
 
