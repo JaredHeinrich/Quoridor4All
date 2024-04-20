@@ -9,6 +9,7 @@ pub enum Side {
     Right,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Direction {
     Up,
     Right,
