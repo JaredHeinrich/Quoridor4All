@@ -55,10 +55,11 @@ pub async fn get_possible_moves<'a>(state: State<'a, GameState>) -> Result<Vec<V
 }
 
 #[tauri::command]
-pub async fn move_pawn<'a>(state: State<'a, GameState>, new_position: Vector) -> Result<Vector, String> {
+pub async fn move_pawn<'a>(state: State<'a, GameState>, new_position: Vector) -> Result<(Vector, bool), String> {
+    let pool = state.db_pool.lock().await;
     let mut moves_lock = state.current_possible_moves.lock().await;
     let mut game_lock = state.game.lock().await;
-    let result: Result<Vector, String> = match moves_lock.as_ref() {
+    let result: Result<(Vector, bool, String), String> = match moves_lock.as_ref() {
         //if there are buffered positions use them
         Some(allowed_moves) => {
             match game_lock.deref_mut() {
@@ -80,13 +81,25 @@ pub async fn move_pawn<'a>(state: State<'a, GameState>, new_position: Vector) ->
         }
     };
     match result {
-        Ok(_) => {
+        Ok(r) => {
             //wenn der move erfolgreich war die gepufferten moves entfernen.
             *moves_lock = None;
+            // wenn der spieler gewonnen hat wird das spiel gelöscht
+            if r.1 {
+                *game_lock = None;
+                let _res = sqlx::query("
+                                       UPDATE players
+                                       SET wins = wins + 1
+                                       WHERE name = $1
+                                          ")
+                    .bind(&r.2)
+                    .execute(&*pool)
+                    .await;
+            }
+            Ok((r.0,r.1))
         },
-        _ => {},
+        Err(e) => Err(e),
     }
-    result
 }
 
 #[tauri::command]
