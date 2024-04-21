@@ -1,4 +1,4 @@
-## Wer hat was gemacht
+## Zuordnung Arbeitsaufteilung
 - Backend Jared (bis auf PathChecker Valentin)
 - Unit Tests Jared
 - Frontend Valentin
